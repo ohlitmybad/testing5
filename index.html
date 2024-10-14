@@ -1,0 +1,756 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.535, user-scalable=no"">
+    <meta name="robots" content="noindex">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+    <style>
+
+  
+        .rank-bar-fill {
+            background-color: rgba(0, 110, 255, 0.835);
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 20px;
+        }
+
+        body {
+          zoom: 119.2%; /* Adjust the percentage as needed */
+    font-family: Arial, Helvetica, sans-serif; /* Use Font1 as the primary font */
+    font-size: 14.7px;
+    color: #000000c4;
+    scrollbar-width: none; /* Firefox */
+    margin-left: 17.5px;
+    margin-top:0.2px;
+        background: #fff;
+}
+
+/* Style for selectors */
+select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+
+
+
+.toggle-button {
+  position: absolute;
+  left: 704px;
+  top: 23.8px;
+  width: 20px; /* Set width */
+}
+
+/* Hide the default checkbox */
+.toggle-button input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Style the custom checkbox */
+.toggle-button label {
+  display: inline-block;
+  width: 20px; /* Set width */
+  height: 20px; /* Set height */
+  background-color: #ccc;
+  border-radius: 50%; /* Make it round */
+  cursor: pointer;
+  position: absolute;
+}
+
+/* Style the checked state of the custom checkbox */
+.toggle-button input[type="checkbox"]:checked + label {
+  background-color: #8be31e;
+}
+
+/* Style the slider inside the custom checkbox */
+.toggle-button label::before {
+  content: "";
+  position: absolute;
+  width: 12px; /* Set width of the slider */
+  height: 12px; /* Set height of the slider */
+  background-color: white;
+  border-radius: 50%; /* Make it round */
+  left: 20%; /* Adjust position */
+  top: 20%; /* Adjust position */
+  transition: transform 0.3s ease;
+}
+
+/* Style the slider when checkbox is checked */
+.toggle-button input[type="checkbox"]:checked + label::before {
+  transform:scale(0.88)
+}
+
+
+/* Existing CSS for toggleSortingButton */
+.toggle-button:hover::after {
+  content: "Per 90 : Yes / No"; /* Text to display */
+  position: absolute;
+  top: 26px; /* Adjust as needed */
+  left: -30px;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+  color: #fff; /* Text color */
+  padding: 4px 8px; /* Padding around the text */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 10px; /* Adjust font size as needed */
+  white-space: nowrap; /* Prevent line breaks */
+}
+
+
+.metric-selector {
+    width: 280px; /* Adjust the width as needed */
+    margin-left: 4px;
+}
+
+/* Style for the table rows */
+td {
+    width: 300px;
+}
+
+.rank-bar {
+            background-color: rgb(213, 213, 213);
+            border: 1px solid #fff;
+            border-radius: 20px;
+            height: 17.1px;
+            width: 385px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+th {
+    width: 50px;
+}
+
+body {
+          zoom: 124.2%; /* Adjust the percentage as needed */
+          overflow: hidden;
+    scrollbar-width: none; /* Firefox */
+        background: #fff;
+}
+
+.result-container {
+            max-height: 65.2vh; /* Adjust the height based on your content */
+            overflow-y: auto; /* Enable vertical scrolling for metrics */
+            margin-bottom: 11px; /* Optional: Add margin for spacing */
+        }
+        @media only screen and (max-width: 900px) {
+    /* Apply styles for screens smaller than 768px (typical mobile devices) */
+    .result-container {
+        max-height: 87.5vh; /* Adjusted height for mobile */
+	margin-bottom: 18px; /* Optional: Add margin for spacing */
+
+    }
+}
+
+
+
+.smaller-text {
+    font-size: 79%; /* or adjust with specific size like 80% or 0.8em */
+}
+
+body.dark-mode,
+body.dark-mode * {
+  color: #f2f2f2;
+}
+
+body.dark-mode {
+  background-color: #0F0F0E;
+}
+
+body.dark-mode .tooltip {
+  color: #000000;
+  background-color: #f9f9f9;
+  border: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 12px;
+}
+
+body.dark-mode th {
+  color: #000000;
+}
+
+body.dark-mode select,
+body.dark-mode input {
+  color: #f2f2f2;
+  background-color: #333333;
+}
+
+.dark-mode-toggle {
+    position: absolute;
+  left: 735px;
+  top: 23.7px;
+}
+
+.dark-mode-toggle {
+  width: 18px;
+  height: 18px;
+  background-color: #ffffff;
+  border-color: #e0e0de;
+  border-style: solid;  /* Add this line to apply the border */
+  border-radius: 50%;  /* This makes it a perfect circle */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.dark-mode-toggle .toggle-icon::before {
+  content: "\f467";; /* Moon icon */
+  font-family: "Ionicons";
+  font-size: 20px;
+}
+
+body.dark-mode .dark-mode-toggle {
+  background-color: #333333;
+}
+
+body.dark-mode .dark-mode-toggle .toggle-icon::before {
+  content: "\f3b0"; /* Sun icon */
+  font-family: "Ionicons";
+  font-size: 13px;
+}
+
+body.dark-mode button {
+  color: #f2f2f2;
+  background-color: #333333;
+}
+
+
+@media only screen and (max-width: 900px) {
+  body {
+    zoom: 100%; /* Reset zoom level for mobile devices */
+  }
+
+  .toggle-button {
+  left: 94.2%;
+  top: 23px;
+}
+
+.dark-mode-toggle {
+    left: 94.85%;
+  top: 1px;
+}
+
+.rank-bar {
+            width: 320px;
+        }
+
+        /* Style for the table rows */
+td {
+    width: 365px;
+}
+.half-spacing {
+    margin-bottom: 0.5em; /* Adjust as needed */
+  }
+
+  /* Existing CSS for toggleSortingButton */
+.toggle-button:hover::after {
+  display: none;
+}
+
+.metric-selector {
+    width: 260px; /* Adjust the width as needed */
+    margin-left: 0px;
+}
+
+}
+
+
+   </style>
+</head>
+<script type="text/javascript">document.body.style.visibility="hidden";</script><div id="SFctr" data-org="31002" data-mfl="64c215764c0b6076026762a3"><div style="clear:both"></div></div><script type="text/javascript" src="https://cdn.membershipworks.com/mfl.js"></script>
+<body>
+    <select id="metric" class="metric-selector">
+    </select>
+    <select id="position">
+        <option value="Goalkeeper">Goalkeeper</option>
+        <option value="Centre-back">Centre-back</option>
+        <option value="Full-back">Full-back</option>
+        <option value="Midfielder">Midfielder</option>
+        <option value="Winger">Winger</option>
+        <option value="Striker">Striker</option>
+        <option value="All">All positions</option>
+    </select>
+    <select id="league">
+      <option value="Premier League">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+      <option value="La Liga">🇪🇸 La Liga</option>
+      <option value="Bundesliga">🇩🇪 Bundesliga</option>
+      <option value="Serie A">🇮🇹 Serie A</option> 
+      <option value="Ligue 1">🇫🇷 Ligue 1</option>
+      <option value="Liga Portugal">🇵🇹 Liga Portugal</option>
+      <option value="Eredivisie">🇳🇱 Eredivisie</option>
+      <option value="Top 5 Leagues">🇪🇺 Top 5 Leagues</option>
+      <option value="Top 7 Leagues">🇪🇺 Top 7 Leagues</option>
+      <option value="Belgium Pro League">🇧🇪 Belgium</option>
+        <option value="Scotland Premiership">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland</option>
+        <option value="Austrian Bundesliga">🇦🇹 Austria</option>
+        <option value="Swiss Super League">🇨🇭 Switzerland</option>      
+        <option value="Süper Lig">🇹🇷 Türkiye</option>
+        <option value="Denmark Superliga">🇩🇰 Denmark</option>
+        <option value="Sweden Allsvenskan">🇸🇪 Sweden</option>
+        <option value="Norway Eliteserien">🇳🇴 Norway</option>
+        <option value="Croatia HNL">🇭🇷 Croatia</option>
+        <option value="Serbia SuperLiga">🇷🇸 Serbia</option>
+        <option value="Czech Fortuna Liga">🇨🇿 Czech Republic</option>
+        <option value="Poland">🇵🇱 Poland</option>
+        <option value="Ukraine">🇺🇦 Ukraine</option>
+        <option value="Russia">🇷🇺 Russia</option>
+        <option value="Greece">🇬🇷 Greece</option>
+        <option value="Israel">🇮🇱 Israel</option>
+        <option value="J1 League">🇯🇵 Japan</option>
+        <option value="K League 1">🇰🇷 Korea</option>
+        <option value="Saudi Pro League">🇸🇦 Saudi Arabia</option>
+        <option value="MLS">🇺🇸 United States</option>
+        <option value="LigaMX">🇲🇽 Mexico</option>
+        <option value="Brazil Serie A">🇧🇷 Brazil</option>
+        <option value="Argentina Primera">🇦🇷 Argentina</option>
+        <option value="Uruguay Primera">🇺🇾 Uruguay</option>
+        <option value="Chile">🇨🇱 Chile</option>
+        <option value="Colombia">🇨🇴 Colombia</option>
+        <option value="Ecuador">🇪🇨 Ecuador</option>
+        <option value="Paraguay">🇵🇾 Paraguay</option>
+        <option value="Championship">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Championship</option>
+        <option value="Segunda Division">🇪🇸 Spain Segunda</option>
+        <option value="Serie B">🇮🇹 Serie B</option>
+        <option value="Bundesliga 2">🇩🇪 2. Bundesliga</option>
+        <option value="Ligue 2">🇫🇷 Ligue 2</option> 
+      <option value="No Top 7">🌍 Outside Top 7</option>
+      <option value="South America">🌎 South America</option>
+      <option value="Scandinavia">🌍 Scandinavia</option>
+      <option value="Eastern Europe">🌍 Eastern Europe</option>
+      <option value="All Leagues">🌍 All Leagues</option>
+</select>
+    <select id="age">
+        <option value="">Age</option>
+        <option value="17">U17</option>
+        <option value="18">U18</option>
+        <option value="19">U19</option>
+        <option value="20">U20</option>
+        <option value="21">U21</option>
+        <option value="22">U22</option>
+        <option value="23">U23</option>
+        <option value="24">U24</option>
+        <option value="25">U25</option>
+        <option value="26">U26</option>
+        <option value="27">U27</option>
+        <option value="28">U28</option>
+        <option value="29">U29</option>
+        <option value="30">U30</option>
+        <option value="35">U35</option>
+    </select><div class="toggle-button">
+        <input type="checkbox" id="toggleMetrics" checked> <!-- Add checked attribute here -->
+          <label for="toggleMetrics"></label>
+      </div>
+  <br><br>
+      <div class="half-spacing"></div>
+	<div class="result-container">
+	<table id="playerTable" style="display: none;">
+        <tr><th id="metricHeader"></th></tr></table></div>
+
+
+    <script>
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://datamb.football/database/INDEX.csv', false); // false for synchronous request
+xhr.send(null);
+let data = xhr.responseText;	
+let extraHeaderRow = 'Player,Team,League,Position,Age,Performance Index,Minutes played,Successful defensive actions per 90,Defensive duels per 90,Aerial duels per 90,Sliding tackles per 90,PAdj Sliding tackles,Shots blocked per 90,Interceptions per 90,PAdj Interceptions,Successful attacking actions per 90,Goals per 90,Non-penalty goals per 90,xG per 90,Head goals per 90,Shots per 90,Assists per 90,Crosses per 90,Crosses to goalie box per 90,Dribbles per 90,Offensive duels per 90,Touches in box per 90,Progressive runs per 90,Accelerations per 90,Fouls suffered per 90,Passes per 90,Forward passes per 90,Short / medium passes per 90,Long passes per 90,Average pass length m,xA per 90,Shot assists per 90,Key passes per 90,Passes to final third per 90,Passes to penalty area per 90,Through passes per 90,Deep completions per 90,Progressive passes per 90,Shots against per 90,Clean sheets,xG against per 90,Prevented goals per 90,Exits per 90,Defensive duels won %,Aerial duels won %,Shots on target %,Goal conversion %,Accurate crosses %,Successful dribbles %,Offensive duels won %,Accurate passes %,Accurate forward passes %,Accurate short / medium passes %,Accurate long passes %,Accurate passes to final third %,Accurate passes to penalty area %,Accurate through passes %,Accurate progressive passes %,Save rate %,Possession +/-';
+data = extraHeaderRow + '\n' + data;
+
+let originalDataArray = data.split('\n').map(row => row.split(','));
+
+const playerTable = document.getElementById('playerTable');
+const metricSelect = document.getElementById('metric');
+const positionSelect = document.getElementById('position');
+const leagueSelect = document.getElementById('league');
+const ageInput = document.getElementById('age');
+const metricHeader = document.getElementById('metricHeader');
+const toggleButton = document.getElementById('toggleMetrics');
+
+let isToggled = false;
+let currentDataArray = originalDataArray; // Initially set to original data
+
+// Populate metric selector
+// Populate metric selector
+for (let i = originalDataArray[0].length - 1; i >= 5; i--) {
+    const option = document.createElement('option');
+    option.value = i;
+    option.textContent = originalDataArray[0][i];
+    metricSelect.insertBefore(option, metricSelect.firstChild); // Insert options at the beginning
+}
+
+// Set column 61 as the default selection
+metricSelect.value = "5";
+
+leagueSelect.querySelector('option[value="Top 5 Leagues"]').disabled = true;
+leagueSelect.querySelector('option[value="Top 7 Leagues"]').disabled = true;
+leagueSelect.querySelector('option[value="All Leagues"]').disabled = true;
+leagueSelect.querySelector('option[value="No Top 7"]').disabled = true;
+positionSelect.querySelector('option[value="All"]').disabled = true;
+leagueSelect.querySelector('option[value="South America"]').disabled = true;
+    leagueSelect.querySelector('option[value="Eastern Europe"]').disabled = true;
+    leagueSelect.querySelector('option[value="Scandinavia"]').disabled = true;
+metricSelect.dispatchEvent(new Event('change'));
+
+
+toggleButton.addEventListener('change', toggleData);
+metricSelect.addEventListener('change', filterTable);
+positionSelect.addEventListener('change', filterTable);
+leagueSelect.addEventListener('change', filterTable);
+ageInput.addEventListener('input', filterTable);
+
+function toggleData() {
+    isToggled = !isToggled; // Toggle the state
+
+    // Store current selection in metric selector
+    const currentMetricValue = metricSelect.value;
+
+    if (isToggled) {
+        // Adjust data when toggled
+        currentDataArray = originalDataArray.map((row, index) => {
+            if (index === 0) {
+                // Modify header row
+                return row.map((cell, cellIndex) => {
+                    if (![11, 14, 34, 44, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63].includes(cellIndex)) {
+                        // Remove "per 90" from column names (except for specified columns)
+                        return cell.replace(' per 90', '');
+                    } else {
+                        return cell; // Keep other cells unchanged
+                    }
+                });
+            } else {
+                // Modify data rows
+                const minutesPlayed = parseFloat(row[6]);
+                return row.map((cell, cellIndex) => {
+    if (cellIndex > 4 && ![5, 6, 11, 14, 34, 44, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64].includes(cellIndex)) {
+        // Multiply values by minutes played for cells after column 5 (index 6)
+        if ([18, 35, 45, 46].includes(cellIndex)) {
+            // Round to one decimal point for specific columns
+            return (cell * minutesPlayed / 90).toFixed(1);
+        } else {
+            // Round to the nearest whole number for other columns
+            return Math.round(cell * minutesPlayed / 90);
+        }
+    } else {
+        return cell; // Keep other cells unchanged
+    }
+});
+
+            }
+        });
+
+        // Update metric selector with modified column names
+        metricSelect.innerHTML = ''; // Clear existing options
+        for (let i = 5; i < currentDataArray[0].length; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = currentDataArray[0][i];
+            metricSelect.appendChild(option);
+        }
+    } else {
+        // Revert to original data when untoggled
+        currentDataArray = originalDataArray;
+
+        // Restore original column names in the metric selector
+        metricSelect.innerHTML = ''; // Clear existing options
+        for (let i = 5; i < originalDataArray[0].length; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = originalDataArray[0][i];
+            metricSelect.appendChild(option);
+        }
+    }
+
+    // Reapply the selected value in the metric selector
+    metricSelect.value = currentMetricValue;
+    handleSelectorsChange();
+
+    filterTable(); // Apply filters
+}
+
+
+
+function filterTable() {
+    let filteredData = currentDataArray.slice(1); // Exclude header row
+    const metricIndex = metricSelect.value;
+    const position = positionSelect.value;
+    const league = leagueSelect.value;
+    const age = ageInput.value;
+
+
+
+    if (metricIndex === '') {
+        // Hide metric column
+        metricHeader.style.display = 'none';
+    } else {
+        // Show metric column
+        metricHeader.style.display = '';
+        // Sort by selected metric
+        filteredData.sort((a, b) => parseFloat(b[metricIndex]) - parseFloat(a[metricIndex]));
+    }
+
+    filteredData = filteredData.filter(row => row[metricIndex] !== '');
+
+    if (position === 'All') {
+        // Filter out duplicates and select all players
+        const uniquePlayers = {};
+        filteredData = filteredData.filter(row => {
+            const key = `${row[0]} ${row[1]}`; // Assuming the first column contains player names
+            if (!uniquePlayers[key]) {
+                uniquePlayers[key] = true;
+                return true;
+            }
+            return false;
+        });
+    } else if (position !== '') {
+        // Filter by selected position
+        filteredData = filteredData.filter(row => row[3] === position);
+    }
+
+    if (league === 'Top 5 Leagues') {
+        // Filter data to include only players from the top 5 leagues
+        filteredData = filteredData.filter(row =>
+            ['Premier League', 'Bundesliga', 'La Liga', 'Ligue 1', 'Serie A'].includes(row[2])
+        );
+    } else if (league === 'Top 7 Leagues') {
+        // Filter data to include only players from the top 7 leagues
+        filteredData = filteredData.filter(row =>
+            ['Premier League', 'Bundesliga', 'La Liga', 'Ligue 1', 'Serie A', 'Eredivisie', 'Liga Portugal'].includes(row[2])
+        );
+    } else if (league === 'No Top 7') {
+        // Filter data to include only players from the top 7 leagues
+        filteredData = filteredData.filter(row =>
+            ['Belgium Pro League', 'Scotland Premiership', 'Austrian Bundesliga', 'Swiss Super League', 'Süper Lig', 'Denmark Superliga', 'Sweden Allsvenskan', 'Norway Eliteserien', 'Croatia HNL', 'Serbia SuperLiga', 'Czech Fortuna Liga', 'Saudi Pro League', 'J1 League', 'K League 1', 'MLS', 'LigaMX', 'Brazil Serie A', 'Argentina Primera', 'Uruguay Primera', 'Championship', 'Segunda Division', 'Serie B', 'Bundesliga 2', 'Ligue 2', ].includes(row[2])
+        );
+    } else if (league === 'All Leagues') {
+        // Filter data to include only players from the top 7 leagues
+        filteredData = filteredData.filter(row =>
+            ['Greece','Poland','Ukraine','Russia','Israel','Ecuador','Paraguay','Chile','Colombia','Premier League', 'Bundesliga', 'La Liga', 'Ligue 1', 'Serie A', 'Eredivisie', 'Liga Portugal', 'Belgium Pro League', 'Scotland Premiership', 'Austrian Bundesliga', 'Swiss Super League', 'Süper Lig', 'Denmark Superliga', 'Sweden Allsvenskan', 'Norway Eliteserien', 'Croatia HNL', 'Serbia SuperLiga', 'Czech Fortuna Liga', 'Saudi Pro League', 'J1 League', 'K League 1', 'MLS', 'LigaMX', 'Brazil Serie A', 'Argentina Primera', 'Uruguay Primera', 'Championship', 'Segunda Division', 'Serie B', 'Bundesliga 2', 'Ligue 2'].includes(row[2])
+        );
+    } else if (league === 'South America') {
+        // Filter data to include only players from the top 7 leagues
+        filteredData = filteredData.filter(row =>
+            [      "Brazil Serie A",
+      "Argentina Primera",
+      "Uruguay Primera",
+      "Colombia",
+      "Chile",
+      "Paraguay",
+      "Ecuador",].includes(row[2])
+        );
+    } else if (league === 'Scandinavia') {
+        // Filter data to include only players from the top 7 leagues
+        filteredData = filteredData.filter(row =>
+            [   "Norway Eliteserien",
+      "Denmark Superliga",
+      "Sweden Allsvenskan"].includes(row[2])
+        );
+    } else if (league === 'Eastern Europe') {
+        // Filter data to include only players from the top 7 leagues
+        filteredData = filteredData.filter(row =>
+            [      "Czech Fortuna Liga",
+      "Serbia SuperLiga",
+      "Croatia HNL",
+      "Russia",
+      "Ukraine",
+      "Poland"].includes(row[2])
+        );
+    } else if (league !== '') {
+        // Filter data based on selected league
+        filteredData = filteredData.filter(row => row[2] === league);
+    }
+
+    if (age !== '') {
+    filteredData = filteredData.filter(row => row[4] <= age + 1);
+}
+
+
+    displayTable(filteredData);
+}
+
+function displayTable(data) {
+    // Clear existing table
+    playerTable.innerHTML = '';
+
+    if (metricSelect.value === '') {
+        playerTable.style.display = 'none'; // Hide the table if no metric is selected
+        return; // Exit the function
+    } else {
+        playerTable.style.display = ''; // Show the table if a metric is selected
+    }
+
+    // Sort the data first to ensure consistency in ranking
+    data.sort((a, b) => parseFloat(b[metricSelect.value]) - parseFloat(a[metricSelect.value]));
+
+    let previousValue = null;
+    let previousIndex = 0;
+    let previousRankBarWidth = 100;
+    let previousRakim = 100;
+    let maxValue = Math.max(...data.map(row => parseFloat(row[metricSelect.value])));
+let minValue = Math.min(...data.map(row => parseFloat(row[metricSelect.value])));
+
+
+    // Add table data
+    data.forEach((row, index) => {
+    let rankBarWidth;
+    let rakim;
+    if (row[metricSelect.value] === previousValue) {
+        // If the current value is equal to the previous one, keep the same index and rank bar width
+        rankBarWidth = previousRankBarWidth;
+        rakim = previousRakim;
+    } else {
+        // If not tied, calculate rank bar width and index
+        if (row[metricSelect.value] === '0') {
+            rankBarWidth = 0;
+            rakim = 0;
+     } else {
+    if (metricSelect.value === "46") {
+        rankBarWidth = ((data.length - index) / data.length) * 100; // Apply first version of the code for metricSelect.value === "5"
+        rakim = ((data.length - index) / data.length) * 100; // Apply first version of the code for metricSelect.value === "5"     
+    } else if (metricSelect.value === "64") {
+        rankBarWidth = ((data.length - index) / data.length) * 100; // Apply first version of the code for metricSelect.value === "5"
+        rakim = ((data.length - index) / data.length) * 100; // Apply first version of the code for metricSelect.value === "5"     
+    } else if (metricSelect.value === "5") {
+        rankBarWidth = parseFloat(row[metricSelect.value]) * 100 / 99; // Apply first version of the code for metricSelect.value === "5" 
+        rakim = ((data.length - index) / data.length) * 100; // Apply first version of the code for metricSelect.value === "5"      
+    } else {
+        rankBarWidth = Math.max(((parseFloat(row[metricSelect.value])) / (maxValue) * 100), 1.5);
+        rakim = ((data.length - index) / data.length) * 100; // Apply first version of the code for metricSelect.value === "5"     
+    }
+}
+        previousValue = row[metricSelect.value];
+        previousIndex = index;
+        previousRankBarWidth = rankBarWidth;
+        previousRakim = rakim;
+    }
+
+        const red = Math.round((255 * (1 - Math.pow((rakim / 100), 1.3))));
+        const green = Math.round(rakim);
+        const blue = Math.round((255 * Math.pow((rakim / 100), 1.3)));
+        const alpha = 0.835;
+        const color = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${previousIndex + 1}. ${row[0]}&nbsp;<span class="smaller-text">(${row[1]}, ${Math.round(row[4])})</span></td>
+            <th>${row[metricSelect.value]}</th>
+            <th>
+                <div class="rank-bar">
+                    <div class="rank-bar-fill" style="width: ${rankBarWidth}%; background-color: ${color}"></div>
+                </div>
+            </th>
+        `;
+        playerTable.appendChild(tr);
+    });
+}
+// Event listener for all selectors
+function handleSelectorsChange() {
+    const selectedMetricIndex = parseInt(metricSelect.value);
+    const selectedPosition = positionSelect.value;
+    const selectedLeague = leagueSelect.value;
+    const metricOptions = metricSelect.querySelectorAll('option');
+
+// Logic for metric selector
+if (selectedMetricIndex === 5) {
+  leagueSelect.querySelector('option[value="Top 5 Leagues"]').disabled = true;
+    leagueSelect.querySelector('option[value="Top 7 Leagues"]').disabled = true;
+    positionSelect.querySelector('option[value="All"]').disabled = true;
+    leagueSelect.querySelector('option[value="No Top 7"]').disabled = true;
+    leagueSelect.querySelector('option[value="All Leagues"]').disabled = true;
+    leagueSelect.querySelector('option[value="South America"]').disabled = true;
+    leagueSelect.querySelector('option[value="Eastern Europe"]').disabled = true;
+    leagueSelect.querySelector('option[value="Scandinavia"]').disabled = true;
+} else {
+  leagueSelect.querySelector('option[value="Top 5 Leagues"]').disabled = false;
+    leagueSelect.querySelector('option[value="Top 7 Leagues"]').disabled = false;
+    positionSelect.querySelector('option[value="All"]').disabled = false;
+    leagueSelect.querySelector('option[value="No Top 7"]').disabled = false;
+    leagueSelect.querySelector('option[value="All Leagues"]').disabled = false;
+    leagueSelect.querySelector('option[value="South America"]').disabled = false;
+    leagueSelect.querySelector('option[value="Eastern Europe"]').disabled = false;
+    leagueSelect.querySelector('option[value="Scandinavia"]').disabled = false;
+  }
+
+
+
+// Logic for position selector
+if (selectedPosition === 'All' || (selectedLeague === 'Top 5 Leagues' || selectedLeague === 'Top 7 Leagues' || selectedLeague === 'No Top 7' || selectedLeague === 'All Leagues' || selectedLeague === 'South America' || selectedLeague === 'Scandinavia' || selectedLeague === 'Eastern Europe')) {
+    metricOptions[0].disabled = true;
+    if (selectedMetricIndex === 0) {
+        metricSelect.value = "1";
+        filterTable();
+    }
+} else {
+    metricOptions[0].disabled = false; // Enable column 10
+}
+
+
+}
+
+// Add event listener for all selectors
+metricSelect.addEventListener('change', handleSelectorsChange);
+positionSelect.addEventListener('change', handleSelectorsChange);
+leagueSelect.addEventListener('change', handleSelectorsChange);
+
+
+// Initial display
+filterTable();
+
+</script>
+<script>
+    // Function to remove text content containing '23/24'
+    function removeText() {
+        const elements = document.querySelectorAll('*');
+        elements.forEach(element => {
+            if (element.children.length === 0) { // Only process elements without children
+                if (element.textContent.includes(' Wanderers')) {
+                    element.textContent = element.textContent.replace(/ Wanderers/g, '');
+                }
+            }
+        });
+    }
+
+    // Call the function after the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', removeText);
+
+    // Set up a MutationObserver to watch for changes in the DOM
+    const observer = new MutationObserver(removeText);
+
+    // Observe changes in the entire document
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+    });
+</script>
+<script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+    
+    // Check for saved dark mode preference on page load
+    document.addEventListener('DOMContentLoaded', (event) => {
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+      }
+    });
+</script>
+
+<div class="dark-mode-toggle" onclick="toggleDarkMode()">
+    <span class="toggle-icon"></span>
+  </div>
+  
+</body>
+</html>
