@@ -1,21 +1,476 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="robots" content="noindex">
-
-	<script src="https://d3js.org/d3.v5.min.js"></script>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <link rel="shortcut icon" type="image/x-icon" href="https://datamb.football/favicon.ico">
+  <title translate="no">DataMB | Compare Strikers</title>
+  <meta property="og:image" content="https://datamb.football/vignettes/st.png">
+					<meta name="description" content="Compare the statistics of strikers (centre-forwards) in the Top 7 Leagues. Visualize player performance. Find similar profiles. Use our radar tool to compare aerial duels; goals; crosses; dribbles; xG; xA; passes received and more for strikers in Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Eredivisie, Primeira Liga.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@DataMB_">
+  <meta name="twitter:title" content="DataMB | Compare Strikers">
+  <meta name="twitter:description" content="Radar Comparison Tool">
+  <meta name="twitter:image" content="https://datamb.football/vignettes/st.png">
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<script>
+  (function() {
+      var width = window.innerWidth;
+      var viewportMeta = document.querySelector('meta[name="viewport"]');
+      if (viewportMeta) {
+if (width < 770) {
+	      
+      var initialScale = width / 770;
+viewportMeta.setAttribute('content', 'width=device-width, initial-scale=' + initialScale + ', user-scalable=no');
+} else {
+            var fixedScale = 1;
+	viewportMeta.setAttribute('content', 'width=device-width, initial-scale=' + fixedScale + ', user-scalable=no');
 
+  }
+    } 
+})();
+</script>
+	<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
-
-
+<defs>
 <style>
-
 body {
     background-color: white;
-  }
+}
+
+	  body.dark-mode #searchInput {
+    color: #000; 
+        }
 	
-  /* Dark Mode Styles */
+.result-color-blue {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-pink {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-orange {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-green {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+
+
+
+.result-color-bleu {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-rose {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+
+
+.result-color-1 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-2 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-3 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-4 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-5 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-6 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+.result-color-7 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-8 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-9 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-10 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-11 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-12 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+
+
+.result-color-13 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-14 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-15 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-16 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-17 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-18 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+.result-color-19 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-20 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-21 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-22 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-23 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-24 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+
+
+.result-color-25 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-26 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-27 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-28 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-29 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-30 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+.result-color-31 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-32 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-33 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-34 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-35 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-36 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+
+
+.result-color-37 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-38 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-39 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-40 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-41 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-42 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+.result-color-43 {
+  color: #3062FB !important;
+  stroke: #3062FB;
+  fill: #3062FB;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-44 {
+  color: #F62681 !important;
+stroke: #F62681;
+fill: #F62681;
+fill-opacity: 0.02;
+
+}
+
+.result-color-45 {
+  color: #55d149 !important;
+stroke: #55d149;
+fill: #55d149;
+fill-opacity: 0.02;
+}
+
+.result-color-46 {
+  color: #FFCF5F !important;
+stroke: #FFCF5F;
+fill: #FFCF5F;
+fill-opacity: 0.02;
+}
+
+
+.result-color-47 {
+  color: #900C3F  !important;
+  stroke: #900C3F ;
+  fill: #900C3F ;
+  fill-opacity: 0.02;
+}
+
+
+.result-color-48 {
+  color: #F09710 !important;
+stroke: #F09710;
+fill: #F09710;
+fill-opacity: 0.02;
+
+}
+
+   
+
+  /* !!!DARK MODE!!! */
   body.dark-mode,
   body.dark-mode * {
     color: #f2f2f2;
@@ -25,85 +480,96 @@ body {
     background-color: #0F0F0E;
   }
 
-body.dark-mode .tooltip {
-  color: #000000; /* Set the font color to black in dark mode */
-  background-color: #f9f9f9;
-  border: solid;
-  border-width: 1px;
-  border-radius: 5px;
-  padding: 10px;
-  font-size: 12px;
+  body.dark-mode table {
+    background-color: #333333;
+  }
+
+  body.dark-mode tr:first-child th:first-child {
+  color: #5b5b5b;
+  
 }
 
+  body.dark-mode th
+  body.dark-mode td {
+    color: #f2f2f2;
+  }
 
+ body.dark-mode .metrics-table th {
+  color: #bcbcbc;
+  padding: 9px;
+}
 
- body.dark-mode #search-bar {
-    color: #000; /* Specify the desired text color for dark mode */
-background-color : #999
+body.dark-mode #searchInput1 {
+    color: #000; 
+background-color : #999;
   }
 	
- body.dark-mode	  #search-bar::placeholder {
-    color: #fff; /* Specify the desired color for the placeholder text */
+ body.dark-mode	  #searchInput1::placeholder {
+    color: #fff; 
   }
 
-  body.dark-mode svg .x-label {
-    /* Override SVG text color */
-    fill: #f2f2f2;
+ body.dark-mode	  #searchButton1 {
+    color: #fff !important; 
+background-color : #333333;
   }
 
 
-  body.dark-mode svg .y-label {
-    /* Override SVG text color */
-    fill: #f2f2f2;
-  }
 
-body.dark-mode select {
-  color: #f2f2f2; /* Set the text color to a light color in dark mode */
-  background-color: #333333; /* Set the background color to a dark color in dark mode */
+.dark-mode .matching-names-container {
+  background-color: grey;
 }
 
 
-body.dark-mode .player-name {
-  fill: #ffffff; /* Set the fill color to white in dark mode */
-}
+
+
+  body.dark-mode svg text.label {
+    fill: #bcbcbc;
+  }
+
+
+
+  body.dark-mode svg text.label {
+    fill: #bcbcbc;
+  }
 
 body.dark-mode button {
-  /* Override button background color */
   background-color: #333333;
 }
 
 body.dark-mode button,
 body.dark-mode button:focus {
-  /* Override button text color */
   color: #f2f2f2;
 }
 
 body.dark-mode button:hover {
-  /* Preserve button hover property */
   color: initial;
 }
 
-
 body.dark-mode .button-8 {
-  /* Override button background color */
-  background-color: #13293d; /* Dark blue color */
-  color: #f2f2f2; /* Off-white color */
+  background-color: #13293d; 
+  color: #f2f2f2; 
 }
 
 body.dark-mode .button-8:hover,
 body.dark-mode .button-8:focus {
-  /* Override button hover and focus state */
-  background-color: #3a6ea5; /* Darker blue color */
-  color: #f2f2f2; /* Off-white color */
+  background-color: #3a6ea5;
+  color: #f2f2f2; 
 }
 
 body.dark-mode .button-8:hover,
 body.dark-mode .button-8:focus {
-  /* Override button hover and focus state */
-  background-color: #3a6ea5; /* Darker blue color */
-  color: #f2f2f2; /* Off-white color */
+  background-color: #3a6ea5;
+  color: #f2f2f2;
 }
 
+
+
+
+.dark-mode-toggle .toggle-icon::before {
+  font-family: "Ionicons";
+  content: "\f467"; 
+  font-size: 35px; 
+}
 
 body.dark-mode .dark-mode-toggle {
   background-color: #333333;
@@ -113,217 +579,194 @@ body.dark-mode .dark-mode-toggle {
 
 body.dark-mode .dark-mode-toggle .toggle-icon::before {
   font-family: "Ionicons";
-  content: "\f3b0"; /* Unicode value for the sun icon in Ionicons */
-  font-size: 24px; /* Adjust the value as needed */
+  content: "\f3b0"; 
+  font-size: 24px; 
 }
 
 
 
 body.dark-mode .toggle-slider {
-  background-color: #2B2C2E; /* Darker background color for dark mode */
+  background-color: #2B2C2E;
 }
 
 body.dark-mode input:checked + .toggle-slider:before {
-  background-color: #ccc; /* Darker background color for dark mode */
+  background-color: #ccc; 
+}
+
+
+body.dark-mode .button-10 {
+  border: 0.1px solid #000000; 
+}
+
+
+.header .logo {
+  display: flex;
+  align-items: center;
+}
+
+.header .logo img {
+  width: 40px;
+  height: 40px;
+opacity: 0.84;
+}
+
+.header .logo-text {
+  margin-left: 10px;
+  font-size: 20px;
+color: #444444;
+  font-weight: 600;
+}
+
+.header .navigation {
+  display: center;
+  align-items: center;
+  word-spacing: 2.6em; 
 }
 
 
 
-.dark-mode-toggle .toggle-icon::before {
-  font-family: "Ionicons";
-  content: "\f467"; /* Unicode value for the moon icon in Ionicons */
-  font-size: 35px; /* Adjust the value as needed */
-}
 
-body.dark-mode .dark-mode-toggle {
-  background-color: #333333;
-}
-
-
-
-body.dark-mode .dark-mode-toggle .toggle-icon::before {
-  font-family: "Ionicons";
-  content: "\f3b0"; /* Unicode value for the sun icon in Ionicons */
-  font-size: 24px; /* Adjust the value as needed */
+.header {
+  font-family: system-ui;
+  background: white;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ececec;
 }
 
 
-.dark-mode-toggle {
+
+
+.header .button {
+  margin: 0 10px;
+  padding: 0px 20px;
+  color: #444444;
+  text-decoration: none;
+  border-radius: 0px;
+font-size: 18px;
+}
+
+header a {
+      color: #444444;
+      text-decoration: none;
+
+    }
+
+.header .twitter-link svg {
+  width: 25px;
+  height: 24px;
+  fill: #444444;
+}
+
+
+
+
+
+
+.search-input-modal {
+    display: none;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); 
+    z-index: 999; 
+}
+
+.search-input-container {
     position: absolute;
-    top: 15.3px;
-    left: 93%;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    z-index: 1000; 
+}
+
+#searchInput {
+            width: 340px;
+            padding: 12px;
+            border: 3px solid #ccc;
+            border-radius: 4px;
+            font-size: 19px;
+            outline: none;
+        }
+
+        #autocompleteBox {
+            width: 360px;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+        }
+
+
+        #autocompleteBox ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #autocompleteBox li {
+            margin: 0;
+            padding: 5px;
+        }
+
+        #autocompleteBox {
+            line-height: 2; 
+            text-align: center !important;
+
+        }
+
+        #autocompleteBox a {
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            text-align: center !important;
+            color: #333 !important;
+            cursor: pointer; 
+        }
+
+        #autocompleteBox li:hover {
+            background-color: #f0f0f0;
+        }
+        #searchButton {
+    padding: 10px;
+    background-color: #0074d9;
+    color: #fff;
+    border: none;
+    width: 40px; 
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px; 
+}
+
+.button-10 {
+    position: absolute;
+    top: 607px;
+    left: 657px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 37px;
-    height: 37px;
-    background-color: #e0e0de;
+    width: 40.1px;
+    height: 40.1px;
     border-radius: 50%;
-    cursor: pointer;
+  background-color: #e0e0de;
+  color: #333;
+  border: 0.1px solid #ccc;
+  cursor: pointer;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
-
-
-
-
-
-
-
-.dark-mode-toggle .toggle-icon::before {
-  font-family: "Ionicons";
-  content: "\f467"; /* Unicode value for the moon icon in Ionicons */
-  font-size: 35px; /* Adjust the value as needed */
-}
-
-
-
-
-.icon::before {
-  content: "\f2b5";
-  font-family: "Ionicons"; /* Replace with the appropriate font */
-font-size: 22px;
-}
-
-
-
-
-
-.icon4::before {
-  content: "\f21c";
-  font-family: "Ionicons"; /* Replace with the appropriate font */
-font-size: 22px;
-}		
-
-.icon3::before {
-  content: "\f448";
-  font-family: "Ionicons"; /* Replace with the appropriate font */
-font-size: 22px;
-}
-
-.button-screenshot, .select-all-button {
-    margin: 10px;
-    cursor: pointer;
-    background-color: #fff;
-    border-radius: 25px;
-    border-style: none;
-    box-shadow: rgba(0, 0, 0, .2) 0 1px 0px 0px, rgba(0, 0, 0, .14) 0 0px 0px 0, rgba(0, 0, 0, .12) 0 0px 3px 0;
-    box-sizing: border-box;
-    color: #3c4043;
-    font-family: "Google Sans", Roboto, Arial, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    height: 24px;
-    letter-spacing: .25px;
-    padding: 2px 24px;
-    width: 120px; /* Fixed width */
-    text-align: center;
-}
-
-
-body.dark-mode .button-screenshot {
-    margin: 10px;
-    cursor: pointer;
-  border-radius: 25px;
-  border-style: none;
-  box-shadow: rgba(255, 253, 253, 0.5) 0 1px 0px 0px,rgba(255, 250, 250, 0.18) 0 0px 0px 0,rgba(255, 251, 251, 0.18) 0 0px 3px 0;
-  box-sizing: border-box;
-  font-family: "Google Sans",Roboto,Arial,sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  height: 24px;
-  letter-spacing: .25px;
-  padding: 2px 24px;
-}
-
-
-
-body.dark-mode .select-all-button {
-    margin: 10px;
-    cursor: pointer;
-  border-radius: 25px;
-  border-style: none;
-  box-shadow: rgba(255, 253, 253, 0.5) 0 1px 0px 0px,rgba(255, 250, 250, 0.18) 0 0px 0px 0,rgba(255, 251, 251, 0.18) 0 0px 3px 0;
-  box-sizing: border-box;
-  font-family: "Google Sans",Roboto,Arial,sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  height: 24px;
-  letter-spacing: .25px;
-  padding: 2px 24px;
-}
-
-
-
-circle.highlighted {
-  stroke: #ff00ff;
-  stroke-width: 3px;
-}
-
-
-
-circle {
-  cursor: pointer;
-}
-
-
-
-
-	     
-
-.container {
-    position:absolute;
-    top: 750px;
-    left: 88px; /* Position the container from the right */
-    white-space: nowrap;
-
-}
-
-  select {
-    
-    padding: 4px 6px;
-    font-size: 13px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-#search-bar {
-    padding: 4px 6px;
-    font-size: 13px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-  }
-
-
-
-.toggle-button {
-  background-color: #f5f5f5;
-  color: #333;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-	margin-left: 15px;
-}
-
-img {
-            width: 200px;
-position: absolute;
-top: 235px;
-pointer-events: none;
-z-index: -1; 
-left: 475px;
-opacity: .055; 	
-	}
-
-	     
 
 
 .button-1 {
   align-items: center;
 height: 20px;
-background-color: #F9F9F9;
+  background-color: #F9F9F9;
   border-radius: 6px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
@@ -346,20 +789,15 @@ background-color: #F9F9F9;
   border: 0;
   user-select: none;
   position: absolute;
-  top: 15px;
-  left: 18px;
-width: 72px; 
+top: 611px;
+  left: 55px;
+width: 85px; 
  
   touch-action: manipulation;
 }
 
 .button-1:hover {
-    box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
-}
-
-body.dark-mode .button-6 {
-  /* Override button background color */
-  background-color: #646464;
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
 }
 
 .button-2 {
@@ -387,10 +825,10 @@ body.dark-mode .button-6 {
   border: 0;
   user-select: none;
   position: absolute;
-  top: 15px;
-  left: 108px;
+top: 611px;
+  left: 155px;
 height: 20px;
-width: 72px; 
+width: 85px; 
  
   touch-action: manipulation;
 }
@@ -425,9 +863,9 @@ height: 20px;
   border: 0;
   user-select: none;
   position: absolute;
-  top: 15px;
-  left: 198px;
-width: 72px; 
+top: 611px;
+  left: 255px;
+width: 85px; 
  
   touch-action: manipulation;
 }
@@ -461,10 +899,10 @@ width: 72px;
   border: 0;
   user-select: none;
   position: absolute;
-  top: 15px;
-  left: 288px;
+top: 611px;
+  left: 355px;
 height: 20px;
-width: 72px; 
+width: 85px; 
  
   touch-action: manipulation;
 }
@@ -501,9 +939,9 @@ height: 20px;
   border: 0;
   user-select: none;
   position: absolute;
-  top: 15px;
-  left: 378px;
-width: 72px; 
+top: 611px;
+  left: 455px;
+width: 85px; 
  
   touch-action: manipulation;
 }
@@ -513,42 +951,6 @@ width: 72px;
 }
 
 .button-6 {
-  align-items: center;
-  background-color: #e7e4e4;
-  border-radius: 6px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.24);
-  box-sizing: border-box;
-  color: #121212;
-  cursor: pointer;
-  display: inline-flex;
-  flex: 1 1 auto;
-  font-family: Inter,sans-serif;
-  font-size: 0.82rem;
-  font-weight: 700;
-  justify-content: center;
-  line-height: 1;
-  margin: 0;
-  outline: none;
-  padding: 1rem 1.2rem;
-  text-align: center;
-  text-decoration: none;
-  transition: box-shadow .1s,-webkit-box-shadow .1s;
-  white-space: nowrap;
-  border: 0;
-  user-select: none;
-  position: absolute;
-  top: 15px;
-  left: 468px;
-height: 20px;
-width: 72px; 
- 
-  touch-action: manipulation;
-}
-
-.button-6:hover {
-  box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 3px;
-}
-.button-7 {
   align-items: center;
   background-color: #F9F9F9;
   border-radius: 6px;
@@ -573,1434 +975,603 @@ width: 72px;
   border: 0;
   user-select: none;
   position: absolute;
-  top: 15px;
-  left: 558px;
+top: 611px;
+  left: 555px;
 height: 20px;
-width: 72px; 
+width: 85px; 
  
   touch-action: manipulation;
 }
 
-.button-7:hover {
+.button-6:hover {
    box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
 }
 
 
 
-.button-9 {
-  align-items: center;
-  background-color: #e0e0de;
-  border-radius: 25px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  color: #121212;
-  cursor: pointer;
-  display: inline-flex;
-  flex: 1 1 auto;
-  font-family: Inter,sans-serif;
-  font-size: 1.82rem;
-  font-weight: 700;
-  justify-content: center;
-  line-height: 1;
-  margin: 0;
-  outline: none;
-  padding: 0.1rem;
+svg text.label {
+    fill: #bcbcbc;
+  }
+	
+.icon2::before {
+  content: "\f118";
+  font-family: "Ionicons"; 
+font-size: 22px;
+}
+
+.icon3::before {
+  content: "\f448";
+  font-family: "Ionicons";
+font-size: 22px;
+}
+
+text {
+  font-family: Arial;
+}
+
+
+  #searchInput1::placeholder {
+    font-size : 18px; 
+  }
+
+
+.name {
+font-family: Arial, sans-serif !important;
+font-size: 13px;
+position: relative;
+top: 10px;
+color: black !important;
+cursor: pointer;
+}
+
+
+
+td {
+    font-weight: bold;
+  }
+  th {
+    font-weight: normal;
+  }
+
+
+.icon::before {
+  content: "\f21c";
+  font-family: "Ionicons"; 
+font-size: 22px;
+}		
+
+body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+
+table {
+   border-collapse: collapse;
+  width: 200px;
+  font-family: Arial;
+  border-radius: 10px;
+}
+
+.metrics-table {
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  width: 750px;
+  table-layout: fixed; 
+  border-collapse: collapse; 
+}
+
+
+.metrics-table th {
+  color: #000000;
+  padding: 6px 9px;
+  font-size: 11px;
   text-align: center;
-  text-decoration: none;
-  transition: box-shadow .1s,-webkit-box-shadow .1s;
-  white-space: nowrap;
-  border: 0;
-  user-select: none;
-  position: absolute;
-  top: 10px;
-  left: 878px;
-  width: 50px; 
+  overflow: hidden; 
+}
+
+.metrics-table td {
+  padding: 4px 11px;
+  text-align: center;
+  word-wrap: break-word; 
+  overflow: hidden; 
+}
+
+.metrics-table th:nth-child(1),
+.metrics-table td:nth-child(1) {
+  width: 90px; 
+}
+
+.metrics-table th:nth-child(2),
+.metrics-table td:nth-child(2) {
+  width: 95px; 
+}
+
+.metrics-table th:nth-child(3),
+.metrics-table td:nth-child(3) {
+  width: 20px; 
+}
+
+
+tr:first-child th:first-child {
+  color: #5b5b5b;
+  font-weight: bold;
+  font-size: 12px;
+  word-wrap: break-word;
+  overflow: hidden; 
+}
+
+
+
+#searchInput1 {
+width: 406px;
+height: 30px;
+}
+
+#searchButton1 {
+width: 32px;
+color: black !important;
+height: 32px;
+cursor: pointer;
+}
+
+
+
+
+
+.searchcontainer {
+    display: flex;
+    align-items: center;
+    position: relative;
+	  margin-left: 8px;
+            margin-top: 8px;
+	
+}
+
+.dark-mode-toggle {
+position: absolute;
+left: 93%;
+top:5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    background-color: #e0e0de;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  }
+
+
+.maxcontainer {
+position: absolute;
+    }
+
+
+
+.toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+position: absolute;
+  top: 431.5px;
+  left: 620px;
+ width: 120px; 
  
-  touch-action: manipulation;
+    }
+
+    .toggle-label {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+
+    .toggle-checkbox {
+      width: 40px;
+      height: 20px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .toggle-checkbox input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+    }
+
+    .toggle-slider:before {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.4s;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    .toggle-container2 {
+display: flex;
+align-items: center;
+justify-content: center;
+position: absolute;
+  top: 416.6px;
+  left: 5.9px;
+ width: 120px; 
+    }
+
+    img {
+            width: 40px;
+top: -400px;
+pointer-events: none;
+
+left: -953px;
+opacity: .8;
+        }
+
+
+
+  
+        .screenshotcontainer {
+            margin-left: 8px;
+        }
+        
+	.emptycontainer {
+    height: 166px;
+    width: 100%; 
+}
+.finalcontainer {
+  width: 100%;
 }
 
-.button-9:hover {
-  box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+
+
+.similar-table {
+  position: absolute;
+  left: 389.4px;
+  transform: translateX(-50%);
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  border-collapse: collapse; 
 }
 
-	     
+.similar-table th,
+.similar-table td {
+  text-align: center;
+  white-space: normal;
+  width: auto;
+
+}
+
+.similar-table th {
+  color: #000000;
+  padding: 6px 9px;
+  font-size: 11px;
+  overflow: hidden; 
+}
+
+.similar-table td {
+  padding: 4px 11px;
+}
+
+
 </style>
-
-
+</defs>
+	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
-	
-	
+
+
+
+<header class="header">
+  <div class="logo">
+    <a href="http://datamb.football">
+        <img src="https://datamb.football/logo.png" alt="Player comparisons. Radar comparison tool. Visualise and compare midfielder statistics from the top 7 leagues : Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Eredivisie, Primeira Liga" /></a>
+    <div class="logo-text"><a href="http://datamb.football"></a>Radars</div>
+  </div>&nbsp;
+  <nav class="navigation">
+   <a href="http://datamb.football/" class="button">Home</a>
+    <a href="http://datamb.football/join" class="button">Pro</a>
+ <a href="http://datamb.football/glossary" class="button">Guide</a>  
+  </nav>
+  <div class="search-container">
+    <button id="searchButton"><iconify-icon icon="ion:search-outline"></iconify-icon></button>
+</div>
+  <a href="https://twitter.com/datamb_" target="_blank" class="twitter-link">
+    <svg width="25" height="24" fill="#bcbcbc" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  </a>
+</header>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7677714701428206"
+     crossorigin="anonymous"></script>
 </head>
 
-<body>
-		  <script type="text/javascript">document.body.style.visibility="hidden";</script><div id="SFctr" data-org="31002" data-mfl="64c215764c0b6076026762a3"><div style="clear:both"></div></div><script type="text/javascript" src="https://cdn.membershipworks.com/mfl.js"></script>
-
-	<br>
-	<br><br>
-
-	
-	
-
-
-	
-<svg id="scatter-plot"></svg>
-<div class="container">
-  <input type="text" id="search-bar" placeholder="Search player...">
-
-
-  <select id="select-league">
-    <option value="all">🌍 All Leagues</option>
-      <option value="Top 7 Leagues">🇪🇺 Top 7 Leagues</option>
-       <option value="Top 5 Leagues">🇪🇺 Top 5 Leagues</option>
-       <option value="Premier League">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
-       <option value="La Liga">🇪🇸 La Liga</option>
-       <option value="Bundesliga">🇩🇪 Bundesliga</option>
-       <option value="Serie A">🇮🇹 Serie A</option> 
-       <option value="Ligue 1">🇫🇷 Ligue 1</option>
-       <option value="Liga Portugal">🇵🇹 Liga Portugal</option>
-       <option value="Eredivisie">🇳🇱 Eredivisie</option>  
-       <option value="Belgium Pro League">🇧🇪 Belgium</option>
-  <option value="Scotland Premiership">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland</option>
-  <option value="Austrian Bundesliga">🇦🇹 Austria</option>
-  <option value="Swiss Super League">🇨🇭 Switzerland</option>      
-  <option value="Süper Lig">🇹🇷 Türkiye</option>
-  <option value="Denmark Superliga">🇩🇰 Denmark</option>
-  <option value="Sweden Allsvenskan">🇸🇪 Sweden</option>
-  <option value="Norway Eliteserien">🇳🇴 Norway</option>
-  <option value="Croatia HNL">🇭🇷 Croatia</option>
-  <option value="Serbia SuperLiga">🇷🇸 Serbia</option>
-  <option value="Czech Fortuna Liga">🇨🇿 Czech Republic</option>
-  <option value="Poland">🇵🇱 Poland</option>
-  <option value="Ukraine">🇺🇦 Ukraine</option>
-  <option value="Russia">🇷🇺 Russia</option>
-  <option value="Greece">🇬🇷 Greece</option>
-  <option value="Israel">🇮🇱 Israel</option>
-  <option value="J1 League">🇯🇵 Japan</option>
-  <option value="K League 1">🇰🇷 Korea</option>
-  <option value="Saudi Pro League">🇸🇦 Saudi Arabia</option>
-  <option value="MLS">🇺🇸 United States</option>
-  <option value="LigaMX">🇲🇽 Mexico</option>
-  <option value="Brazil Serie A">🇧🇷 Brazil</option>
-  <option value="Argentina Primera">🇦🇷 Argentina</option>
-  <option value="Uruguay Primera">🇺🇾 Uruguay</option>
-  <option value="Chile">🇨🇱 Chile</option>
-  <option value="Colombia">🇨🇴 Colombia</option>
-  <option value="Ecuador">🇪🇨 Ecuador</option>
-  <option value="Paraguay">🇵🇾 Paraguay</option>
-  <option value="Championship">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Championship</option>
-  <option value="Segunda Division">🇪🇸 Spain Segunda</option>
-  <option value="Serie B">🇮🇹 Serie B</option>
-  <option value="Bundesliga 2">🇩🇪 2. Bundesliga</option>
-  <option value="Ligue 2">🇫🇷 Ligue 2</option>
-  <option value="Outside Top 7">🌍 Outside Top 7</option>
-<option value="South America">🌎 South America</option>
-<option value="Scandinavia">🌍 Scandinavia</option>
-<option value="Eastern Europe">🌍 Eastern Europe</option> 
-   </select>
-   <select id="select-age">
-    <option value="all">Age</option>
-    <option value="17">U17</option>
-    <option value="18">U18</option>
-    <option value="19">U19</option>
-    <option value="20">U20</option>
-    <option value="21">U21</option>
-    <option value="22">U22</option>
-    <option value="23">U23</option>
-    <option value="24">U24</option>
-    <option value="25">U25</option>
-    <option value="26">U26</option>
-    <option value="27">U27</option>
-    <option value="28">U28</option>
-    <option value="29">U29</option>
-    <option value="30">U30</option>
-    <option value="35">U35</option>    
- </select>
-  <button class="select-all-button" onclick="selectAllCircles()">Click All</button>
- <button onclick="takeScreenshot()" class="button-screenshot">
-  Screenshot
-</button>
- <br>
- <select id="select-x"></select>
- <select id="select-y"></select>
- <select id="select-size"></select>
-<button id="toggle-median-lines" class="toggle-button"><div class="icon"></div></button></div>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PSBMXX80EF"></script>
 <script>
-
-
-const allData = [];
-let isFirstFileProcessed = false;
-
-const urls = [
- 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx',
-   'https://datamb.football/database/CURRENT/PRO2425/ST/ST.xlsx',
-'https://datamb.football/database/CURRENT/PRO2024/ST/ST.xlsx',
-
-];
-
-
-const fetchPromises = urls.map(url => fetch(url).then(response => response.arrayBuffer()));
-
-Promise.all(fetchPromises)
-    .then(responses => {
-        responses.forEach((data, index) => {
-            const url = urls[index]; // Get the URL of the current file being processed
-            const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-            // Perform transformations
-            // 1. Cut column C and paste it to the end
-            const columnC = jsonData.map(row => row[2]);
-            jsonData.forEach((row, index) => row.push(columnC[index]));
-            jsonData.forEach(row => row.splice(2, 1));
-
-            // 2. Delete specified columns
-            const columnsToDelete = [27, 28, 29, 30, 59, 61, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 90, 91];
-            columnsToDelete.sort((a, b) => b - a); // Sort in descending order
-            columnsToDelete.forEach(col => {
-                jsonData.forEach(row => row.splice(col, 1));
-            });
-
-            // 3. Insert new columns and fill with appropriate values
-            if (url === 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx' && !isFirstFileProcessed) {
-                // Include header only for the first file ('gk4.xlsx')
-                jsonData.forEach(row => row.unshift(null)); // Insert empty column at the beginning
-                jsonData[0][0] = "ID"; // Set header for the new column
-                isFirstFileProcessed = true; // Mark the first file as processed
-            } else {
-                // Exclude header for all other files
-                jsonData.forEach(row => row.unshift(undefined)); // Insert undefined at the beginning
-            }
-
-            // Fill ID column
-            for (let i = 1; i < jsonData.length; i++) {
-                jsonData[i][0] = i;
-            }
-
-            // 4. Replace ", m" with " m" and ", %" with " %"
-            jsonData.forEach(row => {
-                for (let i = 0; i < row.length; i++) {
-                    if (typeof row[i] === 'string') {
-                        row[i] = row[i].replace(', m', ' m').replace(', %', ' %');
-                    }
-                }
-            });
-
-            // 5. Collect the transformed data (excluding header for non-first 'gk4.xlsx')
-            allData.push(...(url === 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx' ? jsonData : jsonData.slice(1)));
-        });
-
-const leagues = {
- 
-  
-  "Ecuador": [
-      "Universidad", "Técnico Universitario", "Orense", "Mushuc Runa", 
-      "Macará", "Libertad (ECU)", "LDU Quito", "Independiente del Valle", 
-      "Imbabura", "Emelec", "El Nacional", "Deportivo Cuenca", 
-      "Delfin", "Cumbayá", "Barcelona (ECU)", "Aucas", "Guayaquil City", "Gualaceo",
-   ],
-
-   "Chile": [
-      "Ñublense", "Unión La Calera", "Unión Española", "Universidad de Chile", 
-      "Universidad Católica", "Palestino", "O'Higgins", "Huachipato", 
-      "Everton (CHI)", "Deportes Iquique", "Coquimbo Unido", "Copiapó", 
-      "Colo Colo", "Cobresal", "Cobreloa", "Audax Italiano", "Curicó Unido", "Magallanes",
-   ],
-
-    
-      
-   "Paraguay": [
-      "Tacuary", "Sportivo Trinidense", "Sportivo Luqueño", "Sportivo Ameliano", 
-      "Sol de América", "Olimpia", "Nacional Asunción", "Libertad", 
-      "Guaraní", "General Caballero JLM", "Cerro Porteño", "2 de Mayo", "Resistencia", "Guaireña",
-   ],
-
-   "Colombia": [
-      "Águilas Doradas", "Tolima", "Santa Fe", "Medellín", 
-      "Patriotas Boyacá", "Once Caldas", "Millonarios", "La Equidad", 
-      "Junior", "Jaguares de Córdoba", "Fortaleza (COL)", "Envigado", 
-      "Deportivo Pereira", "Deportivo Pasto", "Deportivo Cali", "Boyacá Chicó", 
-      "Atlético Nacional", "Atlético Bucaramanga", "América de Cali", "Alianza", "Atlético Huila", "Unión Magdalena",
-   ],
-
-   
-"Argentina Primera": [
-"Argentinos Juniors", "Atlético Tucumán", "Banfield", "Barracas Central", "Belgrano",
-"Boca Juniors", "Central Córdoba SdE", "Defensa y Justicia", "Deportivo Riestra", "Estudiantes",
-"Gimnasia La Plata", "Godoy Cruz", "Huracán", "Independiente", "Independiente Rivadavia",
-"Instituto", "Lanús", "Newell's Old Boys", "Platense", "Racing Club",
-"River Plate", "Rosario Central", "San Lorenzo", "Sarmiento", "Talleres Córdoba",
-"Tigre", "Unión Santa Fe", "Vélez Sarsfield", "Colón",
-],
-
-
-
-"Brazil Serie A": [
-"Athletico Paranaense", "Atlético GO", "Atlético Mineiro", "Bahia", "Botafogo",
-"Corinthians", "Criciúma", "Cruzeiro", "Cuiabá", "Flamengo",
-"Fluminense", "Fortaleza", "Grêmio", "Internacional", "Juventude",
-"Palmeiras", "Red Bull Bragantino", "São Paulo", "Vasco da Gama", "Vitória", "Santos", "América Mineiro", "Coritiba", "Goiás",
-],
-
-
-"Uruguay Primera": [
-"Boston River", "Cerro", "Cerro Largo", "Danubio", "Defensor Sporting",
-"Deportivo Maldonado", "Fénix", "Liverpool (URU)", "Miramar Misiones", "Nacional (URU)",
-"Peñarol", "Progreso", "Racing", "Rampla Juniors", "River Plate (URU)", "Wanderers", "Plaza Colonia", "La Luz", "Torque",
-],
-
-"MLS": [
-"Los Angeles FC", "Philadelphia Union", "SJ Earthquakes", "Orlando City", "Toronto",
-"Minnesota United", "Colorado Rapids", "Chicago Fire", "St. Louis City", "St. Louis City ", "Charlotte FC",
-"Dallas", "Vancouver Whitecaps", "Inter Miami", "Austin FC", "DC United",
-"Los Angeles Galaxy", "New York RB", "Sporting KC", "Portland Timbers", "Nashville SC",
-"Seattle Sounders", "CF Montréal", "Real Salt Lake", "New York City", "Houston Dynamo",
-"Atlanta United", "New England", "Cincinnati", "Columbus Crew",
-],
-
-"K League 1": [
-"Gangwon", "Seoul", "Pohang Steelers", "Suwon", "Gwangju",
-"Jeju United", "Ulsan Hyundai", "Daejeon Citizen", "Jeonbuk Motors",
-"Incheon United", "Daegu", "Gimcheon Sangmu",
-],
-
-          
-
-"J1 League": [
-"Albirex Niigata", "Avispa Fukuoka", "Cerezo Osaka", "Consadole Sapporo", "Gamba Osaka",
-"Júbilo Iwata", "Kashima Antlers", "Kashiwa Reysol", "Kawasaki Frontale", "Kyoto Sanga",
-"Machida Zelvia", "Nagoya Grampus", "Sagan Tosu", "Sanfrecce Hiroshima", "Shonan Bellmare",
-"Tokyo", "Tokyo Verdy", "Urawa Reds", "Vissel Kobe", "Yokohama F. Marinos", "Suwon Bluewings", "Yokohama",
-],
-
-
-"Norway Eliteserien": [
-"Bodø / Glimt", "Brann", "Fredrikstad", "HamKam", "Haugesund",
-"KFUM", "Kristiansund", "Lillestrøm", "Molde", "Odds",
-"Rosenborg", "Sandefjord", "Sarpsborg 08", "Strømsgodset", "Tromsø",
-"Viking", "Vålerenga", "Aalesund", "Stabæk",
-],
-
-
-"Sweden Allsvenskan": [
-"AIK", "Brommapojkarna", "Djurgården", "Elfsborg", "GAIS",
-"Halmstad", "Hammarby", "Häcken", "IFK Göteborg", "IFK Norrköping",
-"Kalmar", "Malmö FF", "Mjällby", "Sirius", "Värnamo",
-"Västerås SK","Degerfors", "Varbergs",
-
-],
-
-"Ukraine": [
-"Shakhtar Donetsk", "Dynamo Kyiv", "Polissya", "Vorskla", "Rukh Lviv", "Kryvbas KR", "Zorya", "Veres", "Obolon", "Livyi Bereh", "LNZ Cherkasy", "Inhulets", "Karpaty", "Oleksandria", "Chornomorets", "Kolos Kovalivka", 
-   ],
-
-   "Poland": [
-"Cracovia Kraków", "Pogoń Szczecin", "Lech Poznań", "Korona Kielce", "Legia Warszawa", "Śląsk Wrocław", "Zagłębie Lubin", "Jagiellonia Białystok", "Widzew Łódź", "Raków Częstochowa", "Piast Gliwice", "Puszcza Niepołomice", "Stal Mielec", "Lechia Gdańsk", "Katowice", "Motor Lublin", "Górnik Zabrze", "Radomiak Radom", 
-   ],
-
-   "Russia": [
-"Lokomotiv Moskva", "Spartak Moskva", "Krylya Sovetov", "CSKA Moskva", "Zenit", "Krasnodar", "Orenburg", "Rubin Kazan'", "Dinamo Moskva", "Akhmat Grozny", "Nizhny Novgorod", "Fakel", "Akron Togliatti", "Dynamo Makhachkala", "Khimki", "Rostov", "Ural", "Baltika", "Sochi", 
-   ],
-
-   "Israel": [
-"Hapoel Haifa", "Maccabi Petah Tikva", "Ironi Kiryat Shmona", "Beitar Jerusalem", "Hapoel Jerusalem", "Maccabi Tel Aviv", "Maccabi Bnei Raina", "Ashdod", "Maccabi Netanya", "Ironi Tiberias", "Hapoel Hadera", "Bnei Sakhnin", "Hapoel Be'er Sheva", "Maccabi Haifa", 
-   ],
-
-   "Greece": [
-"PAOK", "Panathinaikos", "Olympiacos Piraeus", "AEK Athens", "Panetolikos FC", "OFI", "Atromitos", "Aris", "Volos NFC", "Asteras Tripolis", "Panserraikos", "Lamia", "Levadiakos", "Athens Kallithea", "Ergotelis", "PAE Chania", "Diagoras Rodou", "AO Xanthi", "Ionikos", "Trikala", "Panachaiki", "Doxa Dramas", "Apollon Larisas", "Karaiskakis Artas", "Ierapetras",
-   ],
-
-"Championship": [
-"Burnley", "Leeds United", "Sunderland", "Preston North End", "Luton Town", "Stoke City", "Derby County", "Bristol City", "Coventry City", "Norwich City", "Queens Park Rangers", "Watford", "Middlesbrough", "Hull City", "Cardiff City", "West Bromwich Albion", "Blackburn Rovers", "Sheffield United", "Oxford United", "Plymouth Argyle", "Millwall", "Portsmouth", "Swansea City", "Sheffield Wednesday", 
-],
-"Süper Lig": [
-"Fenerbahçe", "Trabzonspor", "Kayserispor", "İstanbul Başakşehir", "Rizespor", "Göztepe", "Eyüpspor", "Galatasaray", "Beşiktaş", "Bodrumspor", "Samsunspor", "Antalyaspor", "Konyaspor", "Kasımpaşa", "Gaziantep", "Hatayspor", "Sivasspor", "Alanyaspor", "Adana Demirspor",
-],
-
-"Segunda Division": [
-"Almería", "Granada", "Sporting Gijón", "Racing Santander", "Cádiz", "Elche", "Real Oviedo", "Deportivo La Coruña", "Burgos", "Cartagena", "Eldense", "Real Zaragoza", "Eibar", "Castellón", "Racing Ferrol", "Málaga", "Levante", "Córdoba", "Huesca", "Tenerife", "Albacete", "Mirandés",
-],
-
-"Scotland Premiership": [
-"Rangers", "Celtic", "Hibernian", "Hearts", "Aberdeen", "Kilmarnock", "Dundee United", "Ross County", "St. Mirren", "Dundee", "St. Johnstone", "Motherwell", 
-],
-
-"Belgium Pro League": [
-"Cercle Brugge", "OH Leuven", "Union Saint-Gilloise", "Club Brugge", "Genk", "Gent", "Antwerp", "Kortrijk", "Beerschot-Wilrijk", "Standard Liège", "Sint-Truiden", "Dender", "Westerlo", "Mechelen", "Anderlecht", "Charleroi", 
-],
-
-"Swiss Super League": [
-"Lugano", "Young Boys", "Yverdon Sport", "St. Gallen", "Grasshopper", "Lausanne Sport", "Sion", "Zürich", "Servette", "Winterthur", "Basel", "Luzern",
-],
-
-"Austrian Bundesliga": [
-"Sturm Graz", "LASK", "Salzburg", "Rapid Wien", "Hartberg", "Wolfsberger AC", "Rheindorf Altach", "WSG Swarovski Tirol", "Austria Wien", "Grazer AK", "Blau-Weiß Linz", "Austria Klagenfurt", 
-],
-
-"Saudi Pro League": [
-"Al Nassr", "Al Ittihad", "Al Hilal", "Al Ahli", "Al Qadisiyah", "Al Taawon", "Al Ettifaq", "Al Orubah", "Al Wehda", "Al Khaleej", "Al Shabab", "Al Fateh", "Al Kholood", "Al Riyadh", "Al Akhdoud", "Dhamk", "Al Raed", "Al Feiha", 
-],
-
-"LigaMX": [
-"América", "Cruz Azul", "Santos Laguna", "Necaxa", "Pachuca", "Guadalajara", "Monterrey", "Toluca", "Atlas", "Club Tijuana", "Puebla", "Atlético de San Luis", "Juárez", "Tigres UANL", "Pumas UNAM", "Mazatlán", "Querétaro", "León", 
-],
-
-"Denmark Superliga": [
-"Brøndby", "Viborg", "Nordsjælland", "København", "Midtjylland", "SønderjyskE", "AaB", "Silkeborg", "Randers", "Lyngby", "Vejle", "AGF",
-],
-
-"Czech Fortuna Liga": [
-"Sparta Praha", "Viktoria Plzeň", "Hradec Králové", "Teplice", "Baník Ostrava", "Mladá Boleslav", "Slovan Liberec", "Pardubice", "Sigma Olomouc", "Dukla Praha", "České Budějovice", "Slovácko", "Karviná", "Bohemians 1905", "Jablonec", "Slavia Praha",
-],
-
-"Serbia SuperLiga": [
-"Bačka Topola", "Partizan", "Spartak Subotica", "Radnički Niš", "Crvena Zvezda", "Napredak Kruševac", "OFK Beograd", "Vojvodina", "Novi Pazar", "Radnički Kragujevac", "Čukarički", "Tekstilac Odžaci", "Jedinstvo Ub", "Mladost Lučani", "Železničar Pancevo", "IMT Novi Beograd",
-],
-
-"Croatia HNL": [
-"Hajduk Split", "Dinamo Zagreb", "Osijek", "Istra 1961", "Rijeka", "Varaždin", "Slaven Belupo", "Lokomotiva Zagreb", "Gorica", "Šibenik", 
-],
-
-"Bundesliga 2": [
-"Köln", "Hertha BSC", "Fortuna Düsseldorf", "Kaiserslautern", "Darmstadt 98", "Magdeburg", "Hamburger SV", "Jahn Regensburg", "Paderborn", "Eintracht Braunschweig", "Greuther Fürth", "Hannover 96", "Nürnberg", "Karlsruher SC", "Schalke 04", "Ulm", "Preußen Münster", "Elversberg", 
-],
-
-"Serie B": [
-"Pisa", "Palermo", "Cittadella", "Bari", "Catanzaro", "Modena", "Cremonese", "Frosinone", "Carrarese", "Sampdoria", "Salernitana", "Cosenza", "Juve Stabia", "Brescia", "Cesena", "Mantova", "Sassuolo", "Spezia", "Reggiana", "Südtirol",
-],
-
-"Ligue 2": [
-"Lorient","Caen", "Paris", "Pau", "Guingamp", "Rodez", "Annecy", "Metz", "Red Star", "Dunkerque", "Grenoble", "Ajaccio", "Laval", "Amiens SC", "Troyes", "Bastia", "Martigues", "Clermont", "Rodez ",
-],
-
-"Liga Portugal": [
-"Porto", "Benfica", "Sporting CP", "Sporting Braga", "Vitória Guimarães", "Gil Vicente", "Farense", "Moreirense", "Nacional", "Arouca", "Estoril", "Rio Ave", "Santa Clara", "Boavista", "Casa Pia AC", "Famalicão", "Estrela Amadora", "AVS", "AVS ",
-],
-
-"Ligue 1": [
-"PSG", "Lille", "Nice", "Lens", "Nantes", "Reims", "Olympique Lyonnais", "Monaco", "Olympique Marseille", "Brest", "Saint-Étienne", "Montpellier", "Angers SCO", "Le Havre", "Rennes", "Auxerre", "Strasbourg", "Toulouse", 
-],
-
-"Premier League": [
-"Manchester City", "Tottenham Hotspur", "Arsenal", "Manchester United", "Aston Villa", "Liverpool", "Southampton", "Everton", "Chelsea", "Brighton", "Newcastle United", "Wolverhampton Wanderers", "Fulham", "Crystal Palace", "Brentford", "Bournemouth", "West Ham United", "Leicester City", "Nottingham Forest", "Ipswich Town", "Wolverhampton",
-],
-
-"Bundesliga": [
-"Borussia Dortmund", "Stuttgart", "Wolfsburg", "Bayer Leverkusen", "Borussia M'gladbach", "Augsburg", "Union Berlin", "Eintracht Frankfurt", "Bayern München", "Hoffenheim", "Mainz 05", "Werder Bremen", "RB Leipzig", "St. Pauli", "Holstein Kiel", "Freiburg", "Heidenheim", "Bochum", "Borussia Mgladbach",
-],
-
-"Eredivisie": [
-"PSV", "Feyenoord", "Sparta Rotterdam", "Twente", "Utrecht", "Groningen", "PEC Zwolle", "Almere City", "NAC Breda", "NEC", "Fortuna Sittard", "Go Ahead Eagles", "Heerenveen", "Willem II", "Heracles", "AZ", "RKC Waalwijk", "Ajax",
-],
-
-"La Liga": [
-"Valencia", "Atlético Madrid", "Barcelona", "Real Madrid", "Real Sociedad", "Real Betis", "Osasuna", "Deportivo Alavés", "Getafe", "Athletic Bilbao", "Girona", "Mallorca", "Villarreal", "Real Valladolid", "Rayo Vallecano", "Leganés", "Sevilla", "Las Palmas", "Celta de Vigo", "Espanyol",
-],
-
-"Serie A": [
-"Milan", "Juventus", "Atalanta", "Lazio", "Napoli", "Roma", "Monza", "Internazionale", "Lecce", "Torino", "Parma", "Udinese", "Genoa", "Hellas Verona", "Bologna", "Fiorentina", "Cagliari", "Venezia", "Como", "Empoli", 
-],
-
-};
-
-
-function getTeamLeague(team) {
-            for (const [league, teams] of Object.entries(leagues)) {
-                if (teams.includes(team)) {
-                    return league;
-                }
-            }
-            return "Unknown League";
-        }
-
-        const outputLines = [];
-let playerId = 1; // Initialize player ID counter
-
-allData.forEach((row, index) => {
-    // Ensure row has at least 3 elements
-    if (row.length >= 3) {
-        const team = row[2];
-        const league = getTeamLeague(team);
-        row[0] = playerId++; // Update the first element with the incremented player ID
-        row[2] = league; // Replace the third element with the league information
-        outputLines.push(row.join(",")); // Join the modified parts back into a line
-    } else {
-        // Handle rows that don't have at least 3 elements as needed
-        outputLines.push(row.join(","));
-    }
-});
-
-const output_data = outputLines.join("\n");
-
-// Concatenate the extra header row with the fetched CSV data
-let csvData = output_data;
-
-
-
-        // Replace all '\n' characters with actual new rows in the CSV
-        csvData = csvData.split('\\n').join('\n');
-
-
-
-
-var rows = csvData.trim().split('\n');
-var header = rows[0].split(',');
-var data = rows.slice(1).map(function(row) {
-  return row.split(',').map(function(d, i) {
-    if (i >= 3) { // Assuming columns 2 and onwards contain numeric values
-      return parseFloat(d);
-    } else {
-      return d;
-    }
-  });
-});
-
-  var margin = { top: 40, right: 80, bottom: 100, left: 100 };
-  var width = 1080 - margin.left - margin.right;
-  var height = 720 - margin.top - margin.bottom;
-
-var medianLinesVisible = false;
-
-
-var selectX = d3.select("#select-x");
-var selectY = d3.select("#select-y");
-var selectSize = d3.select("#select-size");
-
-
-var xMedian = d3.median(data, function(d) { return d[header.indexOf(xMetric)]; });
-var yMedian = d3.median(data, function(d) { return d[header.indexOf(yMetric)]; });
-
-
-
-var names = data.map(function(row) {
-  return row[1];
-});
-
-
-  header.slice(3).forEach(function(metric) {
-    selectX.append("option")
-      .text(metric)
-      .attr("value", metric);
-    selectY.append("option")
-      .text(metric)
-      .attr("value", metric);
-    selectSize.append("option")
-      .text(metric)
-      .attr("value", metric);
-    
-  });
-
-
-  var svg = d3.select("#scatter-plot")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  var xMetric = header[3];
-  var yMetric = header[3];
-  var sizeMetric = header[3];
-
-  var xScale = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return d[3]; })])
-    .range([0, width]);
-  var yScale = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return d[3]; })])
-    .range([height, 0]);
-
-// This code should be placed where you update your scatter plot
-
-// Check if both axes are xG per 90 or Goals per 90
-var xAxis = d3.axisBottom(xScale)
-  .tickSize(0); 
-var yAxis = d3.axisLeft(yScale)
-  .tickSize(0); 
-
-var xExtent = d3.extent(data, function(d) { return d[header.indexOf(xMetric)]; });
-var yExtent = d3.extent(data, function(d) { return d[header.indexOf(yMetric)]; });
-var sizeExtent = d3.extent(data, function(d) { return d[header.indexOf(sizeMetric)]; });
-
-svg.append("g")
-  .attr("transform", "translate(0," + height + ")")
-  .call(xAxis)
-  .selectAll("text")
-  .remove();
-
-svg.append("g")
-  .call(yAxis)
-  .selectAll("text")
-  .remove();
-
-svg.append("text")
-  .attr("class", "x-label")
-  .attr("text-anchor", "end")
-  .attr("x", width)
-  .attr("y", height + margin.top)
-  .text(header[3])
-  .style("font-family", "Arial")
-  .style("font-size", "12px");
-
-
-svg.append("text")
-  .attr("class", "y-label")
-  .attr("text-anchor", "end")
-  .attr("transform", "rotate(-90)")
-  .attr("y", -35)
-  .attr("x", 0)
-  .text(header[3])
-  .style("font-family", "Arial")
-  .style("font-size", "12px");
-
-
-svg.append("g")
-  .attr("class", "x-axis")
-  .attr("transform", "translate(0," + height + ")")
-  .call(d3.axisBottom(xScale).tickSize(0));
-
-svg.append("g")
-  .attr("class", "y-axis")
-  .call(d3.axisLeft(yScale).tickSize(0));
-
-
-var tooltip = d3.select("body")
-  .append("div")
-  .attr("class", "tooltip")
-  .style("opacity", 0);
-
-tooltip.style("position", "absolute")
-  .style("background-color", "#f9f9f9")
-  .style("border", "solid")
-  .style("border-width", "1px")
-  .style("border-radius", "5px")
-  .style("padding", "10px")
-  .style("font-size", "12px");
-	
-  document.addEventListener('touchstart', function(event) {
-  // Ensure tooltip is a valid DOM element
-  var tooltip = document.querySelector('#tooltip'); // or use getElementById('tooltip') if it's an ID
-
-  if (tooltip && !tooltip.contains(event.target)) {
-    tooltip.style.display = 'none';
-  }
-});
-
-var names = rows.slice(1).map(function(row) {
-  return row.split(',')[1];
-});
-
-
-
-function updateCirclesData(filteredRows, filteredNames) {
-  circles = svg.selectAll("circle").data(filteredRows);
-}
-
-var searchBar = document.getElementById("search-bar");
-
-searchBar.addEventListener("input", function() {
-  var searchTerm = searchBar.value.toLowerCase();
-
-  if (searchTerm === '') {
-    resetSearch();
-    return;
-  }
-
-  searchTerm = removeSpecialCharsAndDiacritics(searchTerm);
-
-  // Filter circles based on search term
-  circles.classed("highlighted", false);
-
-  circles.filter(function(d, i) {
-      var name = removeSpecialCharsAndDiacritics(filteredNames[i].toLowerCase());
-      return name.includes(searchTerm);
-    })
-    .classed("highlighted", true);
-});
-
-function removeSpecialCharsAndDiacritics(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f\s]/g, '') 
-              .replace(/Ø/g, 'O')
-              .replace(/ø/g, 'o');
-            }
-
-
-
-
-
-
-var clickedCircles = []; // array to keep track of clicked circles
-var filteredData; // declare filteredData in a higher scope
-var filteredNames; // declare filteredNames in a higher scope
-
-
-var longPressTimer;
-
-
-var circles = svg.selectAll("circle")
-.data(data)
-  .enter()
-  .append("circle")
-  .attr("cx", function(d) { return xScale(d[header.indexOf(xMetric)]); })
-  .attr("cy", function(d) { return yScale(d[header.indexOf(yMetric)]); })
-  .attr("r", 8)  .style("fill", "#4682B4B4")
-
-
-
-
-  .on("mouseout", function(d) {
-    if (!d3.select(this).classed("clicked")) {
-      // If the circle is not clicked, reset its color to #4682B4B4
-      d3.select(this).attr("r", 5).style("fill", "#4682B4B4");
-    } else {
-      // If the circle is clicked, apply the league color
-      d3.select(this).attr("r", 5).style("fill", leagueColorScale(d[2]));
-    }
-
-    // Hide the tooltip and reset its position
-    tooltip.style("opacity", 0)
-      .style("left", "-1000px")
-      .style("top", "-1000px");
-
-    tooltip.transition()
-      .duration(500)
-      .style("opacity", 0);
-})
-  .on("mouseout", function(d) {
-    if (!d3.select(this).classed("clicked")) {
-      d3.select(this).attr("r", 5);
-        tooltip.style("opacity", 0)
-        .style("left", "-1000px")  // Move tooltip off-screen
-        .style("top", "-1000px") // Move tooltip off-screen
-        .classed("hovered", false)
-        .style("fill", "#4682B4B4");
-    }
-    
-    tooltip.transition()
-      .duration(500)
-      .style("opacity", 0);
-  })
-  .on("click", function(d) {
-    var identifier = d[0];  // Unique identifier
-    var index = clickedCircles.indexOf(identifier);
-
-    if (index > -1) {
-      // If already clicked, remove from clickedCircles and reset color
-      clickedCircles.splice(index, 1);
-      d3.select(this).style("fill", "#4682B4B4");  // Reset to default color
-      svg.select(".player-name-" + identifier).remove();  // Remove player name
-    } else {
-      // If not clicked, add to clickedCircles and apply league color
-      clickedCircles.push(identifier);
-      d3.select(this).style("fill", leagueColorScale(d[2]));  // Apply league color
-
-      // Append player name below the circle
-      svg.append("text")
-        .attr("class", "player-name player-name-" + identifier)
-        .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-        .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
-        .style("font-family", "Arial")
-        .style("font-size", "12px")
-        .style("user-select", "none")      
-        .style("pointer-events", "none")
-        .style("touch-action", "none")
-
-        .text(filteredNames[filteredData.indexOf(d)]);
-    }
-  });
-  svg.on("mouseleave", function() {
-  tooltip.style("opacity", 0)
-         .style("left", "-1000px")
-         .style("top", "-1000px");
-         if (isMobileDevice()) {
-            clearTimeout(longPressTimer);  // Clear the long press timer if they leave the element
-        }
-  });
-
-
-
-
-
-
-// X-axis median line
-var xMedianLine = svg.append("line")
-  .attr("class", "x-median")
-  .attr("x1", xScale(xMedian))
-  .attr("y1", 0)
-  .attr("x2", xScale(xMedian))
-  .attr("y2", height)
-  .style("stroke", "red")
-  .style("stroke-dasharray", "4")
-  .style("display", medianLinesVisible ? "block" : "none");
-
-// Y-axis median line
-var yMedianLine = svg.append("line")
-  .attr("class", "y-median")
-  .attr("x1", 0)
-  .attr("y1", yScale(yMedian))
-  .attr("x2", width)
-  .attr("y2", yScale(yMedian))
-  .style("stroke", "red")
-  .style("stroke-dasharray", "4")
-  .style("display", medianLinesVisible ? "block" : "none");
-
-
-  updateChart();
-
-
-
-
-  function updateChart() {
-  xMetric = selectX.property("value");
-  yMetric = selectY.property("value");
-  var sizeMetric = selectSize.property("value");
-
-
-
-  var selectedLeague = document.getElementById("select-league").value;
-  var selectedAge = document.getElementById("select-age").value;
-  var leagueColorScale = d3.scaleOrdinal()
-  .domain([
-  "Serie A", "Bundesliga", "Premier League", "La Liga", "Ligue 1",
-  "Liga Portugal", "Eredivisie", "Scotland Premiership",
-  "Austrian Bundesliga","Belgium Pro League","Swiss Super League",
-  "Süper Lig","Denmark Superliga","Sweden Allsvenskan","Norway Eliteserien",
-  "Croatia HNL","Serbia SuperLiga","Czech Fortuna Liga","Poland","Ukraine",
-  "Russia","Greece","Israel","J1 League","K League 1","Saudi Pro League",
-  "MLS","LigaMX","Brazil Serie A","Argentina Primera","Uruguay Primera",
-  "Chile","Colombia","Ecuador","Paraguay","Championship",
-  "Segunda Division","Serie B","Bundesliga 2","Ligue 2"
-])
-  .range([
-  "rgba(82,145,255,0.9)", "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
-  "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)", 
-  "rgba(255,143,207,0.8)", "rgba(93,255,178,0.8)", "rgba(255,249,181,0.8)", "rgba(255,104,104,0.8)",
-  "rgba(82,145,255,0.9)", "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
-  "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)", 
-  "rgba(255,143,207,0.8)", "rgba(93,255,178,0.8)", "rgba(255,249,181,0.8)", "rgba(255,104,104,0.8)",
-  "rgba(82,145,255,0.9)", "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
-  "rgba(255,143,207,0.8)", "rgba(255,249,181,0.8)", "rgba(93,255,178,0.8)",  "rgba(255,104,104,0.8)",
-  "rgba(82,145,255,0.9)", "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)", 
-  "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
-  "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)"
-]);
-  var leagues = [
-  "Serie A", "Bundesliga", "Premier League", "La Liga", "Ligue 1",
-  "Liga Portugal", "Eredivisie", "Scotland Premiership",
-  "Austrian Bundesliga","Belgium Pro League","Swiss Super League",
-  "Süper Lig","Denmark Superliga","Sweden Allsvenskan","Norway Eliteserien",
-  "Croatia HNL","Serbia SuperLiga","Czech Fortuna Liga","Poland","Ukraine",
-  "Russia","Greece","Israel","J1 League","K League 1","Saudi Pro League",
-  "MLS","LigaMX","Brazil Serie A","Argentina Primera","Uruguay Primera",
-  "Chile","Colombia","Ecuador","Paraguay","Championship",
-  "Segunda Division","Serie B","Bundesliga 2","Ligue 2"
-];
-
-
-// Function to get color based on whether the circle is clicked or not
-function getCircleColor(d) {
-  // Check if the circle is clicked
-  if (clickedCircles.includes(d[0])) {
-    return leagueColorScale(d[2]);  // Apply league color if clicked
-  }
-  return "#4682B4B4";  // Default state is #4682B4B4
-}
-
-  filteredData = data;
-        filteredNames = names;
-      
-
-        
-        if (selectedLeague !== "all") {
-          var leaguesToInclude2 = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1", "Liga Portugal", "Eredivisie"];
-  var leaguesToInclude = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
-  var leaguesToInclude3 = ["Scotland Premiership",
-      "Belgium Pro League",
-      "Swiss Super League",
-      "Ukraine",
-      "Poland",
-      "Greece",
-      "Israel",
-      "Russia",
-      "Colombia",
-      "Chile",
-      "Paraguay",
-      "Ecuador",
-      "Austrian Bundesliga",
-      "Süper Lig",
-      "Saudi Pro League",
-      "Brazil Serie A",
-      "Argentina Primera",
-      "Uruguay Primera",
-      "LigaMX",
-      "MLS",
-      "K League 1",
-      "J1 League",
-      "Norway Eliteserien",
-      "Denmark Superliga",
-      "Sweden Allsvenskan",
-      "Czech Fortuna Liga",
-      "Serbia SuperLiga",
-      "Croatia HNL",
-      "Championship",
-      "Segunda Division",
-      "Bundesliga 2",
-      "Serie B",
-      "Ligue 2",
-      "Unknown League"];
-  var leaguesToInclude4 = ["Brazil Serie A",
-      "Argentina Primera",
-      "Uruguay Primera",
-      "Colombia",
-      "Chile",
-      "Paraguay",
-      "Ecuador"];
-  var leaguesToInclude5 = [    "Norway Eliteserien",
-      "Denmark Superliga",
-      "Sweden Allsvenskan"];
-  var leaguesToInclude6 = [      "Czech Fortuna Liga",
-      "Serbia SuperLiga",
-      "Croatia HNL",
-      "Russia",
-      "Ukraine",
-      "Poland"];
-
-
-  filteredData = filteredData.filter(function(d) {
-    var league = d[2]; // Assuming d is an array where league is at index 2
-
-    if (selectedLeague === "Top 7 Leagues") {
-      return leaguesToInclude2.includes(league); // Check if league is in top 5 leagues
-    } else if (selectedLeague === "Top 5 Leagues") {
-      return leaguesToInclude.includes(league); // Check if league is in top 5 leagues
-    } else if (selectedLeague === "Outside Top 7") {
-      return leaguesToInclude3.includes(league); // Check if league is in top 5 leagues
-    } else if (selectedLeague === "South America") {
-      return leaguesToInclude4.includes(league); // Check if league is in top 5 leagues
-    } else if (selectedLeague === "Scandinavia") {
-      return leaguesToInclude5.includes(league); // Check if league is in top 5 leagues
-    } else if (selectedLeague === "Eastern Europe") {
-      return leaguesToInclude6.includes(league); // Check if league is in top 5 leagues
-    } else {
-      return league && league.trim() === selectedLeague; // Filter based on selected league
-    }
-  });
-
-    // Filter names based on filtered data
-    filteredNames = names.filter(function(name, i) {
-      return filteredData.includes(data[i]); // Assuming data and filteredData have the same structure
-    });
-  }
-
-if (selectedAge !== "all") {
-    var ageLimit = parseInt(selectedAge);
-    filteredData = filteredData.filter(function(d) {
-        var age = parseInt(d[header.indexOf('Age')]); // Convert age to integer
-        return age <= ageLimit;
-    });
-
-
-    // Filter names based on filtered data
-    filteredNames = names.filter(function(name, i) {
-        return filteredData.includes(data[i]); // Assuming data and filteredData have the same structure
-    });
-}
-
-var sizeScale = d3.scaleLinear()
-  .domain(d3.extent(filteredData, function(d) { return d[header.indexOf(sizeMetric)]; }))
-  .range([6, 14.8]);  // Adjust the circle size range
-
-  // Update scales with filtered data
-  xScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(xMetric)]; })).nice();
-  yScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(yMetric)]; })).nice();
-
-  
-
-  // Remove the existing median lines and the previous x=y line
-  svg.selectAll(".median-line").remove();
-  svg.selectAll(".xy-line").remove();
-  
-  // Create new median lines
-  if (medianLinesVisible) {
-    // Calculate the new medians based on the selected metrics
-    var xMedian = d3.median(filteredData, function(d) { return d[header.indexOf(xMetric)]; });
-    var yMedian = d3.median(filteredData, function(d) { return d[header.indexOf(yMetric)]; });
-
-    // X-axis median line
-    svg.append("line")
-      .attr("class", "median-line")
-      .attr("x1", xScale(xMedian))
-      .attr("y1", 0)
-      .attr("x2", xScale(xMedian))
-      .attr("y2", height)
-      .style("stroke", "red")
-      .style("stroke-dasharray", "4");
-
-    // Y-axis median line
-    svg.append("line")
-      .attr("class", "median-line")
-      .attr("x1", 0)
-      .attr("y1", yScale(yMedian))
-      .attr("x2", width)
-      .attr("y2", yScale(yMedian))
-      .style("stroke", "red")
-      .style("stroke-dasharray", "4");
-  }
-  if (
-    ((xMetric === 'xG per 90' || xMetric === 'Goals per 90') &&
-    (yMetric === 'xG per 90' || yMetric === 'Goals per 90')) ||
-    ((xMetric === 'xA per 90' || xMetric === 'Assists per 90') &&
-    (yMetric === 'xA per 90' || yMetric === 'Assists per 90'))
-
-  ) {
-    // Get the smaller maximum value of x and y
-// Calculate the intersection points for the x=y line
-  var minX = d3.min(filteredData, d => d[header.indexOf(xMetric)]);
-  var maxX = d3.max(filteredData, d => d[header.indexOf(xMetric)]);
-  var minY = d3.min(filteredData, d => d[header.indexOf(yMetric)]);
-  var maxY = d3.max(filteredData, d => d[header.indexOf(yMetric)]);
-
-// Get the smaller max between the x and y axes
-  var maxVal = Math.min(maxX, maxY);
-
-// Get the larger min between the x and y axes
-  var minVal = Math.max(minX, minY);
-
-// Now draw the line only within these bounds
-  svg.append("line")
-    .attr("class", "xy-line")
-    .attr("x1", xScale(minVal))
-    .attr("y1", yScale(minVal))
-    .attr("x2", xScale(maxVal))
-    .attr("y2", yScale(maxVal))
-    .style("stroke", "green")
-    .style("stroke-dasharray", "4");
-  }
-
-
-  svg.select(".x-label")
-    .text(xMetric);
-
-  svg.select(".y-label")
-    .text(yMetric);
-
-    circles = svg.selectAll("circle")
-    .data(filteredData)
-
-  circles.exit().remove();
-
-  circles.enter()
-  .append("circle")
-  .merge(circles)
-  .attr("cx", function(d) {
-    return xScale(d[header.indexOf(xMetric)]);
-  })
-  .attr("cy", function(d) {
-    return yScale(d[header.indexOf(yMetric)]);
-  })
-  .attr("r", function(d) {
-    return sizeScale(d[header.indexOf(sizeMetric)]);  // Set the circle radius
-  })
-  .style("fill", function(d) {
-    return getCircleColor(d);  // Set color based on click state and league
-  })
-  .on("mouseover", function(d) {
-    d3.select(this).style("fill", "red");  // Temporarily change color to red on hover
-    tooltip.transition().duration(200).style("opacity", 0.9);
-    if (isMobileDevice()) {  // Hide the tooltip after X seconds (e.g., 2000 milliseconds) only on mobile
-            setTimeout(function() {
-                tooltip.style("opacity", 0)
-                    .style("left", "-1000px")  // Move tooltip off-screen
-                    .style("top", "-1000px");  // Move tooltip off-screen
-            }, 2000);
-        }  
-    tooltip.html(filteredNames[filteredData.indexOf(d)] + "<br/>" + xMetric + ": " + d[header.indexOf(xMetric)] + "<br/>" + yMetric + ": " + d[header.indexOf(yMetric)] + "<br/>" + sizeMetric + ": " + d[header.indexOf(sizeMetric)])
-      .style("left", (d3.event.pageX + 10) + "px")
-      .style("top", (d3.event.pageY - 28) + "px");
-  })
-  .on("mouseout", function(d) {
-    // Revert to original color (either league color or red if clicked)
-    d3.select(this).style("fill", getCircleColor(d));
-    tooltip.transition().duration(500).style("opacity", 0);
-  })
-  .on("click", function(d) {
-    var identifier = d[0];  // Use unique identifier for the circle
-    var index = clickedCircles.indexOf(identifier);
-
-    if (index > -1) {
-      // If already clicked, remove from clickedCircles and remove the name
-      clickedCircles.splice(index, 1);
-      d3.selectAll(".player-name-" + identifier).remove();  // Remove name
-      if (!isBulkSelection) {
-        updateChart();  // Only update the chart if not in bulk selection mode
-      }    } else {
-      // If not clicked, add to clickedCircles and show the name
-      clickedCircles.push(identifier);
-
-      // Append the player name below the circle
-      svg.append("text")
-        .attr("class", "player-name player-name-" + identifier)
-        .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-        .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
-        .style("font-family", "Arial")
-        .style("font-size", "12px")
-        .style("user-select", "none")      
-        .style("pointer-events", "none")
-        .style("touch-action", "none")
-
-        .text(filteredNames[filteredData.indexOf(d)]);
-    }
-
-    // Update the circle color after the click
-    d3.select(this).style("fill", getCircleColor(d));
-  });
-
-  svg.selectAll(".player-name").remove(); // Remove existing player names
-
-  // Display player names for clicked circles
-  var clickedCirclesData = filteredData.filter(function(d) {
-    return clickedCircles.includes(d[0]);
-  });
-
-  var playerNames = svg.selectAll(".player-name")
-    .data(clickedCirclesData, function(d) {
-      return d[0]; // Use unique identifier as the data key
-    });
-
-  playerNames.exit().remove();
-
-  playerNames.enter()
-    .append("text")
-    .attr("class", "player-name")
-    .merge(playerNames)
-    .attr("x", function(d) {
-      return xScale(d[header.indexOf(xMetric)]) - 20;
-    })
-    .attr("y", function(d) {
-      return yScale(d[header.indexOf(yMetric)]) + 20;
-    })
-    
-    .style("font-family", "Arial")
-    .style("font-size", "12px")
-    .style("user-select", "none")      
-    .style("pointer-events", "none")
-    .style("touch-action", "none")
-    .text(function(d) {
-      return filteredNames[filteredData.indexOf(d)];
-    });
-
-    updateCirclesData(filteredData, filteredNames);
-
-
-  svg.select(".x-axis")
-    .transition()
-    .duration(1000)
-    .call(d3.axisBottom(xScale).tickSize(0));
-
-  svg.select(".y-axis")
-    .transition()
-    .duration(1000)
-    .call(d3.axisLeft(yScale).tickSize(0));
-
-
-}
-
-
-
-
-document.getElementById('select-y').addEventListener('change', function(event) {
-    updateChart(event.target.value); // Call updateChart with the selected value
-});
-
-
-document.getElementById('select-x').addEventListener('change', function(event) {
-    updateChart(event.target.value); // Call updateChart with the selected value
-});
-
-
-document.getElementById('select-league').addEventListener('change', function(event) {
-  updateChart('all');
-    updateChart(event.target.value); // Call updateChart with the selected value
-});
-
-
-
-document.getElementById('select-age').addEventListener('change', function(event) {
-  updateChart('all');
-
-    updateChart(event.target.value); // Call updateChart with the selected value
-});
-document.getElementById('select-size').addEventListener('change', function(event) {
-    updateChart(event.target.value); // Call updateChart with the selected value
-});
-
-
-
-
-
-
-function circleClick(d, i) {
-  var circle = d3.select(this);
-  var identifier = d[0]; // Unique identifier of the data point
-
-  var index = clickedCircles.indexOf(identifier);
-
-  if (index > -1) {
-    circle
-      .classed("clicked", false)
-      .style("fill", "#4682B4B4");
-
-    clickedCircles.splice(index, 1);
-
-    // Remove the player name text element
-    svg.select(".player-name-" + identifier).remove();
-  } else {
-    circle
-      .classed("clicked", true)
-      .style("fill", "red");
-
-    clickedCircles.push(identifier);
-
-    // Append the player name text element
-    svg.append("text")
-      .attr("class", "player-name player-name-" + identifier)
-      .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-      .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
-      .style("font-family", "Arial")
-      .style("font-size", "12px")
-      .style("user-select", "none")      
-      .style("pointer-events", "none")
-      .style("touch-action", "none")
-
-      .text(filteredNames[filteredData.indexOf(d)]);
-  }
-
-  updateClickedPlayerName(xMetric, yMetric);
-
-  circles.on("click", function(d, i) {
-    var clickedCircle = d3.select(this);
-    var circleName = filteredNames[i];
-
-    // Check if the circle is already clicked
-    var isClicked = clickedCircles.includes(circleName);
-
-    if (isClicked) {
-      // Remove the circle from clickedCircles and reset its style
-      clickedCircles = clickedCircles.filter(function(name) {
-        return name !== circleName;
-      });
-      clickedCircle
-        .style("fill", "#4682B4B4")
-        .classed("clicked", false);
-    } else {
-      // Add the circle to clickedCircles and update its style
-      clickedCircles.push(circleName);
-      clickedCircle
-        .style("fill", "red")
-        .classed("clicked", true);
-    }
-
-    // Update the chart based on the clicked circles
-    updateChart();
-  });
-
-  // Restore the style for previously clicked circles
-  circles.each(function(d, i) {
-    var circleName = filteredNames[i];
-    var clicked = clickedCircles.includes(circleName);
-    d3.select(this).classed("clicked", clicked);
-  });
-
-
-}
-
-
-function updateClickedPlayerName() {
-  svg.selectAll(".player-name")
-    .attr("x", function(d) {
-      return xScale(d[header.indexOf(xMetric)]) - 20;
-    })
-    .attr("y", function(d) {
-      return yScale(d[header.indexOf(yMetric)]) + 20;
-    })
-    .text(function(d) {
-      return clickedCircles.includes(d[0]) ? filteredNames[filteredData.indexOf(d)] : "";
-    });
-}
-
-
-
-function resetSearch() {
-  searchBar.value = '';
-  circles.classed("highlighted", false);
-}
-
-
-
-function resetMedianLines() {
-  svg.selectAll(".median-line").remove();
-}
-
-
-var toggleButton = document.getElementById("toggle-median-lines");
-toggleButton.addEventListener("click", function() {
-  medianLinesVisible = !medianLinesVisible; // toggle the visibility state
-
-  if (medianLinesVisible) {
-    updateChart();
-  } else {
-    svg.selectAll(".median-line").remove(); // Remove existing median lines
-  }
-});
-
-})
-.catch(error => {
-    console.error('Error fetching or processing data:', error);
-});
-
-function refreshChart() {
-  const button = document.getElementById('toggle-median-lines');
-  
-  if (button) {
-    // Simulate two clicks on the button
-    button.click();
-    button.click();
-  }
-}
-
-
-let isBulkSelection = false; // Global flag to track bulk selection
-
-function selectAllCircles() {
-  isBulkSelection = true;  // Disable chart update during bulk selection
-  const circles = d3.selectAll('#scatter-plot circle');
-
-  // Loop through each circle and trigger a click event
-  circles.each(function() {
-    // Trigger the existing click event on each circle
-    const clickEvent = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true
-    });
-    this.dispatchEvent(clickEvent);  // 'this' refers to the current circle element
-  });
-
-  isBulkSelection = false;  // Re-enable chart update after bulk selection
-  refreshChart()
-}
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PSBMXX80EF');
 </script>
 
 
-
-
-<a href="https://datamb.football/proplotgk24/" target="_self" rel="noopener noreferrer">
-  <button class="button-1" role="button">GK</button></a>
-
-<a href="https://datamb.football/proplotcb24/" target="_self" rel="noopener noreferrer">
-  <button class="button-2" role="button">CB</button></a>
-
-<a href="https://datamb.football/proplotfb24/" target="_self" rel="noopener noreferrer">
-  <button class="button-3" role="button">FB</button></a>
-
-<a href="https://datamb.football/proplotcm24/" target="_self" rel="noopener noreferrer">
-  <button class="button-4" role="button">CM</button></a>
-
-<a href="https://datamb.football/proplotfw24/" target="_self" rel="noopener noreferrer">
-  <button class="button-5" role="button">FW</button></a>
-
-<a href="https://datamb.football/proplotst24/" target="_self" rel="noopener noreferrer">
-  <button class="button-6" role="button">ST</button></a>
-
-  <a href="https://datamb.football/proplotst/" target="_self" rel="noopener noreferrer">
-    <button class="button-7" role="button">&#8594; 23/24</button></a>
-  
-    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
-      <div class="toggle-icon"></div>
-    </div>
+<div class="search-input-modal" id="searchInputModal">
+  <div class="search-input-container">
+      <input type="text" id="searchInput" placeholder="Enter a team or player name...">
+      <div id="autocompleteBox"></div>
+  </div>
+</div>
 
 
 <script>
 
-    // Function to toggle dark mode
-    function toggleDarkMode() {
-      const body = document.querySelector("body");
-      body.classList.toggle("dark-mode");
-
-      // Store the user's preference in local storage
-      const isDarkMode = body.classList.contains("dark-mode");
-      localStorage.setItem("darkMode", isDarkMode);
-    }
-
-    // Check if user has a stored preference for dark mode
-    const storedDarkMode = localStorage.getItem("darkMode");
-
-    if (storedDarkMode === "true") {
-      const body = document.querySelector("body");
-      body.classList.add("dark-mode");
-    }
-
-  </script>
-		
-    <script>// Function to capture and download the chart area
-      function captureChart() {
-          // Get the SVG element
-          const svg = document.getElementById('scatter-plot');
-          const tooltip = d3.select("#tooltip");
-      
-          // Create a canvas element
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          // Set canvas size to match SVG
-          const svgRect = svg.getBoundingClientRect();
-          canvas.width = svgRect.width;
-          canvas.height = svgRect.height;
-          
-          // Fill canvas with a white background
-          ctx.fillStyle = '#FFFFFF';  // Set background to white
-          ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill the entire canvas
-          
-          // Create an image from the SVG
-          const img = new Image();
-          const svgData = new XMLSerializer().serializeToString(svg);
-          
-          // Properly encode the SVG data
-          const encodedData = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-          img.src = encodedData;
-      
-          img.onload = function() {
-              // Draw the image on the canvas (on top of the white background)
-              ctx.drawImage(img, 0, 0);
-              
-              // Convert canvas to image and trigger download
-              const dataURL = canvas.toDataURL('image/png');
-              const link = document.createElement('a');
-              link.download = 'chart-screenshot.png';
-              link.href = dataURL;
-              link.click();
-          };
-      }
-      
   
-      // Add click event listener to the screenshot icon
-      document.querySelector('.button-screenshot').addEventListener('click', captureChart);
-  </script>
-  <script>
-    function isMobileDevice() {
-      return /Mobi|Android/i.test(navigator.userAgent);
-    }
+const xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://datamb.football/database/searchbar.csv', false); // false for synchronous request
+xhr.send(null);
+
+let dataCSV = xhr.responseText;
+
+const _0x1cda9d=_0x3279;(function(_0x3d1616,_0x106f05){const _0x561e6e=_0x3279,_0x2e8a41=_0x3d1616();while(!![]){try{const _0x282d7f=-parseInt(_0x561e6e(0x1a1))/0x1+parseInt(_0x561e6e(0x18f))/0x2*(-parseInt(_0x561e6e(0x195))/0x3)+-parseInt(_0x561e6e(0x18b))/0x4+-parseInt(_0x561e6e(0x1a2))/0x5+-parseInt(_0x561e6e(0x19a))/0x6+parseInt(_0x561e6e(0x188))/0x7*(-parseInt(_0x561e6e(0x19d))/0x8)+parseInt(_0x561e6e(0x191))/0x9*(parseInt(_0x561e6e(0x19b))/0xa);if(_0x282d7f===_0x106f05)break;else _0x2e8a41['push'](_0x2e8a41['shift']());}catch(_0x219362){_0x2e8a41['push'](_0x2e8a41['shift']());}}}(_0x113e,0x28c6f));const dataLines=dataCSV[_0x1cda9d(0x199)]('\x0a'),searchButton=document[_0x1cda9d(0x18a)](_0x1cda9d(0x182)),searchInputModal=document[_0x1cda9d(0x18a)]('searchInputModal'),searchInput=document[_0x1cda9d(0x18a)]('searchInput'),autocompleteBox=document[_0x1cda9d(0x18a)](_0x1cda9d(0x18c)),data1=dataLines[_0x1cda9d(0x18e)](_0x2eff42=>{const [_0x577075,_0x1d5918]=_0x2eff42['split'](',');return{'name':_0x577075,'link':_0x1d5918};});function _0x113e(){const _0x254e59=['trim','getElementById','274776cBvuqt','autocompleteBox','link','map','442SSdBdl','length','1620naLciC','block','includes','name','4038eTYCsb','createElement','replace','href','split','327870eYOUMc','53290VqPTPN','div','8696OyNMkN','target','appendChild','style','53872WUKLzq','603865uRsUWF','display','click','input','addEventListener','searchButton','none','toLowerCase','forEach','filter','textContent','1267oKEowq'];_0x113e=function(){return _0x254e59;};return _0x113e();}function removeDiacritics(_0x521617){return _0x521617['normalize']('NFD')['replace'](/[\u0300-\u036f]/g,'');}function search2(_0x20c915){const _0x2d8964=_0x1cda9d;autocompleteBox['innerHTML']='';const _0x25dc8b=removeDiacritics(_0x20c915)[_0x2d8964(0x197)](/[^\w\s]/g,'')[_0x2d8964(0x184)](),_0x4c0cab=data1[_0x2d8964(0x186)](_0x122915=>{const _0x3f413e=_0x2d8964,_0x19a3ab=removeDiacritics(_0x122915[_0x3f413e(0x194)])[_0x3f413e(0x197)](/[^\w\s]/g,'')[_0x3f413e(0x184)]();return _0x19a3ab[_0x3f413e(0x193)](_0x25dc8b);});if(_0x4c0cab[_0x2d8964(0x190)]===0x0){autocompleteBox[_0x2d8964(0x1a0)][_0x2d8964(0x1a3)]='none';return;}_0x4c0cab[_0x2d8964(0x185)](_0x548088=>{const _0xc8b0f0=_0x2d8964,_0xaae7d=document[_0xc8b0f0(0x196)](_0xc8b0f0(0x19c)),_0x25de77=document[_0xc8b0f0(0x196)]('a');_0x25de77[_0xc8b0f0(0x198)]=_0x548088[_0xc8b0f0(0x18d)],_0x25de77[_0xc8b0f0(0x187)]=_0x548088[_0xc8b0f0(0x194)],_0xaae7d[_0xc8b0f0(0x19f)](_0x25de77),autocompleteBox[_0xc8b0f0(0x19f)](_0xaae7d);}),autocompleteBox[_0x2d8964(0x1a0)][_0x2d8964(0x1a3)]=_0x2d8964(0x192);}function _0x3279(_0xecdda4,_0x35cb52){const _0x113ead=_0x113e();return _0x3279=function(_0x32790c,_0x3803af){_0x32790c=_0x32790c-0x182;let _0x4b6796=_0x113ead[_0x32790c];return _0x4b6796;},_0x3279(_0xecdda4,_0x35cb52);}searchButton[_0x1cda9d(0x1a6)](_0x1cda9d(0x1a4),()=>{const _0x2900c9=_0x1cda9d;searchInputModal[_0x2900c9(0x1a0)][_0x2900c9(0x1a3)]=_0x2900c9(0x192);}),searchInput[_0x1cda9d(0x1a6)](_0x1cda9d(0x1a5),()=>{const _0xa04743=_0x1cda9d,_0x40b10d=searchInput['value'];_0x40b10d[_0xa04743(0x189)]()===''?autocompleteBox[_0xa04743(0x1a0)][_0xa04743(0x1a3)]='none':search2(_0x40b10d);}),document[_0x1cda9d(0x1a6)](_0x1cda9d(0x1a4),_0x4eaaf3=>{const _0x505703=_0x1cda9d;_0x4eaaf3[_0x505703(0x19e)]===searchInputModal&&(searchInputModal[_0x505703(0x1a0)]['display']=_0x505703(0x183));});
 
 
-  </script>
+
+</script>
+
+<body>
+
+  <center>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7677714701428206"
+     crossorigin="anonymous"></script>
+<!-- radarplotsearch -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7677714701428206"
+     data-ad-slot="6673239737"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script></center>
+  <div class="searchcontainer">
+    <input type="text" id="searchInput1" class="search-bar" placeholder="Enter name of striker..." />
+    &nbsp;<input type="button" id="searchButton1" value="+&nbsp;" />
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()"><div class="toggle-icon"></div></div></div>
+    <div class="screenshotcontainer">
+      <div id="matchingNames"></div>
+	<div id="resultsTable"></div>  
+ <br><br>
+  <div class="maxcontainer">
+  <div class="toggle-container">
+    <label class="toggle-label"></label>
+    <label class="toggle-checkbox">
+      <input type="checkbox" id="toggleButton" onclick="toggleFilling()" unchecked>
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="toggle-container2">
+    <img src="https://datamb.football/logo.png" alt="Logo">
+  </div>
+  <button onclick="takeScreenshot()" class="button-10"><div class="icon2"></div></button>
+  <a href="https://datamb.football/keepers/" target="_top" rel="noopener noreferrer">
+    <button class="button-1" role="button">GK</button></a>
   
-      
-  <br>		
-  <br>		
-  <br>		
-  <br>
+  <a href="https://datamb.football/centrebacks/" target="_top" rel="noopener noreferrer">
+    <button class="button-2" role="button">CB</button></a>
+  
+  <a href="https://datamb.football/fullbacks/" target="_top" rel="noopener noreferrer">
+    <button class="button-3" role="button">FB</button></a>
+  
+  <a href="https://datamb.football/midfielders/" target="_top" rel="noopener noreferrer">
+    <button class="button-4" role="button">CM</button></a>
+  
+  <a href="https://datamb.football/wingers/" target="_top" rel="noopener noreferrer">
+    <button class="button-5" role="button">FW</button></a>
+  
+  <a href="https://datamb.football/teamradars/" target="_top" rel="noopener noreferrer">
+    <button class="button-6" role="button">Team</button></a>
+
+  </div>
+
+
+  <svg class="radar"><g transform="translate(379.77,225.77)"><g class="axisWrapper">
+  
+    <g class="radar_label">
+      <text class="label" data-type="Aerial%" data-idx="0" transform="translate(-23.6 -199) scale(1.3) rotate(-1.7)">xA</text>
+  </g>
+  
+  <g class="radar_label">
+      <text class="label" data-type="Long%" data-idx="6" transform="matrix(0.65, -1.118, 1.118, 0.65, -200.21, -61.03) rotate(6)">Passes to box</text>
+  </g>
+  
+  <g class="radar_label">
+      <text class="label" data-type="Passes" data-idx="5" transform="matrix(-0.494, -1.209, 1.209, -0.494, -190, 63.54) rotate(3.87)">xG</text>
+  </g>
+  
+  <g class="radar_label">
+      <text class="label" data-type="Exits" data-idx="4" transform="translate(-105.12 188.16) scale(1.3) rotate(21)">NPG</text>
+  </g>
+  
+  <g class="radar_label">
+      <text class="label" data-type="Aerial" data-idx="3" transform="translate(78.82 201.54) scale(1.3) rotate(-31)">Aerial%</text>
+  </g>
+  
+  <g class="radar_label">
+      <text class="label" data-type="Def Actions" data-idx="2" transform="translate(203.22 -10.30) scale(1.3) rotate(99.11)">Passes Rec</text>
+  </g>
+  
+  <g class="radar_label">
+      <text class="label" data-type="Shotstopping" data-idx="1" transform="translate(125.64 -163.65) scale(1.3) rotate(49.49)">Att Actions</text>
+  </g>
+  
+  
+  
+  <circle class="blackCircle" r="190" style="fill:none; stroke:#D3D3D3; stroke-width:1;"></circle>
+  <circle class="gridCircle" r="190" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
+  <circle class="gridCircle" r="160" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
+  <circle class="gridCircle" r="120" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
+  <circle class="gridCircle" r="80" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
+  <circle class="gridCircle" r="40" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
+
+   
+  <line x1="0" y1="0" x2="9.33" y2="189.4543362" stroke="#D3D3D3" stroke-width="1" transform="translate(-9.33, -189.4543362)"></line>
+  <line x1="0" y1="0" x2="-142.0538533333333" y2="126.24" stroke="#D3D3D3" stroke-width="1" transform="translate(141.74184, -126.24)"></line>
+  <line x1="0" y1="0" x2="-187.31589333333332" y2="-32.31413333333333" stroke="#D3D3D3" stroke-width="1" transform="translate(187.5574112, 32.2528)"></line>
+  <line x1="0" y1="0" x2="-91.84497333333333" y2="-166.92245333333333" stroke="#D3D3D3" stroke-width="1" transform="translate(91.84497333333333, 166.21328)"></line>
+  <line x1="0" y1="0" x2="72.99733333333333" y2="-175.84917333333335" stroke="#D3D3D3" stroke-width="1" transform="translate(-72.99997333333334, 175.334068)"></line>
+  <line x1="0" y1="0" x2="182.73258666666666" y2="-52.67472" stroke="#D3D3D3" stroke-width="1" transform="translate(-182.7209384, 52.480128)"></line>
+  <line x1="0" y1="0" x2="154.67849333333334" y2="109.91788799999999" stroke="#D3D3D3" stroke-width="1" transform="translate(-154.6883792222, -110.017215488)"></line>
+  
+  
+  <g class="radarWrapper"></g>
+  </g></g>    
+  <div id="insertHere"></div>
+</div>
+<script>
+const _0x1c7f31=_0x2b01;(function(_0x3d62c2,_0x163630){const _0x284543=_0x2b01,_0x291691=_0x3d62c2();while(!![]){try{const _0x25d87f=parseInt(_0x284543(0x1e1))/0x1+-parseInt(_0x284543(0x1d1))/0x2+parseInt(_0x284543(0x1f8))/0x3+parseInt(_0x284543(0x1a1))/0x4+parseInt(_0x284543(0x1b5))/0x5+parseInt(_0x284543(0x1d2))/0x6*(parseInt(_0x284543(0x184))/0x7)+-parseInt(_0x284543(0x1e2))/0x8*(parseInt(_0x284543(0x1bc))/0x9);if(_0x25d87f===_0x163630)break;else _0x291691['push'](_0x291691['shift']());}catch(_0x22f2f5){_0x291691['push'](_0x291691['shift']());}}}(_0x66d7,0xedbb9));function _0x66d7(){const _0x3124e5=['left','result-color-10','forEach','Expected\x20goals','result-color-green','transform','result-color-15','result-color-9','addEventListener','metrics-table','name','polygon','error','result-color-1','.team','Arial,\x20sans-serif','result-color-43','http://www.w3.org/2000/svg','fill','https://datamb.football/database/OLD/RATOP72324/ST/ST.xlsx','5741187bQbvKo','result-color-35','Similar\x20data\x20to\x20','concat','pointer','Percentiles','keyup','createElementNS','button','click','length','fontSize','result-color-37','sort','textContent','result-color-7','join','cos','result-color-33','result-color-23','substring','value','map','indexOf','matchingNames','includes','result-color-45','querySelectorAll','children','result-color-14','SheetNames','.fullName','.radarLines.','stroke-width','appendChild','Aerial%','age','NFD','setAttribute','fillOpacity','Age','userAgent','target','result-color-4','5.5px','result-color-bleu','none','points','radarPolygon\x20','Non-penalty\x20goals','result-color-20','Error\x20fetching\x20or\x20processing\x20data:','sqrt','all','result-color-46','dispatchEvent','searchInput1','Sheets','\x2024/25','table','result-color-28','remove','116326oRZzuN','classList','10.8px','relative','zIndex','position','display','test','input','result-color-orange','.age','result-color-36','toLowerCase','0.86','catch','trim','add','Backspace','key','split','result-color-3','index','result-color-47','result-color-6','sheet_to_json','result-color-12','result-color-22','cursor','result-color-21','2031812IdMEaq','pow',')\x20-\x20','paddingLeft','insertHere','unshift','https://datamb.football/database/CURRENT/RATOP72425/ST/ST.xlsx','result-color-41','result-color-2','difference','result-color-38','result-color-32','createElement','then','div','circle','Enter','fontFamily','similarPlayersContainer','translate(379.77,225.77)','5270815KdkzqK','result-color-5','getElementById','arrayBuffer','result-color-44','Passes\x20received','result-color-19','5109102hBmALP','polyline','.name','class','searchButton1','result-color-17','result-color-48','result-color-40','Minutes\x20played','result-color-24','read','span','\x20min','result-color-30','replace','result-color-39','Passes\x20to\x20box','querySelector','slice','Att.\x20actions','10px','528364gEHLNo','408xHvGsK','style','array','result-color-16','9px','result-color-13','.radarCircle.','innerHTML','resultsTable','result-color-26','.radarPolygon.','result-color-25','utils','push','toFixed','605812UOrOiv','56tmhnzh','0.2'];_0x66d7=function(){return _0x3124e5;};return _0x66d7();}const allData1=[],allData2=[];let allDataAsString='';const urls1=[_0x1c7f31(0x1a7)],urls2=[_0x1c7f31(0x1f7)],fetchPromises1=urls1['map'](_0x21dfe2=>fetch(_0x21dfe2)[_0x1c7f31(0x1ae)](_0x4945b8=>_0x4945b8[_0x1c7f31(0x1b8)]())),fetchPromises2=urls2[_0x1c7f31(0x15c)](_0x4a765f=>fetch(_0x4a765f)[_0x1c7f31(0x1ae)](_0x460503=>_0x460503[_0x1c7f31(0x1b8)]()));function processAndStoreData1(_0x347b45){let _0x2c1462=0x1;_0x347b45['forEach'](_0x38e96e=>{const _0x27fb35=_0x2b01,_0x7de8e2=XLSX['read'](new Uint8Array(_0x38e96e),{'type':_0x27fb35(0x1d4)}),_0x33cc5f=_0x7de8e2[_0x27fb35(0x164)][0x0],_0x53f8c5=_0x7de8e2['Sheets'][_0x33cc5f],_0x15a821=XLSX[_0x27fb35(0x1de)][_0x27fb35(0x19c)](_0x53f8c5,{'header':0x1}),_0x175b6e=_0x15a821[_0x27fb35(0x1ce)](0x1);_0x175b6e[_0x27fb35(0x1e6)](_0x2fdc64=>{const _0x36eb96=_0x27fb35;_0x2fdc64[_0x36eb96(0x1a6)](''+_0x2c1462++),_0x2fdc64[0xf]=_0x2fdc64[0x1]+'\x2023/24';const _0x596821=[_0x2fdc64[0x0],_0x2fdc64[0xf],_0x2fdc64[0x2],_0x2fdc64[0x3],_0x2fdc64[0x9],_0x2fdc64[0x5],_0x2fdc64[0x7],_0x2fdc64[0x8],_0x2fdc64[0xb],_0x2fdc64[0xa],_0x2fdc64[0x6],_0x2fdc64[0x4]];allData1[_0x36eb96(0x1df)](_0x596821);});});const _0x34d1af=[0x4,0x5,0x6,0x7,0x8,0x9,0xa],_0x1997fe=_0x34d1af['map'](_0x454f5b=>allData1['map'](_0x58945c=>parseFloat(_0x58945c[_0x454f5b]))),_0x5b6099=_0x1997fe['map'](_0x306b5d=>{const _0x370c48=_0x2b01,_0x505f57=[..._0x306b5d][_0x370c48(0x153)]((_0x51dce0,_0x55fe85)=>_0x51dce0-_0x55fe85);return _0x306b5d['map'](_0x2e1edc=>{const _0x585887=_0x370c48,_0x315493=_0x505f57[_0x585887(0x15d)](_0x2e1edc)+0x1;return _0x315493/_0x505f57[_0x585887(0x202)];});});allData1['forEach']((_0x1ee811,_0x3517fc)=>{const _0x33fe42=_0x2b01;_0x34d1af[_0x33fe42(0x1e6)]((_0x3a9bbc,_0x8521b4)=>{const _0x1d026d=_0x33fe42;_0x1ee811[_0x3a9bbc]=_0x5b6099[_0x8521b4][_0x3517fc][_0x1d026d(0x1e0)](0x3);});});}function _0x2b01(_0x87c2d3,_0x5d4a76){const _0x66d70=_0x66d7();return _0x2b01=function(_0x2b0157,_0x492f46){_0x2b0157=_0x2b0157-0x151;let _0x474a37=_0x66d70[_0x2b0157];return _0x474a37;},_0x2b01(_0x87c2d3,_0x5d4a76);}function processAndStoreData(_0x5aaaf0){const _0x384c52=_0x1c7f31;let _0x5f014f=0x1;_0x5aaaf0[_0x384c52(0x1e6)](_0x54340e=>{const _0x1838b5=_0x384c52,_0x3c42b0=XLSX[_0x1838b5(0x1c6)](new Uint8Array(_0x54340e),{'type':_0x1838b5(0x1d4)}),_0x20fdad=_0x3c42b0['SheetNames'][0x0],_0x587085=_0x3c42b0[_0x1838b5(0x17f)][_0x20fdad],_0x5cf208=XLSX['utils'][_0x1838b5(0x19c)](_0x587085,{'header':0x1}),_0x52f53f=_0x5cf208[_0x1838b5(0x1ce)](0x1);_0x52f53f[_0x1838b5(0x1e6)](_0xc6f7f4=>{const _0x40b8a4=_0x1838b5;_0xc6f7f4[_0x40b8a4(0x1a6)](''+_0x5f014f++),_0xc6f7f4[0xf]=_0xc6f7f4[0x1]+_0x40b8a4(0x180);const _0x19b6d4=[_0xc6f7f4[0x0],_0xc6f7f4[0xf],_0xc6f7f4[0x2],_0xc6f7f4[0x3],_0xc6f7f4[0x9],_0xc6f7f4[0x5],_0xc6f7f4[0x7],_0xc6f7f4[0x8],_0xc6f7f4[0xb],_0xc6f7f4[0xa],_0xc6f7f4[0x6],_0xc6f7f4[0x4]];allData2[_0x40b8a4(0x1df)](_0x19b6d4);});});const _0xcab8be=[0x4,0x5,0x6,0x7,0x8,0x9,0xa],_0x46264e=_0xcab8be[_0x384c52(0x15c)](_0x3ea97b=>allData2[_0x384c52(0x15c)](_0x55d94e=>parseFloat(_0x55d94e[_0x3ea97b]))),_0xcb8c56=_0x46264e[_0x384c52(0x15c)](_0xe6eda9=>{const _0x36d5a6=_0x384c52,_0x3a426b=[..._0xe6eda9][_0x36d5a6(0x153)]((_0xd492d6,_0x5b170f)=>_0xd492d6-_0x5b170f);return _0xe6eda9[_0x36d5a6(0x15c)](_0x20ec6c=>{const _0x12421b=_0x36d5a6,_0x4ab315=_0x3a426b['indexOf'](_0x20ec6c)+0x1;return _0x4ab315/_0x3a426b[_0x12421b(0x202)];});});allData2['forEach']((_0x412bd3,_0x1d096b)=>{const _0x466101=_0x384c52;_0xcab8be[_0x466101(0x1e6)]((_0x2daff5,_0x125312)=>{const _0x222449=_0x466101;_0x412bd3[_0x2daff5]=_0xcb8c56[_0x125312][_0x1d096b][_0x222449(0x1e0)](0x3);});});}Promise[_0x1c7f31(0x17b)](fetchPromises1)['then'](_0x26cab3=>{const _0x30872a=_0x1c7f31;processAndStoreData(_0x26cab3),Promise[_0x30872a(0x17b)](fetchPromises2)['then'](_0x248b3e=>{const _0x30b29a=_0x30872a;processAndStoreData1(_0x248b3e);const _0x5422ff=allData2[_0x30b29a(0x1fb)](allData1);_0x5422ff['forEach']((_0x22f28c,_0x5c3266)=>{_0x22f28c[0x0]=''+(_0x5c3266+0x1);}),_0x5422ff[_0x30b29a(0x1e6)](_0x35d3f2=>{const _0x1fefcd=_0x30b29a;allDataAsString+=_0x35d3f2[_0x1fefcd(0x156)](',')+'\x0a';});const _0x43b9ff=allDataAsString[_0x30b29a(0x193)]()[_0x30b29a(0x197)]('\x0a'),_0x14be6f=[];for(const _0x480caf of _0x43b9ff){const _0x19b9f3=_0x480caf[_0x30b29a(0x197)](','),_0x381bd3=_0x19b9f3[0x1],_0x39e6e3=_0x19b9f3[0x3],_0x2c97b0=_0x19b9f3[0x2],_0x2fda82=_0x381bd3+','+_0x39e6e3+','+_0x2c97b0;_0x14be6f[_0x30b29a(0x1df)](_0x2fda82);}function _0x3851de(){const _0x4afe8f=_0x30b29a,_0x5f31e8=navigator[_0x4afe8f(0x16f)];return/Android|iPhone/i[_0x4afe8f(0x18b)](_0x5f31e8);}const _0x22fec2=_0x14be6f,_0x38feb7=document[_0x30b29a(0x1b7)](_0x30b29a(0x17e)),_0xed60d1=document[_0x30b29a(0x1b7)](_0x30b29a(0x15e)),_0x39f015=document[_0x30b29a(0x1b7)]('searchButton');function _0x5c30c2(){const _0x4161c6=_0x30b29a,_0x333b60=_0x17e614(_0x38feb7['value'][_0x4161c6(0x190)]()),_0x475a2d=_0x22fec2['filter'](function(_0x478aa2){const _0x15e88d=_0x4161c6,[_0x354ed8]=_0x478aa2['split'](','),_0x2dff29=_0x17e614(_0x354ed8[_0x15e88d(0x190)]());return _0x2dff29[_0x15e88d(0x15f)](_0x333b60);});_0xed60d1[_0x4161c6(0x1d9)]='',_0x475a2d[_0x4161c6(0x1e6)](function(_0x4eeef6){const _0x5c9fb8=_0x4161c6,[_0xa2ef09,_0x543618,_0x16e9f8]=_0x4eeef6[_0x5c9fb8(0x197)](','),_0x2691f2=document[_0x5c9fb8(0x1ad)]('div');_0x2691f2[_0x5c9fb8(0x185)][_0x5c9fb8(0x194)](_0x5c9fb8(0x1ee));const _0x170286=document['createElement'](_0x5c9fb8(0x1c7));_0x170286[_0x5c9fb8(0x154)]=_0xa2ef09,_0x170286[_0x5c9fb8(0x185)][_0x5c9fb8(0x194)]('fullName'),_0x2691f2['appendChild'](_0x170286);const _0x1c6e7a=document[_0x5c9fb8(0x1ad)]('span');_0x1c6e7a[_0x5c9fb8(0x154)]='\x20('+_0x543618+',',_0x1c6e7a[_0x5c9fb8(0x185)]['add'](_0x5c9fb8(0x16a)),_0x2691f2[_0x5c9fb8(0x168)](_0x1c6e7a);const _0x2f6044=document['createElement']('span');_0x2f6044[_0x5c9fb8(0x154)]='\x20'+_0x16e9f8+')',_0x2f6044[_0x5c9fb8(0x185)][_0x5c9fb8(0x194)]('team'),_0x2691f2[_0x5c9fb8(0x168)](_0x2f6044),_0x2691f2[_0x5c9fb8(0x1ec)](_0x5c9fb8(0x201),function(_0x241a3e){const _0x30cbd5=_0x5c9fb8,_0x18bec7=_0x241a3e[_0x30cbd5(0x170)]['closest'](_0x30cbd5(0x1be));if(_0x18bec7){const _0x33ddd7=_0x18bec7['querySelector'](_0x30cbd5(0x165))[_0x30cbd5(0x154)],_0x2b75cc=_0x18bec7[_0x30cbd5(0x1cd)](_0x30cbd5(0x18e))[_0x30cbd5(0x154)][_0x30cbd5(0x193)](),_0x54ac30=_0x18bec7['querySelector'](_0x30cbd5(0x1f2))[_0x30cbd5(0x154)][_0x30cbd5(0x193)]()[_0x30cbd5(0x1ca)](/[^a-zA-Z\s]/g,''),_0x485203=_0x33ddd7+','+_0x2b75cc[_0x30cbd5(0x15a)](0x1,_0x2b75cc['length']-0x1)+','+_0x54ac30;_0x38feb7[_0x30cbd5(0x15b)]=_0x485203;const _0x4142ce=new KeyboardEvent(_0x30cbd5(0x1fe),{'key':_0x30cbd5(0x1b1)});_0x38feb7[_0x30cbd5(0x17d)](_0x4142ce);}}),_0xed60d1[_0x5c9fb8(0x168)](_0x2691f2);}),_0x333b60===''&&_0x475a2d[_0x4161c6(0x202)]===0x0?_0xed60d1[_0x4161c6(0x1d3)][_0x4161c6(0x18a)]=_0x4161c6(0x174):(_0xed60d1[_0x4161c6(0x1d3)][_0x4161c6(0x18a)]='block',_0xed60d1[_0x4161c6(0x1d3)]['backgroundColor']='#9c9b9b',_0xed60d1[_0x4161c6(0x1d3)]['width']='384px',_0xed60d1[_0x4161c6(0x1d3)]['padding']=_0x4161c6(0x1d0),_0xed60d1[_0x4161c6(0x1d3)][_0x4161c6(0x189)]=_0x4161c6(0x187),_0xed60d1[_0x4161c6(0x1d3)][_0x4161c6(0x1e4)]=_0x4161c6(0x172),_0xed60d1[_0x4161c6(0x1d3)][_0x4161c6(0x188)]='9999'),_0x333b60===''&&(_0xed60d1['style']['display']=_0x4161c6(0x174));}_0x38feb7[_0x30b29a(0x1ec)](_0x30b29a(0x18c),_0x5c30c2),_0x38feb7['addEventListener']('keyup',function(_0x17f27e){const _0x481411=_0x30b29a;if(_0x17f27e[_0x481411(0x196)]===_0x481411(0x1b1))searchButton1[_0x481411(0x201)]();else _0x17f27e[_0x481411(0x196)]===_0x481411(0x195)&&_0x5c30c2();});const _0x4d634b=allDataAsString;let _0x54e073=_0x4d634b['trim']()['split']('\x0a')[_0x30b29a(0x15c)](_0x14610b=>_0x14610b[_0x30b29a(0x197)](','));function _0x5fe69e(_0x3bc1b6,_0x13196b){const _0x13caac=_0x30b29a;let _0x34966f=0x0;for(let _0x1e4cc6=0x4;_0x1e4cc6<=0xa;_0x1e4cc6++){const _0xa72d48=parseFloat(_0x3bc1b6[_0x1e4cc6]),_0x3954d8=parseFloat(_0x13196b[_0x1e4cc6]);_0x34966f+=Math[_0x13caac(0x1a2)](_0xa72d48-_0x3954d8,0x2);}return Math[_0x13caac(0x17a)](_0x34966f);}const _0x1ad5b1=['result-color-blue','result-color-pink',_0x30b29a(0x18d),_0x30b29a(0x1e8),_0x30b29a(0x173),'result-color-rose',_0x30b29a(0x1f1),_0x30b29a(0x1a9),_0x30b29a(0x198),_0x30b29a(0x171),_0x30b29a(0x1b6),_0x30b29a(0x19b),_0x30b29a(0x155),'result-color-8',_0x30b29a(0x1eb),_0x30b29a(0x1e5),'result-color-11',_0x30b29a(0x19d),_0x30b29a(0x1d7),_0x30b29a(0x163),_0x30b29a(0x1ea),_0x30b29a(0x1d5),_0x30b29a(0x1c1),'result-color-18',_0x30b29a(0x1bb),_0x30b29a(0x178),_0x30b29a(0x1a0),_0x30b29a(0x19e),_0x30b29a(0x159),_0x30b29a(0x1c5),_0x30b29a(0x1dd),_0x30b29a(0x1db),'result-color-27',_0x30b29a(0x182),'result-color-29',_0x30b29a(0x1c9),'result-color-31',_0x30b29a(0x1ac),_0x30b29a(0x158),'result-color-34',_0x30b29a(0x1f9),_0x30b29a(0x18f),_0x30b29a(0x152),_0x30b29a(0x1ab),_0x30b29a(0x1cb),_0x30b29a(0x1c3),_0x30b29a(0x1a8),'result-color-42',_0x30b29a(0x1f4),_0x30b29a(0x1b9),_0x30b29a(0x160),_0x30b29a(0x17c),_0x30b29a(0x19a),_0x30b29a(0x1c2)];let _0x4fa1d4=[];function _0x17e614(_0x132788){const _0x332228=_0x30b29a;return _0x132788['normalize'](_0x332228(0x16b))[_0x332228(0x1ca)](/[\u0300-\u036f\s]/g,'')['replace'](/Ø/g,'O')[_0x332228(0x1ca)](/ø/g,'o');}function _0x4e0f6b(_0xb86e23){const _0xc012db=_0x30b29a,_0x1390ed=_0xb86e23[_0xc012db(0x197)](',')[_0xc012db(0x15c)](_0x5264d7=>_0x5264d7[_0xc012db(0x193)]()),_0x327a6f=_0x1390ed[0x0];let _0x2ae392,_0x2c6b35;_0x1390ed[_0xc012db(0x202)]>0x1&&(_0x2ae392=_0x1390ed[0x1][_0xc012db(0x193)](),_0x1390ed[_0xc012db(0x202)]>0x2&&(_0x2c6b35=_0x1390ed[0x2][_0xc012db(0x193)]()));const _0x2367a2=_0x54e073['filter'](_0x565ef6=>{const _0x51bdfc=_0xc012db,_0x240bdc=_0x17e614(_0x565ef6[0x1][_0x51bdfc(0x190)]()),_0x21079e=_0x17e614(_0x565ef6[0x2][_0x51bdfc(0x190)]()),_0x31eb89=_0x565ef6[0x3][_0x51bdfc(0x193)]()[_0x51bdfc(0x190)](),_0x46f993=_0x240bdc['includes'](_0x17e614(_0x327a6f[_0x51bdfc(0x190)]())),_0x5b5ac1=!_0x2ae392||_0x31eb89===_0x17e614(_0x2ae392[_0x51bdfc(0x190)]()),_0x12e20a=!_0x2c6b35||_0x21079e===_0x17e614(_0x2c6b35[_0x51bdfc(0x190)]());return _0x46f993&&(_0x5b5ac1||_0x12e20a);});return _0x2367a2;}function _0x5bf5fb(_0x48bfd5,_0x4bfea2,_0x36c9f2){const _0x219422=_0x30b29a,_0x2454ca=document[_0x219422(0x1b7)](_0x219422(0x1da)),_0x2459c5=['',_0x219422(0x1fd),'',_0x219422(0x16e),_0x219422(0x1ba),_0x219422(0x169),_0x219422(0x177),_0x219422(0x1e7),_0x219422(0x1cc),'xA',_0x219422(0x1cf),_0x219422(0x1c4)],_0x320926=_0x2454ca[_0x219422(0x1cd)]('th')!==null,_0x3dce7c=_0x320926?_0x2454ca['querySelector']('table'):document['createElement'](_0x219422(0x181));_0x3dce7c[_0x219422(0x185)][_0x219422(0x194)](_0x219422(0x1ed));if(!_0x320926){const _0x153da5=document[_0x219422(0x1ad)]('tr');for(let _0x2bb6f9=0x1;_0x2bb6f9<_0x2459c5[_0x219422(0x202)];_0x2bb6f9++){const _0x5301a3=document[_0x219422(0x1ad)]('th');_0x5301a3[_0x219422(0x154)]=_0x2459c5[_0x2bb6f9],_0x153da5[_0x219422(0x168)](_0x5301a3);}const _0x5a90de=document[_0x219422(0x1ad)]('th');_0x5a90de[_0x219422(0x154)]='',_0x153da5[_0x219422(0x168)](_0x5a90de),_0x3dce7c[_0x219422(0x168)](_0x153da5);}const _0x221bab=_0x54e073[_0x4bfea2],_0x567d36=document[_0x219422(0x1ad)]('tr');for(let _0x29ecd3=0x1;_0x29ecd3<_0x221bab['length'];_0x29ecd3++){const _0x142ff4=document[_0x219422(0x1ad)]('td');if(_0x29ecd3>=0x4&&_0x29ecd3<=0xa){const _0x515533=parseFloat(_0x221bab[_0x29ecd3])*0x64;_0x142ff4['textContent']=_0x515533[_0x219422(0x1e0)](0x1);}else _0x142ff4[_0x219422(0x154)]=_0x221bab[_0x29ecd3];_0x142ff4[_0x219422(0x185)][_0x219422(0x194)](_0x36c9f2),_0x567d36['appendChild'](_0x142ff4);}const _0x52d7a6=document['createElement']('td'),_0x1d7092=document[_0x219422(0x1ad)](_0x219422(0x200));_0x1d7092[_0x219422(0x154)]='x',_0x1d7092['addEventListener'](_0x219422(0x201),function(){const _0x3dab9e=_0x219422;_0x567d36['remove']();const _0x1c0507=document[_0x3dab9e(0x161)](_0x3dab9e(0x1dc)+_0x36c9f2),_0x4ad905=document['querySelectorAll'](_0x3dab9e(0x166)+_0x36c9f2),_0x2cbc31=document[_0x3dab9e(0x161)](_0x3dab9e(0x1d8)+_0x36c9f2);_0x1c0507[_0x3dab9e(0x1e6)](_0x4fd21d=>_0x4fd21d[_0x3dab9e(0x183)]()),_0x4ad905['forEach'](_0x133f85=>_0x133f85['remove']()),_0x2cbc31['forEach'](_0x49d3ed=>_0x49d3ed[_0x3dab9e(0x183)]());}),_0x52d7a6[_0x219422(0x168)](_0x1d7092),_0x567d36[_0x219422(0x168)](_0x52d7a6),_0x3dce7c[_0x219422(0x168)](_0x567d36);!_0x320926&&_0x2454ca['appendChild'](_0x3dce7c);const _0x2f810c=_0x54e073[_0x4bfea2][_0x219422(0x156)](',\x20'),_0x3716b3=0xbe,_0x30afd1=[0x0,0x0],_0x247569=[0x0,0x2*Math['PI']/0x7,0x4*Math['PI']/0x7,0x6*Math['PI']/0x7,0x8*Math['PI']/0x7,0xa*Math['PI']/0x7,0xc*Math['PI']/0x7];function _0x29789a(_0x5b180a,_0x1e1af0){const _0x5608aa=_0x219422;let _0x45df4b=_0x247569[_0x5b180a-0x1];_0x45df4b+=0x2*Math['PI']/0x7*0.2;const _0x8b54e9=0xbe*_0x1e1af0*Math[_0x5608aa(0x157)](_0x45df4b),_0x38229e=0xbe*_0x1e1af0*Math['sin'](_0x45df4b);return{'x':_0x8b54e9,'y':_0x38229e};}const _0x16ef9b=document['querySelector']('.radar'),_0x483dc9=_0x16ef9b[_0x219422(0x168)](document[_0x219422(0x1ff)](_0x219422(0x1f5),'g'));_0x483dc9[_0x219422(0x16c)](_0x219422(0x1e9),_0x219422(0x1b4)),_0x483dc9[_0x219422(0x1d9)]='';const _0x3de67b=[],_0x278298=_0x2f810c[_0x219422(0x197)](',');for(let _0x346a97=0x4;_0x346a97<0xb;_0x346a97++){_0x3de67b[_0x219422(0x1df)]({'axis':_0x346a97-0x3,'value':parseFloat(_0x278298[_0x346a97])});}const _0x21986d=_0x3de67b['map'](({axis:_0x7566,value:_0x16034f})=>{const {x:_0x39b790,y:_0x292cfa}=_0x29789a(_0x7566,_0x16034f);return _0x39b790+','+_0x292cfa;})[_0x219422(0x156)]('\x20'),_0xedb6a6=document[_0x219422(0x1ff)](_0x219422(0x1f5),_0x219422(0x1bd));_0xedb6a6['setAttribute'](_0x219422(0x1bf),'radarLines\x20'+_0x36c9f2),_0xedb6a6['setAttribute']('points',_0x21986d+'\x20'+_0x21986d['split']('\x20')[0x0]),_0xedb6a6[_0x219422(0x16c)](_0x219422(0x167),'3'),_0xedb6a6[_0x219422(0x16c)]('fill',_0x219422(0x174)),_0x483dc9[_0x219422(0x168)](_0xedb6a6);const _0x47ddca=document['createElementNS'](_0x219422(0x1f5),_0x219422(0x1ef));_0x47ddca[_0x219422(0x16c)]('class',_0x219422(0x176)+_0x36c9f2),_0x47ddca['setAttribute'](_0x219422(0x175),_0x21986d),_0x47ddca['style'][_0x219422(0x16d)]=_0x219422(0x1e3),_0x483dc9[_0x219422(0x168)](_0x47ddca),_0x3de67b[_0x219422(0x1e6)](({axis:_0xf8cffa,value:_0x2b601a})=>{const _0x2deaa4=_0x219422,{x:_0x1d8e48,y:_0x35f0cb}=_0x29789a(_0xf8cffa,_0x2b601a),_0x33a0f8=document[_0x2deaa4(0x1ff)]('http://www.w3.org/2000/svg',_0x2deaa4(0x1b0));_0x33a0f8['setAttribute'](_0x2deaa4(0x1bf),'radarCircle\x20'+_0x36c9f2),_0x33a0f8[_0x2deaa4(0x1d3)]['fillOpacity']=_0x2deaa4(0x191),_0x33a0f8[_0x2deaa4(0x16c)]('r','6'),_0x33a0f8[_0x2deaa4(0x16c)]('cx',_0x1d8e48),_0x33a0f8[_0x2deaa4(0x16c)]('cy',_0x35f0cb),_0x483dc9[_0x2deaa4(0x168)](_0x33a0f8);});}const _0x11817a=new Set();function _0x446c61(){const _0x4cda4a=_0x30b29a,_0x39e59c=document[_0x4cda4a(0x1b7)](_0x4cda4a(0x17e)),_0x5d2974=document[_0x4cda4a(0x1b7)](_0x4cda4a(0x1c0)),_0x103ccd=document['getElementById'](_0x4cda4a(0x1da)),_0x293e98=document[_0x4cda4a(0x1ad)]('ul');_0x293e98[_0x4cda4a(0x1d3)][_0x4cda4a(0x1b2)]=_0x4cda4a(0x1f3),_0x293e98['style']['listStyleType']=_0x4cda4a(0x174),_0x293e98[_0x4cda4a(0x1d3)][_0x4cda4a(0x1a4)]=_0x4cda4a(0x1d6),_0x103ccd[_0x4cda4a(0x168)](_0x293e98);let _0x34e6fa=0x0;_0x5d2974['addEventListener'](_0x4cda4a(0x201),function(){const _0x2f415e=_0x4cda4a,_0x5b4ddc=_0x39e59c[_0x2f415e(0x15b)],_0x43a18=_0x4e0f6b(_0x5b4ddc),_0xf83247=document['querySelectorAll']('.radarPolygon');_0xf83247[_0x2f415e(0x1e6)](_0x537961=>{const _0x27a7f4=_0x2f415e;_0x537961[_0x27a7f4(0x1d3)][_0x27a7f4(0x1f6)]='';});if(_0x43a18){const _0x3d2305=parseInt(_0x43a18[0x0]),_0x52460c=_0x43a18[0x1]+'\x20('+_0x43a18[0x2]+',\x20'+_0x43a18[0x3]+_0x2f415e(0x1a3)+_0x43a18[0xb]+_0x2f415e(0x1c8),_0x5c32d6=_0x1ad5b1[_0x34e6fa%_0x1ad5b1['length']];_0x5bf5fb(_0x52460c,_0x3d2305-0x1,_0x5c32d6),_0x34e6fa++;}});}_0x446c61();const _0x138986=document[_0x30b29a(0x1ad)](_0x30b29a(0x1af));_0x138986['id']=_0x30b29a(0x1b3);const _0x11421c=document[_0x30b29a(0x1b7)](_0x30b29a(0x1a5));_0x11421c[_0x30b29a(0x168)](_0x138986);let _0x50468d=0x0;searchButton1[_0x30b29a(0x1ec)](_0x30b29a(0x201),function(){const _0x34c0b4=_0x30b29a,_0x3ab493=_0x38feb7['value'],_0x124a55=_0x4e0f6b(_0x3ab493);if(_0x124a55['length']>0x0){const _0x5481c7=_0x124a55[0x0],_0x2542d5=parseInt(_0x5481c7[0x0])-0x1,_0x588231=[];for(let _0x1c836d=0x0;_0x1c836d<_0x54e073[_0x34c0b4(0x202)];_0x1c836d++){if(_0x1c836d!==_0x2542d5){const _0x335eed=_0x5fe69e(_0x5481c7,_0x54e073[_0x1c836d]);_0x588231[_0x34c0b4(0x1df)]({'index':_0x1c836d,'difference':_0x335eed});}}_0x588231[_0x34c0b4(0x153)]((_0x5c5475,_0x18878e)=>_0x5c5475[_0x34c0b4(0x1aa)]-_0x18878e[_0x34c0b4(0x1aa)]);const _0x3703dd=_0x588231[_0x34c0b4(0x1ce)](0x0,0x5);for(let _0x50d5ff=0x0;_0x50d5ff<0x1;_0x50d5ff++){const _0x32fee8=_0x3703dd[_0x50d5ff][_0x34c0b4(0x199)],_0x29a47c=_0x54e073[_0x32fee8][0x1],_0x18a7aa=_0x54e073[_0x32fee8][0x3],_0x1bc8c3=_0x54e073[_0x32fee8][0x2],_0x16daa9=document[_0x34c0b4(0x1ad)](_0x34c0b4(0x181));_0x16daa9['classList']['add']('similar-table');const _0x46f127=document[_0x34c0b4(0x1ad)]('tr'),_0x1821bc=document[_0x34c0b4(0x1ad)]('th');_0x1821bc['setAttribute']('colspan','5'),_0x1821bc[_0x34c0b4(0x154)]=_0x34c0b4(0x1fa)+_0x124a55[0x0][0x1],_0x1821bc[_0x34c0b4(0x185)][_0x34c0b4(0x194)](_0x1ad5b1[_0x50468d%_0x1ad5b1[_0x34c0b4(0x202)]]),_0x46f127[_0x34c0b4(0x168)](_0x1821bc),_0x16daa9[_0x34c0b4(0x168)](_0x46f127);const _0x18f31a=document[_0x34c0b4(0x1ad)]('tr');for(let _0x40f92b=0x0;_0x40f92b<_0x3703dd[_0x34c0b4(0x202)];_0x40f92b++){const _0x4f6b16=_0x3703dd[_0x40f92b][_0x34c0b4(0x199)],_0x3915eb=_0x54e073[_0x4f6b16][0x1],_0x4ca6c8=_0x54e073[_0x4f6b16][0x3],_0x16ba53=_0x54e073[_0x4f6b16][0x2],_0x1c1301=document[_0x34c0b4(0x1ad)]('td');_0x1c1301[_0x34c0b4(0x154)]=''+_0x3915eb,_0x1c1301[_0x34c0b4(0x1d3)][_0x34c0b4(0x151)]=_0x34c0b4(0x186),_0x1c1301[_0x34c0b4(0x1d3)][_0x34c0b4(0x19f)]=_0x34c0b4(0x1fc),_0x1c1301[_0x34c0b4(0x1ec)](_0x34c0b4(0x201),function(){const _0x4d251d=_0x34c0b4;_0x38feb7[_0x4d251d(0x15b)]=_0x3915eb,searchButton1['click']();}),_0x18f31a['appendChild'](_0x1c1301);}_0x138986[_0x34c0b4(0x162)][_0x34c0b4(0x202)]>0x0&&_0x138986['removeChild'](_0x138986['firstChild']),_0x16daa9[_0x34c0b4(0x168)](_0x18f31a),_0x138986[_0x34c0b4(0x168)](_0x16daa9),_0x50468d++;}}_0x38feb7['value']='',_0x5c30c2();});});})[_0x1c7f31(0x192)](_0x224434=>{const _0x14588d=_0x1c7f31;console[_0x14588d(0x1f0)](_0x14588d(0x179),_0x224434);});	
     
-  </body>
-  </html>
+</script>
+	  
+<script>async function takeScreenshot() {
+  const body = document.querySelector('body');
+  const isDarkMode = body.classList.contains('dark-mode');
+  const backgroundColor = isDarkMode ? '#0F0F0E' : '#ffffff'; // Black for dark mode, white for light mode
   
-  
+  try {
+    const element = document.querySelector('.screenshotcontainer'); // Capture the screenshotcontainer using the class name
+    if (!element) {
+      throw new Error('screenshotcontainer element not found');
+    }
+
+    const canvas = await html2canvas(element, {
+	width: 773,
+    y: -10,
+    x: - 10,  
+      useCORS: true,
+      backgroundColor: backgroundColor, // Set the background color based on mode
+      scale: window.devicePixelRatio,
+      logging: false, // Disable logging for production
+      foreignObjectRendering: false,
+    });
+
+    canvas.toBlob(blob => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'screenshot.png';
+      link.click();
+    }, 'image/png');
+  } catch (error) {
+    console.error('Error in takeScreenshot:', error);
+    // Handle errors appropriately (e.g., display to user or log)
+  }
+}
+
+
+
+  // Function to toggle dark mode
+  function toggleDarkMode() {
+    const body = document.querySelector("body");
+    body.classList.toggle("dark-mode");
+
+    // Store the user's preference in local storage
+    const isDarkMode = body.classList.contains("dark-mode");
+    localStorage.setItem("darkMode", isDarkMode);
+  }
+
+  // Check if user has a stored preference for dark mode
+  const storedDarkMode = localStorage.getItem("darkMode");
+
+  if (storedDarkMode === "true") {
+    const body = document.querySelector("body");
+    body.classList.add("dark-mode");
+  }
+
+              
+  function toggleFilling() {
+    const radarPolygons = document.querySelectorAll('.radarPolygon');
+    radarPolygons.forEach(polygon => {
+      polygon.style.fill = polygon.style.fill ? '' : 'none'; // Toggle the filling
+    });
+  }
+
+
+
+
+</script>
+
+        <div class="emptycontainer"></div>
+
+        <div class="finalcontainer">
+
+<center><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7677714701428206"
+  crossorigin="anonymous"></script>
+<!-- radar page -->
+<ins class="adsbygoogle"
+  style="display:inline-block;width:728px;height:90px"
+  data-ad-client="ca-pub-7677714701428206"
+  data-ad-slot="5336962902"></ins>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script></center>
+<center><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7677714701428206"
+  crossorigin="anonymous"></script>
+<!-- radar page -->
+<ins class="adsbygoogle"
+  style="display:inline-block;width:728px;height:90px"
+  data-ad-client="ca-pub-7677714701428206"
+  data-ad-slot="5336962902"></ins>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+</script></center>
+</div>
+
+<script>
+  // Function to scroll down a tiny bit
+  function scrollDown() {
+    window.scrollBy(0, 400); // Adjust the value (400) to change the scroll distance
+  }
+
+  // Function to scroll up a tiny bit
+  function scrollUp() {
+    window.scrollBy(0, -15); // Adjust the value (-10) to change the scroll distance
+  }
+
+  // Function to check if the device is mobile
+  function isMobileDevice() {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+  }
+
+  // Combine both actions with a small timer between them
+  window.onload = function() {
+    if (isMobileDevice()) {
+      scrollDown();
+      setTimeout(scrollUp, 100); // Adjust the delay time (100ms = 0.1 second)
+    }
+  };
+</script>
+
+</body>
+</html>
