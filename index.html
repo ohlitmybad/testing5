@@ -1244,51 +1244,8 @@ var circles = svg.selectAll("circle")
   .attr("cx", function(d) { return xScale(d[header.indexOf(xMetric)]); })
   .attr("cy", function(d) { return yScale(d[header.indexOf(yMetric)]); })
   .attr("r", 8)  .style("fill", "#4682B4B4")
-  .on("mousedown", function(d) {
-        if (isMobileDevice()) {  // Only apply long press on mobile devices
-            var circleElement = d3.select(this);  // Save reference to the clicked circle
 
-            longPressTimer = setTimeout(function() {
-                // Show tooltip after 3 seconds of holding
-                tooltip.style("opacity", 0.9)
-                    .html("Player: " + filteredNames[filteredData.indexOf(d)])
-                    .style("left", (d3.event.pageX + 10) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
 
-                // Add selected circle styles
-                clickedCircles.push(d[0]);
-                circleElement.style("fill", leagueColorScale(d[2]));  // Apply league color
-
-                svg.append("text")
-                    .attr("class", "player-name player-name-" + d[0])
-                    .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-                    .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
-                    .style("font-family", "Arial")
-                    .style("font-size", "12px")
-                    .style("user-select", "none")
-                    .style("pointer-events", "none")
-                    .text(filteredNames[filteredData.indexOf(d)]);
-            }, 3000); // 3 seconds delay for the long press
-        }
-  })
-  .on("mouseup", function(d) {
-        if (isMobileDevice()) {
-            clearTimeout(longPressTimer);  // Clear the long press timer when the mouse is released
-
-            // Hide the tooltip when the user releases the click
-            tooltip.style("opacity", 0)
-                .style("left", "-1000px")
-                .style("top", "-1000px");
-
-            // Optional: Remove the selected styles or maintain if you want the circle to stay selected
-            var index = clickedCircles.indexOf(d[0]);
-            if (index > -1) {
-                clickedCircles.splice(index, 1);
-                d3.select(this).style("fill", "#4682B4B4");  // Reset the color when unselected
-                svg.select(".player-name-" + d[0]).remove();  // Remove player name
-            }
-        }
-    })
 
 
   .on("mouseout", function(d) {
@@ -1346,6 +1303,8 @@ var circles = svg.selectAll("circle")
         .style("font-size", "12px")
         .style("user-select", "none")      
         .style("pointer-events", "none")
+        .style("touch-action", "none")
+
         .text(filteredNames[filteredData.indexOf(d)]);
     }
   });
@@ -1680,6 +1639,8 @@ var sizeScale = d3.scaleLinear()
         .style("font-size", "12px")
         .style("user-select", "none")      
         .style("pointer-events", "none")
+        .style("touch-action", "none")
+
         .text(filteredNames[filteredData.indexOf(d)]);
     }
 
@@ -1800,6 +1761,8 @@ function circleClick(d, i) {
       .style("font-size", "12px")
       .style("user-select", "none")      
       .style("pointer-events", "none")
+      .style("touch-action", "none")
+
       .text(filteredNames[filteredData.indexOf(d)]);
   }
 
