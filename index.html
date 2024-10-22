@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -169,6 +179,8 @@ body.dark-mode .dark-mode-toggle .toggle-icon::before {
 
 
 
+
+
 .dark-mode-toggle .toggle-icon::before {
   font-family: "Ionicons";
   content: "\f467"; /* Unicode value for the moon icon in Ionicons */
@@ -199,6 +211,7 @@ font-size: 22px;
   font-family: "Ionicons"; /* Replace with the appropriate font */
 font-size: 22px;
 }
+
 
 .button-screenshot, .select-all-button {
     margin: 10px;
@@ -251,6 +264,7 @@ body.dark-mode .select-all-button {
   letter-spacing: .25px;
   padding: 2px 24px;
 }
+
 
 
 
@@ -319,7 +333,6 @@ opacity: .055;
 
 	     
 
-
 .button-1 {
   align-items: center;
 height: 20px;
@@ -357,16 +370,16 @@ width: 72px;
     box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
 }
 
-body.dark-mode .button-6 {
+body.dark-mode .button-2 {
   /* Override button background color */
   background-color: #646464;
 }
 
 .button-2 {
   align-items: center;
-  background-color: #F9F9F9;
+  background-color: #e7e4e4;
   border-radius: 6px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.24);
   box-sizing: border-box;
   color: #121212;
   cursor: pointer;
@@ -396,7 +409,7 @@ width: 72px;
 }
 
 .button-2:hover {
-   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+  box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 3px;
 }
 
 .button-3 {
@@ -514,9 +527,9 @@ width: 72px;
 
 .button-6 {
   align-items: center;
-  background-color: #e7e4e4;
+  background-color: #F9F9F9;
   border-radius: 6px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.24);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   color: #121212;
   cursor: pointer;
@@ -546,7 +559,7 @@ width: 72px;
 }
 
 .button-6:hover {
-  box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 3px;
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
 }
 .button-7 {
   align-items: center;
@@ -623,8 +636,11 @@ width: 72px;
   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
 }
 
+
+
 	     
 </style>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
@@ -692,11 +708,11 @@ width: 72px;
   <option value="Segunda Division">🇪🇸 Spain Segunda</option>
   <option value="Serie B">🇮🇹 Serie B</option>
   <option value="Bundesliga 2">🇩🇪 2. Bundesliga</option>
-  <option value="Ligue 2">🇫🇷 Ligue 2</option>
+  <option value="Ligue 2">🇫🇷 Ligue 2</option> 
   <option value="Outside Top 7">🌍 Outside Top 7</option>
 <option value="South America">🌎 South America</option>
 <option value="Scandinavia">🌍 Scandinavia</option>
-<option value="Eastern Europe">🌍 Eastern Europe</option> 
+<option value="Eastern Europe">🌍 Eastern Europe</option>
    </select>
    <select id="select-age">
     <option value="all">Age</option>
@@ -716,28 +732,24 @@ width: 72px;
     <option value="30">U30</option>
     <option value="35">U35</option>    
  </select>
-  <button class="select-all-button" onclick="selectAllCircles()">Click All</button>
+ <button class="select-all-button" onclick="selectAllCircles()">Click All</button>
  <button onclick="takeScreenshot()" class="button-screenshot">
   Screenshot
-</button>
- <br>
+</button> <br>
  <select id="select-x"></select>
  <select id="select-y"></select>
  <select id="select-size"></select>
 <button id="toggle-median-lines" class="toggle-button"><div class="icon"></div></button></div>
 <script>
 
-
 const allData = [];
 let isFirstFileProcessed = false;
 
 const urls = [
- 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx',
-   'https://datamb.football/database/CURRENT/PRO2425/ST/ST.xlsx',
-'https://datamb.football/database/CURRENT/PRO2024/ST/ST.xlsx',
-
+ 'https://datamb.football/database/CURRENT/TOP72425/CB/CB.xlsx',
+   'https://datamb.football/database/CURRENT/PRO2425/CB/CB.xlsx',
+'https://datamb.football/database/CURRENT/PRO2024/CB/CB.xlsx',
 ];
-
 
 const fetchPromises = urls.map(url => fetch(url).then(response => response.arrayBuffer()));
 
@@ -764,7 +776,7 @@ Promise.all(fetchPromises)
             });
 
             // 3. Insert new columns and fill with appropriate values
-            if (url === 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx' && !isFirstFileProcessed) {
+            if (url === 'https://datamb.football/database/CURRENT/TOP72425/CB/CB.xlsx' && !isFirstFileProcessed) {
                 // Include header only for the first file ('gk4.xlsx')
                 jsonData.forEach(row => row.unshift(null)); // Insert empty column at the beginning
                 jsonData[0][0] = "ID"; // Set header for the new column
@@ -789,7 +801,7 @@ Promise.all(fetchPromises)
             });
 
             // 5. Collect the transformed data (excluding header for non-first 'gk4.xlsx')
-            allData.push(...(url === 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx' ? jsonData : jsonData.slice(1)));
+            allData.push(...(url === 'https://datamb.football/database/CURRENT/TOP72425/CB/CB.xlsx' ? jsonData : jsonData.slice(1)));
         });
 
 const leagues = {
@@ -1001,7 +1013,8 @@ const leagues = {
 
 "Serie A": [
 "Milan", "Juventus", "Atalanta", "Lazio", "Napoli", "Roma", "Monza", "Internazionale", "Lecce", "Torino", "Parma", "Udinese", "Genoa", "Hellas Verona", "Bologna", "Fiorentina", "Cagliari", "Venezia", "Como", "Empoli", 
-],
+], 
+  
 
 };
 
@@ -1234,7 +1247,6 @@ var filteredData; // declare filteredData in a higher scope
 var filteredNames; // declare filteredNames in a higher scope
 
 
-var longPressTimer;
 
 
 var circles = svg.selectAll("circle")
@@ -1244,10 +1256,6 @@ var circles = svg.selectAll("circle")
   .attr("cx", function(d) { return xScale(d[header.indexOf(xMetric)]); })
   .attr("cy", function(d) { return yScale(d[header.indexOf(yMetric)]); })
   .attr("r", 8)  .style("fill", "#4682B4B4")
-
-
-
-
   .on("mouseout", function(d) {
     if (!d3.select(this).classed("clicked")) {
       // If the circle is not clicked, reset its color to #4682B4B4
@@ -1303,19 +1311,23 @@ var circles = svg.selectAll("circle")
         .style("font-size", "12px")
         .style("user-select", "none")      
         .style("pointer-events", "none")
-        .style("touch-action", "none")
-
         .text(filteredNames[filteredData.indexOf(d)]);
+
+        if ('ontouchstart' in window || navigator.maxTouchPoints) {
+            // Hide the tooltip after X seconds (e.g., 2000 milliseconds) only on mobile
+            setTimeout(function() {
+                tooltip.style("opacity", 0)
+                    .style("left", "-1000px")  // Move tooltip off-screen
+                    .style("top", "-1000px");  // Move tooltip off-screen
+            }, 2000);
+        }  
     }
   });
   svg.on("mouseleave", function() {
   tooltip.style("opacity", 0)
          .style("left", "-1000px")
          .style("top", "-1000px");
-         if (isMobileDevice()) {
-            clearTimeout(longPressTimer);  // Clear the long press timer if they leave the element
-        }
-  });
+});
 
 
 
@@ -1639,8 +1651,6 @@ var sizeScale = d3.scaleLinear()
         .style("font-size", "12px")
         .style("user-select", "none")      
         .style("pointer-events", "none")
-        .style("touch-action", "none")
-
         .text(filteredNames[filteredData.indexOf(d)]);
     }
 
@@ -1761,8 +1771,6 @@ function circleClick(d, i) {
       .style("font-size", "12px")
       .style("user-select", "none")      
       .style("pointer-events", "none")
-      .style("touch-action", "none")
-
       .text(filteredNames[filteredData.indexOf(d)]);
   }
 
@@ -1903,13 +1911,14 @@ function selectAllCircles() {
 <a href="https://datamb.football/proplotst24/" target="_self" rel="noopener noreferrer">
   <button class="button-6" role="button">ST</button></a>
 
-  <a href="https://datamb.football/proplotst/" target="_self" rel="noopener noreferrer">
+  <a href="https://datamb.football/proplotcb/" target="_self" rel="noopener noreferrer">
     <button class="button-7" role="button">&#8594; 23/24</button></a>
-  
+
     <div class="dark-mode-toggle" onclick="toggleDarkMode()">
       <div class="toggle-icon"></div>
     </div>
 
+  
 
 <script>
 
@@ -1933,7 +1942,8 @@ function selectAllCircles() {
 
   </script>
 		
-    <script>// Function to capture and download the chart area
+    
+  <script>// Function to capture and download the chart area
       function captureChart() {
           // Get the SVG element
           const svg = document.getElementById('scatter-plot');
@@ -1977,21 +1987,13 @@ function selectAllCircles() {
       // Add click event listener to the screenshot icon
       document.querySelector('.button-screenshot').addEventListener('click', captureChart);
   </script>
-  <script>
-    function isMobileDevice() {
-      return /Mobi|Android/i.test(navigator.userAgent);
-    }
 
+		
+<br>		
+<br>		
+<br>		
+<br>
+  
+</body>
+</html>
 
-  </script>
-  
-      
-  <br>		
-  <br>		
-  <br>		
-  <br>
-    
-  </body>
-  </html>
-  
-  
