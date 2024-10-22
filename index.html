@@ -1,1016 +1,743 @@
-
-
 <!DOCTYPE html>
 <html>
-<head>	
-  
-  <meta name="viewport" content="width=device-width, user-scalable=no">
-  <title>Álex Baena Football Stats and Visuals | DataMB</title>
-  <link rel="shortcut icon" type="image/x-icon" href="https://datamb.football/favicon.ico">
-  <meta name="description" content="Álex Baena 2024/25 data profile compared to wingers and attacking midfielders in Europe's Top 7 Leagues. Check out his statistics with our radar chart and plots, or compare Álex Baena to other players using our data comparison tool.">
-  <meta property="og:image" content="https://datamb.football/vignettes/profile.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@DataMB_">
-  <meta name="twitter:title" content="Álex Baena | DataMB">
-  <meta name="twitter:image" content="https://datamb.football/vignettes/profile.png">
-  <script>
-    (function() {
-        var width = window.innerWidth;
-        var viewportMeta = document.querySelector('meta[name="viewport"]');
-        if (viewportMeta) {
-  if (width < 681) {
-          
-        var initialScale = width / 681;
-  viewportMeta.setAttribute('content', 'width=device-width, initial-scale=' + initialScale + ', user-scalable=no');
-  } else {
-              var fixedScale = 1;
-    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=' + fixedScale + ', user-scalable=no');
-  
-    }
-      } 
-  })();
-  </script>
+<head>
+	<meta name="robots" content="noindex">
+
+	<script src="https://d3js.org/d3.v5.min.js"></script>
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-<script src="https://d3js.org/d3.v5.min.js"></script>
-  
+
+
 
 
 <style>
 
-
-
-  /* BASIC STYLE ELEMENTS BELOW */
-    
-    
-  svg text.label {
-      fill: #bcbcbc;
-    }
-  
-  
-  
-    td.black {
-      color: black !important;
-    }
-    td.red {
-      color: red !important;
-    }
-    td.green {
-      color: green !important;
-    }
-  text {
-    font-family: Arial;
+body {
+    background-color: white;
   }
-  
-  .result-color-blue {
-    color: #3062FB !important;
-    stroke: #3062FB;
-    fill: #3062FB;
-    fill-opacity: 0.02;
-  }
-  
-  
-  
-  .radar-button {
-    position:relative;
-    left:-5px;
-    align-items: center;
-    background-color: #FFFFFF;
-    border: 4px solid #135eb6; /* Add a border */
-    border-radius: 35px;
-    color: #0b57d0;
-    width: 145px;
-    height: 58px;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-  
-  }
-  
-  .plot-button {
-    position:relative;
-    left:40px;
-    top: -11px;
-    align-items: center;
-    background-color: #FFFFFF;
-    border: 4px solid #135eb6; /* Add a border */
-    border-radius: 35px;
-    color: #0b57d0;
-    width: 145px;
-    height: 58px;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: 'Open Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;  
-  }
-  
-  
-        
-  .metrics-table th {
-    background-color: #ececec;
-    color: #444444;
-    font-weight: bold;
-    padding: 9px;
-    text-align: left;
-  }
-  
-  .metrics-table td {
-    padding: 9px;
-    border: 1px solid #ccc;
-  }
-  
-  .metrics-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  .metrics-table tr:hover {
-    background-color: #ddd;
-  }
-  .metrics-table tr:first-child td {
-    font-size: 20px;
-  }
-  
-  .metrics-table a {
-    text-decoration: none; /* Remove underlining */
-
+	
+  /* Dark Mode Styles */
+  body.dark-mode,
+  body.dark-mode * {
+    color: #f2f2f2;
   }
 
-
-  #metrics-table a {
-    text-decoration: none; /* Remove underlining */
-    color: purple; /* Set link color to purple */
+  body.dark-mode {
+    background-color: #0F0F0E;
   }
 
-  
-
-  
-
-  /* FUNCTIONAL STYLE ELEMENTS BELOW */
-
-
-  
-  svg:nth-of-type(1) {
-  height: 485px;
-}
-  
-
-
-.metrics-table {
-    width: 520px;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    border-collapse: collapse;
-  }
-
-  
-  /* Ensure the container is centered and elements are responsive */
-.container {
-  display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  justify-content: center;
-  align-items: center; /* Center elements horizontally */
-  width: 100%; /* Allow the container to take up full width */
-  margin: 0 auto; /* Center the container itself */
-}
-
-/* For rows that should have elements side by side */
-.desktop-row {
-  display: flex;
-  justify-content: center; /* Center the row contents */
-  align-items: flex-start; /* Align elements to the top, preventing height stretching */
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  width: 100%;
-  margin: 20px 0;
-}
-
-.radar-wrapper {
-  position: relative;
-top: 20px;
-}
-
-
-.scatter-plot-wrapper {
-  position: relative;
-top: 26px;
-}
-
-.scatter-plot-wrapper-2 {
-  position: relative;
-top: 26px;
-left: -20px;
+body.dark-mode .tooltip {
+  color: #000000; /* Set the font color to black in dark mode */
+  background-color: #f9f9f9;
+  border: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 12px;
 }
 
 
 
-/* Limit the width of individual elements and center them */
-.metric-table, .radar-wrapper, .scatter-plot-wrapper, .scatter-plot-wrapper-2 {
-  flex: 1;
-  min-width: 300px;
-  max-width: 550px; /* Ensure no element exceeds 485px */
-  margin: 0px 40px;
-  align-self: center; /* Ensure the element itself is centered */
-  text-align: center; /* Center text or content inside the div */
-}
+ body.dark-mode #search-bar {
+    color: #000; /* Specify the desired text color for dark mode */
+background-color : #999
+  }
+	
+ body.dark-mode	  #search-bar::placeholder {
+    color: #fff; /* Specify the desired color for the placeholder text */
+  }
 
-
-
-.scatter-plot, .scatter-plot-2 {
-  max-height: 400px; /* Keep aspect ratio */
-  max-width: 123%; /* Ensure it scales down on smaller screens */
-}
-
-/* Limit the width of the radar SVG */
-.radar {
-  width: 485px;
-  height: auto; /* Keep aspect ratio */
-  max-width: 100%; /* Ensure it scales down on smaller screens */
-}
-
-/* Wrapper for radar and button */
-.radar-wrapper, .scatter-plot-wrapper, .scatter-plot-wrapper-2 {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center the content inside the wrapper */
-}
-
-/* Ensure the buttons are centered below their respective elements */
-.radar-button, .plot-button {
-  text-align: center; /* Ensure the buttons are centered */
-}
-
-/* Mobile-specific layout: Stack elements vertically */
-@media only screen and (max-width: 1048px) {
-  .desktop-row {
-    flex-direction: column; /* Stack elements vertically on smaller screens */
+  body.dark-mode svg .x-label {
+    /* Override SVG text color */
+    fill: #f2f2f2;
   }
 
 
-    .metric-table, .radar-wrapper, .scatter-plot-wrapper, .scatter-plot-wrapper-2 {
+  body.dark-mode svg .y-label {
+    /* Override SVG text color */
+    fill: #f2f2f2;
+  }
 
-  margin: 20px 40px;
+body.dark-mode select {
+  color: #f2f2f2; /* Set the text color to a light color in dark mode */
+  background-color: #333333; /* Set the background color to a dark color in dark mode */
+}
 
+
+body.dark-mode .player-name {
+  fill: #ffffff; /* Set the fill color to white in dark mode */
+}
+
+body.dark-mode button {
+  /* Override button background color */
+  background-color: #333333;
+}
+
+body.dark-mode button,
+body.dark-mode button:focus {
+  /* Override button text color */
+  color: #f2f2f2;
+}
+
+body.dark-mode button:hover {
+  /* Preserve button hover property */
+  color: initial;
+}
+
+
+body.dark-mode .button-8 {
+  /* Override button background color */
+  background-color: #13293d; /* Dark blue color */
+  color: #f2f2f2; /* Off-white color */
+}
+
+body.dark-mode .button-8:hover,
+body.dark-mode .button-8:focus {
+  /* Override button hover and focus state */
+  background-color: #3a6ea5; /* Darker blue color */
+  color: #f2f2f2; /* Off-white color */
+}
+
+body.dark-mode .button-8:hover,
+body.dark-mode .button-8:focus {
+  /* Override button hover and focus state */
+  background-color: #3a6ea5; /* Darker blue color */
+  color: #f2f2f2; /* Off-white color */
+}
+
+
+body.dark-mode .dark-mode-toggle {
+  background-color: #333333;
 }
 
 
 
-.scatter-plot-wrapper, .scatter-plot-wrapper-2 {
-top:-10px;
-left: 0px
-
-}
-.radar-wrapper {
-
-top: 0px;
-left: 10px
-
-}
-.plot-button {
-    position:relative;
-    left:10px;
-  }
+body.dark-mode .dark-mode-toggle .toggle-icon::before {
+  font-family: "Ionicons";
+  content: "\f3b0"; /* Unicode value for the sun icon in Ionicons */
+  font-size: 24px; /* Adjust the value as needed */
 }
 
-  
 
-  /* IGNORE THESE STYLE ELEMENTS */
 
-  
-  .search-container {
-              position: relative;
-              display: inline-block;
-          }
-  
-          
-          #searchButton {
-      padding: 10px;
-      background-color: #0074d9;
-      color: #fff;
-      border: none;
-      width: 40px; /* Set the width and height to the same value for a round button */
-      height: 40px;
-      border-radius: 50%; /* Make the button round by setting border-radius to 50% of the size */
-      cursor: pointer;
-      font-size: 20px; /* Increase the text size */
-  }
-  
-  
-  .search-input-modal {
-      display: none;
-      position: fixed; /* Change this to "fixed" to cover the entire viewport */
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7); /* Increase opacity for better obscuring */
-      z-index: 999; /* Ensure it's above other elements */
-  }
-  
-  .search-input-container {
-      position: absolute;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 4px;
-      z-index: 1000; /* Make sure it's on top of the modal background */
-  }
-  
-          
-  #searchInput {
-              width: 340px;
-              padding: 12px;
-              border: 3px solid #ccc;
-              border-radius: 4px;
-              font-size: 19px;
-              outline: none;
-          }
-  
-          #autocompleteBox {
-              width: 360px;
-              max-height: 150px;
-              overflow-y: auto;
-              background-color: #fff;
-          }
-  
-  
-          #autocompleteBox ul {
-              list-style: none;
-              padding: 0;
-              margin: 0;
-          }
-  
-          #autocompleteBox li {
-              margin: 0;
-              padding: 5px;
-          }
-  
-          #autocompleteBox {
-              line-height: 2; /* Adjust the value as needed to control line spacing */
-              text-align: center !important;
-  
-          }
-  
-          #autocompleteBox a {
-              text-decoration: none;
-              font-family: Arial, sans-serif;
-              text-align: center !important;
-              color: #333 !important;
-              cursor: pointer; /* Add pointer cursor style to the anchor element */
-          }
-  
-          #autocompleteBox li:hover {
-              background-color: #F0F0F0;
-          }
-  
-  
-  body {
-    margin: 0 auto;
-  }
-  
-  
-  body, html {
-  
-  background-color: #ffffff !important;
-  }
-  .header {
-    font-family: system-ui;
-    padding: 20px;
-    text-align: center;
-    color: #fff;
+body.dark-mode .toggle-slider {
+  background-color: #2B2C2E; /* Darker background color for dark mode */
+}
+
+body.dark-mode input:checked + .toggle-slider:before {
+  background-color: #ccc; /* Darker background color for dark mode */
+}
+
+
+
+.dark-mode-toggle .toggle-icon::before {
+  font-family: "Ionicons";
+  content: "\f467"; /* Unicode value for the moon icon in Ionicons */
+  font-size: 35px; /* Adjust the value as needed */
+}
+
+body.dark-mode .dark-mode-toggle {
+  background-color: #333333;
+}
+
+
+
+body.dark-mode .dark-mode-toggle .toggle-icon::before {
+  font-family: "Ionicons";
+  content: "\f3b0"; /* Unicode value for the sun icon in Ionicons */
+  font-size: 24px; /* Adjust the value as needed */
+}
+
+
+.dark-mode-toggle {
+    position: absolute;
+    top: 15.3px;
+    left: 93%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-  background: #ececec;
-  }
-  
-  .header .logo {
-    display: flex;
-    align-items: center;
-  }
-  
-  .header .logo img {
-    width: 40px;
-    height: 40px;
-  opacity: 0.84;
-  }
-  
-  .header .logo-text {
-    margin-left: 10px;
-    font-size: 20px;
-  color: #444444;
-    font-weight: 600;
-  }
-  
-  .header .navigation {
-    display: center;
-    align-items: center;
-    word-spacing: 1.3em; /* Adjust the spacing as needed */
-  }
-
-  @media only screen and (min-width: 1048px) {
-    .header .navigation a:first-child {
-      margin-left: 100px; /* Adjust the margin as needed */
-    }
-  }
-  
-  .header .button {
-    margin: 0 10px;
-    padding: 0px 20px;
-    color: #444444;
-    text-decoration: none;
-    border-radius: 0px;
-  font-size: 18px;
-  }
-  
-  header a {
-        color: #444444;
-        text-decoration: none;
-  
-      }
-  
-  .header .twitter-link svg {
-    width: 25px;
-    height: 24px;
-    fill: #444444;
-  }
-  
-  
-  #searchInput1 {
-  display: none;
-  }
-  
-  
-  
-  
-  #searchButton1 {
-    display: none;
-  
-  }
-  
-  
-  
-  #twitterSvg {
-    position: relative !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 25px !important;
-    height: 24px !important;
-  }
-  
-  
-  #select-league {
-    display: none;
-  }
-  
-  
-  #select-x,
-  #select-y {
-    display: none;
-  }
-  
-  
-  .footer {
-    font-family: system-ui;
-    background: #F2F2F2;
-    padding: 20px;
-    text-align: center;
-    color: #fff;
-  }
-  
-  .footer {
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  
-  .footer .logo {
-    display: flex;
     justify-content: center;
+    width: 37px;
+    height: 37px;
+    background-color: #e0e0de;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
-  
-  .footer .description {
-    font-size: 20px;
-    margin-bottom: 0px;
-  color: black;
-  }
-  
-  .footer .info {
-    font-size: 16px;
-    opacity: 0.8;
-  }
-  
-  .footer .divider {
-    border: none;
-    border-bottom: 1px solid #fff;
-    margin: 25px 0;
-    opacity: 0.2;
-  }
-  
-  .footer .sub-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .footer .sub-footer .terms,
-  .footer .sub-footer .privacy,
-  .footer .sub-footer .glossary {
-  font-size: 17px;
-    margin-left: 10px;
-    text-decoration: none;
-    color: black;
-  }
-  
-  .logo img {
-    width: 50px;
-    height: 50px;
-  }
-  
-  
-  
-  .footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Align items at the top */
-    flex-wrap: wrap; /* Add flex-wrap property to wrap the content on smaller screens */
-  }
-  
-  .google-play-container {
-    display: flex;
-    flex-direction: column; /* Arrange items in a column */
-    align-items: flex-end; /* Align items to the right */
-    margin-top: -20px; /* Adjust the margin-top to remove the space */
-  }
-  
-  .google-play-container img {
-    width: 182px;
-    height: 70px;
-  }
-  
-  .description,
-  .info,
-  .divider,
-  .sub-footer {
-    flex-basis: 100%;
-  color: black;
-  }
-  
-  .footer p {
-    margin-bottom: 0; 
-  }
-  
 
-.footer .twitter-link svg {
-  width: 25px;
-  height: 24px;
-  fill: #444444;
+
+
+
+
+
+
+.dark-mode-toggle .toggle-icon::before {
+  font-family: "Ionicons";
+  content: "\f467"; /* Unicode value for the moon icon in Ionicons */
+  font-size: 35px; /* Adjust the value as needed */
 }
 
-.header-row {
-    color: #3a3a3a; /* Text color */
-    font-size: 20px; /* Adjust the font size */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    margin-bottom: 20px; /* Add some margin to separate it from the player rows */
-    /* Add any other styles you want for the header row */
-    border-bottom: 2px solid #3a3a3a; /* Add border with desired thickness and color */
+
+
+
+.icon::before {
+  content: "\f2b5";
+  font-family: "Ionicons"; /* Replace with the appropriate font */
+font-size: 22px;
+}
+
+
+
+
+
+.icon4::before {
+  content: "\f21c";
+  font-family: "Ionicons"; /* Replace with the appropriate font */
+font-size: 22px;
+}		
+
+.icon3::before {
+  content: "\f448";
+  font-family: "Ionicons"; /* Replace with the appropriate font */
+font-size: 22px;
+}
+
+.button-screenshot, .select-all-button {
+    margin: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 25px;
+    border-style: none;
+    box-shadow: rgba(0, 0, 0, .2) 0 1px 0px 0px, rgba(0, 0, 0, .14) 0 0px 0px 0, rgba(0, 0, 0, .12) 0 0px 3px 0;
+    box-sizing: border-box;
+    color: #3c4043;
+    font-family: "Google Sans", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    height: 24px;
+    letter-spacing: .25px;
+    padding: 2px 24px;
+    width: 120px; /* Fixed width */
+    text-align: center;
+}
+
+
+body.dark-mode .button-screenshot {
+    margin: 10px;
+    cursor: pointer;
+  border-radius: 25px;
+  border-style: none;
+  box-shadow: rgba(255, 253, 253, 0.5) 0 1px 0px 0px,rgba(255, 250, 250, 0.18) 0 0px 0px 0,rgba(255, 251, 251, 0.18) 0 0px 3px 0;
+  box-sizing: border-box;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 24px;
+  letter-spacing: .25px;
+  padding: 2px 24px;
+}
+
+
+
+body.dark-mode .select-all-button {
+    margin: 10px;
+    cursor: pointer;
+  border-radius: 25px;
+  border-style: none;
+  box-shadow: rgba(255, 253, 253, 0.5) 0 1px 0px 0px,rgba(255, 250, 250, 0.18) 0 0px 0px 0,rgba(255, 251, 251, 0.18) 0 0px 3px 0;
+  box-sizing: border-box;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 24px;
+  letter-spacing: .25px;
+  padding: 2px 24px;
+}
+
+
+
+circle.highlighted {
+  stroke: #ff00ff;
+  stroke-width: 3px;
+}
+
+
+
+circle {
+  cursor: pointer;
+}
+
+
+
+
+	     
+
+.container {
+    position:absolute;
+    top: 750px;
+    left: 88px; /* Position the container from the right */
+    white-space: nowrap;
+
+}
+
+  select {
+    
+    padding: 4px 6px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#search-bar {
+    padding: 4px 6px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
   }
 
 
 
-  
-  </style>
+.toggle-button {
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+	margin-left: 15px;
+}
+
+img {
+            width: 200px;
+position: absolute;
+top: 235px;
+pointer-events: none;
+z-index: -1; 
+left: 475px;
+opacity: .055; 	
+	}
+
+	     
+
+
+.button-1 {
+  align-items: center;
+height: 20px;
+background-color: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 18px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-1:hover {
+    box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
+
+body.dark-mode .button-6 {
+  /* Override button background color */
+  background-color: #646464;
+}
+
+.button-2 {
+  align-items: center;
+  background-color: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 108px;
+height: 20px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-2:hover {
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
+
+.button-3 {
+  align-items: center;
+height: 20px;
+  background-color: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 198px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-3:hover {
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
+
+.button-4 {
+  align-items: center;
+  background-color: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 288px;
+height: 20px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-4:hover {
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
 
 
 
-<header class="header">
-  <div class="logo">
-    <a href="http://datamb.football">
-        <img src="https://i.imgur.com/UurMbGS.png" alt="Álex Baena football statistics and data visuals. 2024/25 Álex Baena player data profile compared to top 7 league players. Radar comparison and plot charts" /></a>
-    <div class="logo-text"><a href="http://datamb.football">DataMB</a></div>
-  </div>
-  <nav class="navigation">
-    <a href="http://datamb.football/radars/" class="button">Compare</a>
-    <a href="http://datamb.football/join/" class="button">Pro</a>
-    <a href="http://datamb.football/glossary/" class="button">Guide</a>
-  </nav>
-  <div class="search-container">
-    <button id="searchButton"><iconify-icon icon="ion:search-outline"></iconify-icon></button>
-</div>
-  <a href="https://twitter.com/datamb_" target="_blank" class="twitter-link">
-    <svg id="twitterSvg" width="25" height="24" fill="#bcbcbc" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  </a>
-</header>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7677714701428206"
-     crossorigin="anonymous"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+.button-5 {
+  align-items: center;
+height: 20px;
+  background-color: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 378px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-5:hover {
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
+
+.button-6 {
+  align-items: center;
+  background-color: #e7e4e4;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.24);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 468px;
+height: 20px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-6:hover {
+  box-shadow: rgba(0, 0, 0, 0.24) 3px 3px 3px;
+}
+.button-7 {
+  align-items: center;
+  background-color: #F9F9F9;
+  border-radius: 6px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 15px;
+  left: 558px;
+height: 20px;
+width: 72px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-7:hover {
+   box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
+
+
+
+.button-9 {
+  align-items: center;
+  background-color: #e0e0de;
+  border-radius: 25px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-family: Inter,sans-serif;
+  font-size: 1.82rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 0.1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .1s,-webkit-box-shadow .1s;
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+  position: absolute;
+  top: 10px;
+  left: 878px;
+  width: 50px; 
+ 
+  touch-action: manipulation;
+}
+
+.button-9:hover {
+  box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 3px;
+}
+
+	     
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+	
+	
 </head>
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PSBMXX80EF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-PSBMXX80EF');
-</script>
-
 <body>
+		  <script type="text/javascript">document.body.style.visibility="hidden";</script><div id="SFctr" data-org="31002" data-mfl="64c215764c0b6076026762a3"><div style="clear:both"></div></div><script type="text/javascript" src="https://cdn.membershipworks.com/mfl.js"></script>
 
-<div class="search-input-modal" id="searchInputModal">
-<div class="search-input-container">
-    <input type="text" id="searchInput" placeholder="Enter a team or player name...">
-    <div id="autocompleteBox"></div>
-</div>
-</div>
+	<br>
+	<br><br>
 
-
-<script>
-  const xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://datamb.football/database/searchbar.csv', false); // false for synchronous request
-xhr.send(null);
-
-let dataCSV = xhr.responseText;
-
-const _0x5a5c2d=_0x5142;(function(_0x4ae5e2,_0x171055){const _0x1f5ab4=_0x5142,_0x4cdb37=_0x4ae5e2();while(!![]){try{const _0x3afa22=parseInt(_0x1f5ab4(0xa8))/0x1*(-parseInt(_0x1f5ab4(0xb6))/0x2)+parseInt(_0x1f5ab4(0xbb))/0x3+-parseInt(_0x1f5ab4(0x9e))/0x4*(parseInt(_0x1f5ab4(0xa2))/0x5)+parseInt(_0x1f5ab4(0xae))/0x6+parseInt(_0x1f5ab4(0xbc))/0x7+-parseInt(_0x1f5ab4(0xaa))/0x8*(-parseInt(_0x1f5ab4(0xa0))/0x9)+-parseInt(_0x1f5ab4(0xbe))/0xa*(parseInt(_0x1f5ab4(0xab))/0xb);if(_0x3afa22===_0x171055)break;else _0x4cdb37['push'](_0x4cdb37['shift']());}catch(_0x1427be){_0x4cdb37['push'](_0x4cdb37['shift']());}}}(_0x52bb,0x59fa0));const dataLines=dataCSV[_0x5a5c2d(0xb5)]('\x0a'),searchButton=document[_0x5a5c2d(0xa5)](_0x5a5c2d(0xa1)),searchInputModal=document[_0x5a5c2d(0xa5)]('searchInputModal'),searchInput=document[_0x5a5c2d(0xa5)](_0x5a5c2d(0xc0)),autocompleteBox=document[_0x5a5c2d(0xa5)](_0x5a5c2d(0xb3)),data1=dataLines['map'](_0x25b9ec=>{const _0x188cb6=_0x5a5c2d,[_0x37829c,_0x135ccf]=_0x25b9ec[_0x188cb6(0xb5)](',');return{'name':_0x37829c,'link':_0x135ccf};});function _0x5142(_0x91cc0a,_0x361212){const _0x52bb26=_0x52bb();return _0x5142=function(_0x514259,_0x37adb4){_0x514259=_0x514259-0x99;let _0x29d9f9=_0x52bb26[_0x514259];return _0x29d9f9;},_0x5142(_0x91cc0a,_0x361212);}function _0x52bb(){const _0x3bd6c6=['replace','split','45174fxMLYv','appendChild','value','target','includes','501672VaVVkL','4952297iMiCMK','innerHTML','1488890idHbOF','trim','searchInput','input','addEventListener','link','style','block','1931500nwUXxJ','filter','756cBmWBX','searchButton','5JjKGuX','textContent','NFD','getElementById','normalize','name','6FNylug','display','9816GfedBU','44MmjqNG','createElement','click','3628404umwpKQ','toLowerCase','none','forEach','length','autocompleteBox'];_0x52bb=function(){return _0x3bd6c6;};return _0x52bb();}function removeDiacritics(_0x464131){const _0xe0c2fa=_0x5a5c2d;return _0x464131[_0xe0c2fa(0xa6)](_0xe0c2fa(0xa4))[_0xe0c2fa(0xb4)](/[\u0300-\u036f]/g,'');}function search2(_0x394513){const _0x949ea9=_0x5a5c2d;autocompleteBox[_0x949ea9(0xbd)]='';const _0x339607=removeDiacritics(_0x394513)[_0x949ea9(0xb4)](/[^\w\s]/g,'')[_0x949ea9(0xaf)](),_0x4cdd40=data1[_0x949ea9(0x9f)](_0x264779=>{const _0x40cc7d=_0x949ea9,_0x405e2a=removeDiacritics(_0x264779['name'])[_0x40cc7d(0xb4)](/[^\w\s]/g,'')[_0x40cc7d(0xaf)]();return _0x405e2a[_0x40cc7d(0xba)](_0x339607);});if(_0x4cdd40[_0x949ea9(0xb2)]===0x0){autocompleteBox[_0x949ea9(0x9c)]['display']=_0x949ea9(0xb0);return;}_0x4cdd40[_0x949ea9(0xb1)](_0x56128b=>{const _0x282f6f=_0x949ea9,_0x48093f=document[_0x282f6f(0xac)]('div'),_0x1b2914=document['createElement']('a');_0x1b2914['href']=_0x56128b[_0x282f6f(0x9b)],_0x1b2914[_0x282f6f(0xa3)]=_0x56128b[_0x282f6f(0xa7)],_0x48093f[_0x282f6f(0xb7)](_0x1b2914),autocompleteBox[_0x282f6f(0xb7)](_0x48093f);}),autocompleteBox['style'][_0x949ea9(0xa9)]=_0x949ea9(0x9d);}searchButton[_0x5a5c2d(0x9a)]('click',()=>{const _0x525d6c=_0x5a5c2d;searchInputModal[_0x525d6c(0x9c)][_0x525d6c(0xa9)]=_0x525d6c(0x9d);}),searchInput['addEventListener'](_0x5a5c2d(0x99),()=>{const _0x2e034c=_0x5a5c2d,_0x330e2e=searchInput[_0x2e034c(0xb8)];_0x330e2e[_0x2e034c(0xbf)]()===''?autocompleteBox[_0x2e034c(0x9c)][_0x2e034c(0xa9)]=_0x2e034c(0xb0):search2(_0x330e2e);}),document['addEventListener'](_0x5a5c2d(0xad),_0x697f09=>{const _0x27985e=_0x5a5c2d;_0x697f09[_0x27985e(0xb9)]===searchInputModal&&(searchInputModal[_0x27985e(0x9c)]['display']=_0x27985e(0xb0));});
-
-</script>
-
+	
 	
 
 
-
-<br> 
+	
+<svg id="scatter-plot"></svg>
 <div class="container">
-  <div class="desktop-row">
-    <div id="resultsTable" class="metric-table"></div>
-    <div class="radar-wrapper">
-      <svg class="radar"><g transform="translate(231.77,225.77)"><g class="axisWrapper">
-        <g class="radar_label">
-          <text class="label" data-type="Aerial%" data-idx="0" transform="translate(-60 -196.04) scale(1.3) rotate(-1.7)">Key Passes</text>
-      </g>
-      
-      <g class="radar_label">
-          <text class="label" data-type="Long%" data-idx="6" transform="matrix(0.65, -1.118, 1.118, 0.65, -184.21, -84.03) rotate(5.5)">Assists</text>
-      </g>
-      
-      <g class="radar_label">
-          <text class="label" data-type="Passes" data-idx="5" transform="matrix(-0.494, -1.209, 1.209, -0.494, -181, 82) rotate(5)">xG+xA</text>
-      </g>
-      
-      <g class="radar_label">
-          <text class="label" data-type="Exits" data-idx="4" transform="translate(-101.5 190.16) scale(1.3) rotate(21)">NPG</text>
-      </g>
-      
-      <g class="radar_label">
-          <text class="label" data-type="Aerial" data-idx="3" transform="translate(71.82 206.54) scale(1.3) rotate(-31)">Dribbles</text>
-      </g>
-      
-      <g class="radar_label">
-          <text class="label" data-type="Def Actions" data-idx="2" transform="translate(200.22 6.30) scale(1.3) rotate(99.11)">Carries</text>
-      </g>
-      
-      <g class="radar_label">
-          <text class="label" data-type="Shotstopping" data-idx="1" transform="translate(125.64 -163.65) scale(1.3) rotate(52.49)">Att Actions</text>
-      </g>
-      
-  <circle class="blackCircle" r="190" style="fill:none; stroke:#D3D3D3; stroke-width:1;"></circle>
-  <circle class="gridCircle" r="190" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
-  <circle class="gridCircle" r="160" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
-  <circle class="gridCircle" r="120" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
-  <circle class="gridCircle" r="80" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
-  <circle class="gridCircle" r="40" style="fill: rgb(16, 135, 188); fill-opacity: 0.03;"></circle>
-  <line x1="0" y1="0" x2="9.33" y2="189.4543362" stroke="#D3D3D3" stroke-width="1" transform="translate(-9.33, -189.4543362)"></line>
-  <line x1="0" y1="0" x2="-142.0538533333333" y2="126.24" stroke="#D3D3D3" stroke-width="1" transform="translate(141.74184, -126.24)"></line>
-  <line x1="0" y1="0" x2="-187.31589333333332" y2="-32.31413333333333" stroke="#D3D3D3" stroke-width="1" transform="translate(187.5574112, 32.2528)"></line>
-  <line x1="0" y1="0" x2="-91.84497333333333" y2="-166.92245333333333" stroke="#D3D3D3" stroke-width="1" transform="translate(91.84497333333333, 166.21328)"></line>
-  <line x1="0" y1="0" x2="72.99733333333333" y2="-175.84917333333335" stroke="#D3D3D3" stroke-width="1" transform="translate(-72.99997333333334, 175.334068)"></line>
-  <line x1="0" y1="0" x2="182.73258666666666" y2="-52.67472" stroke="#D3D3D3" stroke-width="1" transform="translate(-182.7209384, 52.480128)"></line>
-  <line x1="0" y1="0" x2="154.67849333333334" y2="109.91788799999999" stroke="#D3D3D3" stroke-width="1" transform="translate(-154.6883792222, -110.017215488)"></line>
-  
-  <g class="radarWrapper"></g> 
-</g></g></svg>      <a href="https://datamb.football/wingers/">
-  <button class="radar-button">Compare wingers</button>
-</a>
-</div>
-</div>
-  
-  
-<div class="desktop-row">
-
-  <!-- Wrapper for scatter plot and button -->
-  <div class="scatter-plot-wrapper">
-    <svg id="scatter-plot" class="scatter-plot"></svg>
-    <a href="https://datamb.football/join/">
-      <button class="plot-button">Plot more metrics</button>
-    </a></div>
+  <input type="text" id="search-bar" placeholder="Search player...">
 
 
-    <div class="scatter-plot-wrapper-2">
-    <svg id="scatter-plot-2" class="scatter-plot-2"></svg>
-    <a href="https://datamb.football/join/">
-      <button class="plot-button">Plot more metrics</button>
-    </a>
-  </div>
-</div>
-</div>
-  
- 
-<select id="select-league" onchange="updateChart()">
-  <option value="all">Top 7 Leagues</option>
-  <option value="Premier League">Premier League</option>
-  <option value="La Liga">La Liga</option>
-  <option value="Bundesliga">Bundesliga</option>
-  <option value="Serie A">Serie A</option> 
-  <option value="Ligue 1">Ligue 1</option>
-  <option value="Primeira Liga">Primeira Liga</option>
-  <option value="Eredivisie">Eredivisie</option>
-  </select>
-  <input type="text" id="searchInput1" class="search-bar" placeholder=""/>
+  <select id="select-league">
+    <option value="all">🌍 All Leagues</option>
+      <option value="Top 7 Leagues">🇪🇺 Top 7 Leagues</option>
+       <option value="Top 5 Leagues">🇪🇺 Top 5 Leagues</option>
+       <option value="Premier League">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</option>
+       <option value="La Liga">🇪🇸 La Liga</option>
+       <option value="Bundesliga">🇩🇪 Bundesliga</option>
+       <option value="Serie A">🇮🇹 Serie A</option> 
+       <option value="Ligue 1">🇫🇷 Ligue 1</option>
+       <option value="Liga Portugal">🇵🇹 Liga Portugal</option>
+       <option value="Eredivisie">🇳🇱 Eredivisie</option>  
+       <option value="Belgium Pro League">🇧🇪 Belgium</option>
+  <option value="Scotland Premiership">🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland</option>
+  <option value="Austrian Bundesliga">🇦🇹 Austria</option>
+  <option value="Swiss Super League">🇨🇭 Switzerland</option>      
+  <option value="Süper Lig">🇹🇷 Türkiye</option>
+  <option value="Denmark Superliga">🇩🇰 Denmark</option>
+  <option value="Sweden Allsvenskan">🇸🇪 Sweden</option>
+  <option value="Norway Eliteserien">🇳🇴 Norway</option>
+  <option value="Croatia HNL">🇭🇷 Croatia</option>
+  <option value="Serbia SuperLiga">🇷🇸 Serbia</option>
+  <option value="Czech Fortuna Liga">🇨🇿 Czech Republic</option>
+  <option value="Poland">🇵🇱 Poland</option>
+  <option value="Ukraine">🇺🇦 Ukraine</option>
+  <option value="Russia">🇷🇺 Russia</option>
+  <option value="Greece">🇬🇷 Greece</option>
+  <option value="Israel">🇮🇱 Israel</option>
+  <option value="J1 League">🇯🇵 Japan</option>
+  <option value="K League 1">🇰🇷 Korea</option>
+  <option value="Saudi Pro League">🇸🇦 Saudi Arabia</option>
+  <option value="MLS">🇺🇸 United States</option>
+  <option value="LigaMX">🇲🇽 Mexico</option>
+  <option value="Brazil Serie A">🇧🇷 Brazil</option>
+  <option value="Argentina Primera">🇦🇷 Argentina</option>
+  <option value="Uruguay Primera">🇺🇾 Uruguay</option>
+  <option value="Chile">🇨🇱 Chile</option>
+  <option value="Colombia">🇨🇴 Colombia</option>
+  <option value="Ecuador">🇪🇨 Ecuador</option>
+  <option value="Paraguay">🇵🇾 Paraguay</option>
+  <option value="Championship">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Championship</option>
+  <option value="Segunda Division">🇪🇸 Spain Segunda</option>
+  <option value="Serie B">🇮🇹 Serie B</option>
+  <option value="Bundesliga 2">🇩🇪 2. Bundesliga</option>
+  <option value="Ligue 2">🇫🇷 Ligue 2</option>
+  <option value="Outside Top 7">🌍 Outside Top 7</option>
+<option value="South America">🌎 South America</option>
+<option value="Scandinavia">🌍 Scandinavia</option>
+<option value="Eastern Europe">🌍 Eastern Europe</option> 
+   </select>
+   <select id="select-age">
+    <option value="all">Age</option>
+    <option value="17">U17</option>
+    <option value="18">U18</option>
+    <option value="19">U19</option>
+    <option value="20">U20</option>
+    <option value="21">U21</option>
+    <option value="22">U22</option>
+    <option value="23">U23</option>
+    <option value="24">U24</option>
+    <option value="25">U25</option>
+    <option value="26">U26</option>
+    <option value="27">U27</option>
+    <option value="28">U28</option>
+    <option value="29">U29</option>
+    <option value="30">U30</option>
+    <option value="35">U35</option>    
+ </select>
+  <button class="select-all-button" onclick="selectAllCircles()">Click All</button>
+ <button onclick="takeScreenshot()" class="button-screenshot">
+  Screenshot
+</button>
+ <br>
+ <select id="select-x"></select>
+ <select id="select-y"></select>
+ <select id="select-size"></select>
+<button id="toggle-median-lines" class="toggle-button"><div class="icon"></div></button></div>
+<script>
 
-<input type="button" id="searchButton1" value=""/>
-  <center><br>
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7677714701428206"
-         crossorigin="anonymous"></script>
-    <!-- radarplotsearch -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-7677714701428206"
-         data-ad-slot="6673239737"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script> <br></center>
-  
-  
-    <script>
-  
-  
-      const csvData = `1,Álex Baena,Villarreal,La Liga,23,Winger,2024/25,0.55,0.51,0.45,0.94,0.99,0.89,0.6,644`;    
-
-
-      const dataArray = csvData.split('\n').map(line => line.split(','));
-  
-      const colorClasses = ['result-color-blue'];
-      
-      let searchResults = []; // Declare the search results variable
-      
-      
-      function removeSpecialChars(str) {
-        return str.normalize('NFD').replace(/[\u0300-\u036f\s]/g, '');
-      }
-      
-      function search(query) {
-        const results = dataArray.filter(data =>
-          removeSpecialChars(data[1].toLowerCase()).includes(removeSpecialChars(query.toLowerCase()))
-        );
-        return results;
-      }
-      
-      function createTable(teamName, teamIndex, color) {
-        const resultsTable = document.getElementById('resultsTable');
-        const headerNames = [
-          '',
-          '',
-          'Club',
-          'League',
-          'Age',
-          'Position',
-          'Season',
-          'Progressive carries',
-          'Successful dribbles',
-          'Non-penalty goals',
-          'Expected goals and assists',
-          'Assists',
-          'Key passes',
-          'Offensive actions',
-          'Minutes played'
-    
-              ];
-    
-        
-      
-        // Check if table headers exist
-        const headersExist = resultsTable.querySelector('th') !== null;
-      
-        const table = headersExist ? resultsTable.querySelector('table') : document.createElement('table');
-        table.classList.add('metrics-table');
-      
-        if (!headersExist) {
-          // Create the table header
-          const headerRow = document.createElement('tr');
-          for (let i = 0; i < headerNames.length; i++) {
-            const th = document.createElement('th');
-            th.textContent = headerNames[i];
-            headerRow.appendChild(th);
-          }
-        }
-      
-        const teamData = dataArray[teamIndex];
-        for (let i = 1; i < headerNames.length; i++) {
-          const dataRow = document.createElement('tr');
-          const td1 = document.createElement('td');
-          td1.textContent = headerNames[i];
-          dataRow.appendChild(td1);
-          
-          const td2 = document.createElement('td');
-          let value = teamData[i];
-        
-          if (i === 5) {
-            const link = document.createElement('a');
-            link.textContent = value;
-            link.href = 'https://datamb.football/wingers'; // Replace with the URL you want to link to for cell 5
-            td2.appendChild(link);
-          } else if (i === 2) {
-            const link = document.createElement('a');
-            link.textContent = value;
-            link.href = 'https://datamb.football/Villarreal_Team_stats'; // Replace with the URL you want to link to for cell 2
-            td2.appendChild(link);
-          } else {
-            if (i >= 7 && i <= 13) {
-              value = parseFloat(value) * 100;
-              const roundedValue = Math.round(value);
-              const lastDigit = roundedValue % 10;
-              let percentileSuffix = 'th';
-              if (lastDigit === 1 && roundedValue !== 11) {
-                percentileSuffix = 'st';
-              } else if (lastDigit === 2 && roundedValue !== 12) {
-                percentileSuffix = 'nd';
-              } else if (lastDigit === 3 && roundedValue !== 13) {
-                percentileSuffix = 'rd';
-              }
-              value = roundedValue + percentileSuffix + ' percentile';
-            }
-        
-            if ([1, 2, 3, 4, 5, 6, 14].includes(i)) {
-              td2.classList.add('black'); // Add the black class
-            }
-            
-            td2.textContent = value;
-            td2.classList.add(color);
-        
-            if ([7, 8, 9, 10, 11, 12, 13].includes(i)) { 
-            // Apply color based on value range
-            const numericValue = parseFloat(value);
-            if (numericValue >= 75 && numericValue <= 100) {
-              td2.classList.add('green');
-            } else if (numericValue >= 0 && numericValue <= 25) {
-              td2.classList.add('red');
-                    }
-          } }
-        
-          dataRow.appendChild(td2);
-          table.appendChild(dataRow);
-        }
-        
-    if (!headersExist) {
-      resultsTable.appendChild(table);
-    }
-      
-        const combResults = dataArray[teamIndex].join(', ');
-        console.log(combResults);
-      
-        const outerRadius = 190;
-        const center = [0, 0];
-        const angles = [
-          0,
-          (2 * Math.PI) / 7,
-          (4 * Math.PI) / 7,
-          (6 * Math.PI) / 7,
-          (8 * Math.PI) / 7,
-          (10 * Math.PI) / 7,
-          (12 * Math.PI) / 7
-        ];
-      
-        function axisValueToCartesian(axis, value) {
-          let angle = angles[axis - 1];
-          angle += (2 * Math.PI / 7) * 0.2;
-          const x = 190 * value * Math.cos(angle);
-          const y = 190 * value * Math.sin(angle);
-          return { x, y };
-        }
-      
-        const svg = document.querySelector('.radar');
-        const radarWrapper = svg.appendChild(
-          document.createElementNS('http://www.w3.org/2000/svg', 'g')
-        );
-        radarWrapper.setAttribute('transform', 'translate(231.77,225.77)');
-        radarWrapper.innerHTML = '';
-      
-        const data = [];
-        const rowCols = combResults.split(',');
-        for (let i = 7; i < 14; i++) {
-          data.push({ axis: i - 6, value: parseFloat(rowCols[i]) });
-        }
-      
-        const points = data
-          .map(({ axis, value }) => {
-            const { x, y } = axisValueToCartesian(axis, value);
-            return `${x},${y}`;
-          })
-          .join(' ');
-      
-        const polyline = document.createElementNS(
-          'http://www.w3.org/2000/svg',
-          'polyline'
-        );
-        polyline.setAttribute('class', `radarLines ${color}`);
-        polyline.setAttribute('points', `${points} ${points.split(' ')[0]}`);
-        polyline.setAttribute('stroke-width', '3');
-        polyline.setAttribute('fill', 'none');
-        radarWrapper.appendChild(polyline);
-      
-        const polygon = document.createElementNS(
-          'http://www.w3.org/2000/svg',
-          'polygon'
-        );
-        polygon.setAttribute('class', `radarPolygon ${color}`);
-        polygon.setAttribute('points', points);
-        polygon.style.fillOpacity = '0.2';
-        radarWrapper.appendChild(polygon);
-      
-        data.forEach(({ axis, value }) => {
-          const { x, y } = axisValueToCartesian(axis, value);
-          const circle = document.createElementNS(
-            'http://www.w3.org/2000/svg',
-            'circle'
-          );
-          circle.setAttribute('class', `radarCircle ${color}`);
-          circle.style.fillOpacity = '0.86';
-          circle.setAttribute('r', '6');
-          circle.setAttribute('cx', x);
-          circle.setAttribute('cy', y);
-          radarWrapper.appendChild(circle);
-        });
-      }
-      
-      
-      
-      function toggleFilling() {
-        const radarPolygons = document.querySelectorAll('.radarPolygon');
-        radarPolygons.forEach(polygon => {
-          polygon.style.fill = polygon.style.fill ? '' : 'none'; // Toggle the filling
-        });
-      }
-      
-      
-        const teamNames = new Set();
-      
-      
-      function createTableForTeam1() {
-        const searchInput = document.getElementById('searchInput1');
-        const searchButton = document.getElementById('searchButton1');
-        const resultsTable = document.getElementById('resultsTable');
-        const teamNamesList = document.createElement('ul');
-        teamNamesList.style.fontFamily = 'Arial, sans-serif';
-        teamNamesList.style.listStyleType = 'none';
-        teamNamesList.style.paddingLeft = '9px';
-        resultsTable.appendChild(teamNamesList);
-        let searchCounter = 0;
-      
-        searchButton.addEventListener('click', function () {
-          const searchQuery = searchInput.value;
-          const results = search(searchQuery);
-      
-          // Reset the toggle state before performing a new search
-          const radarPolygons = document.querySelectorAll('.radarPolygon');
-          radarPolygons.forEach(polygon => {
-            polygon.style.fill = '';
-          });
-      
-          if (results) {
-            const teamId = parseInt(results[0]);
-            const teamName =
-              results[1] + ' (' + results[2] + ', ' + results[3] + ') - ' + results[11] + ' min';
-            const color = colorClasses[searchCounter % colorClasses.length];
-      
-            createTable(teamName, teamId - 1, color);
-      
-            searchCounter++;
-          }
-        });
-      }
-      
-      createTableForTeam1();
-      searchButton1.click(); // Trigger the search button click event
-    
-      
-            
-      
-        </script>
-
-       <script>
- 
- 
 const allData = [];
 let isFirstFileProcessed = false;
 
 const urls = [
-'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx',
+ 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx',
+   'https://datamb.football/database/CURRENT/PRO2425/ST/ST.xlsx',
+'https://datamb.football/database/CURRENT/PRO2024/ST/ST.xlsx',
 
 ];
+
 
 const fetchPromises = urls.map(url => fetch(url).then(response => response.arrayBuffer()));
 
@@ -1030,14 +757,14 @@ Promise.all(fetchPromises)
             jsonData.forEach(row => row.splice(2, 1));
 
             // 2. Delete specified columns
-            const columnsToDelete = [27, 28, 29, 30, 59, 61, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85];
+            const columnsToDelete = [27, 28, 29, 30, 59, 61, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 90, 91];
             columnsToDelete.sort((a, b) => b - a); // Sort in descending order
             columnsToDelete.forEach(col => {
                 jsonData.forEach(row => row.splice(col, 1));
             });
 
             // 3. Insert new columns and fill with appropriate values
-            if (url === 'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx' && !isFirstFileProcessed) {
+            if (url === 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx' && !isFirstFileProcessed) {
                 // Include header only for the first file ('gk4.xlsx')
                 jsonData.forEach(row => row.unshift(null)); // Insert empty column at the beginning
                 jsonData[0][0] = "ID"; // Set header for the new column
@@ -1062,58 +789,222 @@ Promise.all(fetchPromises)
             });
 
             // 5. Collect the transformed data (excluding header for non-first 'gk4.xlsx')
-            allData.push(...(url === 'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx' ? jsonData : jsonData.slice(1)));
+            allData.push(...(url === 'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx' ? jsonData : jsonData.slice(1)));
         });
+
 const leagues = {
+ 
+  
+  "Ecuador": [
+      "Universidad", "Técnico Universitario", "Orense", "Mushuc Runa", 
+      "Macará", "Libertad (ECU)", "LDU Quito", "Independiente del Valle", 
+      "Imbabura", "Emelec", "El Nacional", "Deportivo Cuenca", 
+      "Delfin", "Cumbayá", "Barcelona (ECU)", "Aucas", "Guayaquil City", "Gualaceo",
+   ],
+
+   "Chile": [
+      "Ñublense", "Unión La Calera", "Unión Española", "Universidad de Chile", 
+      "Universidad Católica", "Palestino", "O'Higgins", "Huachipato", 
+      "Everton (CHI)", "Deportes Iquique", "Coquimbo Unido", "Copiapó", 
+      "Colo Colo", "Cobresal", "Cobreloa", "Audax Italiano", "Curicó Unido", "Magallanes",
+   ],
+
+    
+      
+   "Paraguay": [
+      "Tacuary", "Sportivo Trinidense", "Sportivo Luqueño", "Sportivo Ameliano", 
+      "Sol de América", "Olimpia", "Nacional Asunción", "Libertad", 
+      "Guaraní", "General Caballero JLM", "Cerro Porteño", "2 de Mayo", "Resistencia", "Guaireña",
+   ],
+
+   "Colombia": [
+      "Águilas Doradas", "Tolima", "Santa Fe", "Medellín", 
+      "Patriotas Boyacá", "Once Caldas", "Millonarios", "La Equidad", 
+      "Junior", "Jaguares de Córdoba", "Fortaleza (COL)", "Envigado", 
+      "Deportivo Pereira", "Deportivo Pasto", "Deportivo Cali", "Boyacá Chicó", 
+      "Atlético Nacional", "Atlético Bucaramanga", "América de Cali", "Alianza", "Atlético Huila", "Unión Magdalena",
+   ],
 
    
-  "Liga Portugal": [
-"Porto", "Benfica", "Famalicão", "Sporting CP", "Sporting Braga", "Gil Vicente",
-"Arouca", "Boavista", "Vizela", "Chaves", "Estoril",
-"Estrela Amadora", "Vitória Guimarães", "Farense",
-"Casa Pia AC", "Moreirense", "Portimonense", "Rio Ave",
-],
-"Ligue 1": [
-"PSG", "Nice", "Lens", "Monaco", "Olympique Marseille",
-"Nantes", "Toulouse", "Lille", "Lorient", "Olympique Lyonnais", "Brest", "Reims",
-"Montpellier", "Le Havre", "Clermont", "Rennes", "Metz",
-"Strasbourg",
-],
-"Premier League": [
-"Chelsea", "Manchester City", "West Ham United", "Tottenham Hotspur", "Arsenal",
-"Manchester United", "Newcastle United", "Burnley", "Brighton", "Wolverhampton Wanderers",
-"Fulham", "Liverpool", "Sheffield United", "Nottingham Forest", "Bournemouth",
-"Aston Villa", "Brentford", "Everton", "Luton Town", "Crystal Palace",
+"Argentina Primera": [
+"Argentinos Juniors", "Atlético Tucumán", "Banfield", "Barracas Central", "Belgrano",
+"Boca Juniors", "Central Córdoba SdE", "Defensa y Justicia", "Deportivo Riestra", "Estudiantes",
+"Gimnasia La Plata", "Godoy Cruz", "Huracán", "Independiente", "Independiente Rivadavia",
+"Instituto", "Lanús", "Newell's Old Boys", "Platense", "Racing Club",
+"River Plate", "Rosario Central", "San Lorenzo", "Sarmiento", "Talleres Córdoba",
+"Tigre", "Unión Santa Fe", "Vélez Sarsfield", "Colón",
 ],
 
+
+
+"Brazil Serie A": [
+"Athletico Paranaense", "Atlético GO", "Atlético Mineiro", "Bahia", "Botafogo",
+"Corinthians", "Criciúma", "Cruzeiro", "Cuiabá", "Flamengo",
+"Fluminense", "Fortaleza", "Grêmio", "Internacional", "Juventude",
+"Palmeiras", "Red Bull Bragantino", "São Paulo", "Vasco da Gama", "Vitória", "Santos", "América Mineiro", "Coritiba", "Goiás",
+],
+
+
+"Uruguay Primera": [
+"Boston River", "Cerro", "Cerro Largo", "Danubio", "Defensor Sporting",
+"Deportivo Maldonado", "Fénix", "Liverpool (URU)", "Miramar Misiones", "Nacional (URU)",
+"Peñarol", "Progreso", "Racing", "Rampla Juniors", "River Plate (URU)", "Wanderers", "Plaza Colonia", "La Luz", "Torque",
+],
+
+"MLS": [
+"Los Angeles FC", "Philadelphia Union", "SJ Earthquakes", "Orlando City", "Toronto",
+"Minnesota United", "Colorado Rapids", "Chicago Fire", "St. Louis City", "St. Louis City ", "Charlotte FC",
+"Dallas", "Vancouver Whitecaps", "Inter Miami", "Austin FC", "DC United",
+"Los Angeles Galaxy", "New York RB", "Sporting KC", "Portland Timbers", "Nashville SC",
+"Seattle Sounders", "CF Montréal", "Real Salt Lake", "New York City", "Houston Dynamo",
+"Atlanta United", "New England", "Cincinnati", "Columbus Crew",
+],
+
+"K League 1": [
+"Gangwon", "Seoul", "Pohang Steelers", "Suwon", "Gwangju",
+"Jeju United", "Ulsan Hyundai", "Daejeon Citizen", "Jeonbuk Motors",
+"Incheon United", "Daegu", "Gimcheon Sangmu",
+],
+
+          
+
+"J1 League": [
+"Albirex Niigata", "Avispa Fukuoka", "Cerezo Osaka", "Consadole Sapporo", "Gamba Osaka",
+"Júbilo Iwata", "Kashima Antlers", "Kashiwa Reysol", "Kawasaki Frontale", "Kyoto Sanga",
+"Machida Zelvia", "Nagoya Grampus", "Sagan Tosu", "Sanfrecce Hiroshima", "Shonan Bellmare",
+"Tokyo", "Tokyo Verdy", "Urawa Reds", "Vissel Kobe", "Yokohama F. Marinos", "Suwon Bluewings", "Yokohama",
+],
+
+
+"Norway Eliteserien": [
+"Bodø / Glimt", "Brann", "Fredrikstad", "HamKam", "Haugesund",
+"KFUM", "Kristiansund", "Lillestrøm", "Molde", "Odds",
+"Rosenborg", "Sandefjord", "Sarpsborg 08", "Strømsgodset", "Tromsø",
+"Viking", "Vålerenga", "Aalesund", "Stabæk",
+],
+
+
+"Sweden Allsvenskan": [
+"AIK", "Brommapojkarna", "Djurgården", "Elfsborg", "GAIS",
+"Halmstad", "Hammarby", "Häcken", "IFK Göteborg", "IFK Norrköping",
+"Kalmar", "Malmö FF", "Mjällby", "Sirius", "Värnamo",
+"Västerås SK","Degerfors", "Varbergs",
+
+],
+
+"Ukraine": [
+"Shakhtar Donetsk", "Dynamo Kyiv", "Polissya", "Vorskla", "Rukh Lviv", "Kryvbas KR", "Zorya", "Veres", "Obolon", "Livyi Bereh", "LNZ Cherkasy", "Inhulets", "Karpaty", "Oleksandria", "Chornomorets", "Kolos Kovalivka", 
+   ],
+
+   "Poland": [
+"Cracovia Kraków", "Pogoń Szczecin", "Lech Poznań", "Korona Kielce", "Legia Warszawa", "Śląsk Wrocław", "Zagłębie Lubin", "Jagiellonia Białystok", "Widzew Łódź", "Raków Częstochowa", "Piast Gliwice", "Puszcza Niepołomice", "Stal Mielec", "Lechia Gdańsk", "Katowice", "Motor Lublin", "Górnik Zabrze", "Radomiak Radom", 
+   ],
+
+   "Russia": [
+"Lokomotiv Moskva", "Spartak Moskva", "Krylya Sovetov", "CSKA Moskva", "Zenit", "Krasnodar", "Orenburg", "Rubin Kazan'", "Dinamo Moskva", "Akhmat Grozny", "Nizhny Novgorod", "Fakel", "Akron Togliatti", "Dynamo Makhachkala", "Khimki", "Rostov", "Ural", "Baltika", "Sochi", 
+   ],
+
+   "Israel": [
+"Hapoel Haifa", "Maccabi Petah Tikva", "Ironi Kiryat Shmona", "Beitar Jerusalem", "Hapoel Jerusalem", "Maccabi Tel Aviv", "Maccabi Bnei Raina", "Ashdod", "Maccabi Netanya", "Ironi Tiberias", "Hapoel Hadera", "Bnei Sakhnin", "Hapoel Be'er Sheva", "Maccabi Haifa", 
+   ],
+
+   "Greece": [
+"PAOK", "Panathinaikos", "Olympiacos Piraeus", "AEK Athens", "Panetolikos FC", "OFI", "Atromitos", "Aris", "Volos NFC", "Asteras Tripolis", "Panserraikos", "Lamia", "Levadiakos", "Athens Kallithea", "Ergotelis", "PAE Chania", "Diagoras Rodou", "AO Xanthi", "Ionikos", "Trikala", "Panachaiki", "Doxa Dramas", "Apollon Larisas", "Karaiskakis Artas", "Ierapetras",
+   ],
+
+"Championship": [
+"Burnley", "Leeds United", "Sunderland", "Preston North End", "Luton Town", "Stoke City", "Derby County", "Bristol City", "Coventry City", "Norwich City", "Queens Park Rangers", "Watford", "Middlesbrough", "Hull City", "Cardiff City", "West Bromwich Albion", "Blackburn Rovers", "Sheffield United", "Oxford United", "Plymouth Argyle", "Millwall", "Portsmouth", "Swansea City", "Sheffield Wednesday", 
+],
+"Süper Lig": [
+"Fenerbahçe", "Trabzonspor", "Kayserispor", "İstanbul Başakşehir", "Rizespor", "Göztepe", "Eyüpspor", "Galatasaray", "Beşiktaş", "Bodrumspor", "Samsunspor", "Antalyaspor", "Konyaspor", "Kasımpaşa", "Gaziantep", "Hatayspor", "Sivasspor", "Alanyaspor", "Adana Demirspor",
+],
+
+"Segunda Division": [
+"Almería", "Granada", "Sporting Gijón", "Racing Santander", "Cádiz", "Elche", "Real Oviedo", "Deportivo La Coruña", "Burgos", "Cartagena", "Eldense", "Real Zaragoza", "Eibar", "Castellón", "Racing Ferrol", "Málaga", "Levante", "Córdoba", "Huesca", "Tenerife", "Albacete", "Mirandés",
+],
+
+"Scotland Premiership": [
+"Rangers", "Celtic", "Hibernian", "Hearts", "Aberdeen", "Kilmarnock", "Dundee United", "Ross County", "St. Mirren", "Dundee", "St. Johnstone", "Motherwell", 
+],
+
+"Belgium Pro League": [
+"Cercle Brugge", "OH Leuven", "Union Saint-Gilloise", "Club Brugge", "Genk", "Gent", "Antwerp", "Kortrijk", "Beerschot-Wilrijk", "Standard Liège", "Sint-Truiden", "Dender", "Westerlo", "Mechelen", "Anderlecht", "Charleroi", 
+],
+
+"Swiss Super League": [
+"Lugano", "Young Boys", "Yverdon Sport", "St. Gallen", "Grasshopper", "Lausanne Sport", "Sion", "Zürich", "Servette", "Winterthur", "Basel", "Luzern",
+],
+
+"Austrian Bundesliga": [
+"Sturm Graz", "LASK", "Salzburg", "Rapid Wien", "Hartberg", "Wolfsberger AC", "Rheindorf Altach", "WSG Swarovski Tirol", "Austria Wien", "Grazer AK", "Blau-Weiß Linz", "Austria Klagenfurt", 
+],
+
+"Saudi Pro League": [
+"Al Nassr", "Al Ittihad", "Al Hilal", "Al Ahli", "Al Qadisiyah", "Al Taawon", "Al Ettifaq", "Al Orubah", "Al Wehda", "Al Khaleej", "Al Shabab", "Al Fateh", "Al Kholood", "Al Riyadh", "Al Akhdoud", "Dhamk", "Al Raed", "Al Feiha", 
+],
+
+"LigaMX": [
+"América", "Cruz Azul", "Santos Laguna", "Necaxa", "Pachuca", "Guadalajara", "Monterrey", "Toluca", "Atlas", "Club Tijuana", "Puebla", "Atlético de San Luis", "Juárez", "Tigres UANL", "Pumas UNAM", "Mazatlán", "Querétaro", "León", 
+],
+
+"Denmark Superliga": [
+"Brøndby", "Viborg", "Nordsjælland", "København", "Midtjylland", "SønderjyskE", "AaB", "Silkeborg", "Randers", "Lyngby", "Vejle", "AGF",
+],
+
+"Czech Fortuna Liga": [
+"Sparta Praha", "Viktoria Plzeň", "Hradec Králové", "Teplice", "Baník Ostrava", "Mladá Boleslav", "Slovan Liberec", "Pardubice", "Sigma Olomouc", "Dukla Praha", "České Budějovice", "Slovácko", "Karviná", "Bohemians 1905", "Jablonec", "Slavia Praha",
+],
+
+"Serbia SuperLiga": [
+"Bačka Topola", "Partizan", "Spartak Subotica", "Radnički Niš", "Crvena Zvezda", "Napredak Kruševac", "OFK Beograd", "Vojvodina", "Novi Pazar", "Radnički Kragujevac", "Čukarički", "Tekstilac Odžaci", "Jedinstvo Ub", "Mladost Lučani", "Železničar Pancevo", "IMT Novi Beograd",
+],
+
+"Croatia HNL": [
+"Hajduk Split", "Dinamo Zagreb", "Osijek", "Istra 1961", "Rijeka", "Varaždin", "Slaven Belupo", "Lokomotiva Zagreb", "Gorica", "Šibenik", 
+],
+
+"Bundesliga 2": [
+"Köln", "Hertha BSC", "Fortuna Düsseldorf", "Kaiserslautern", "Darmstadt 98", "Magdeburg", "Hamburger SV", "Jahn Regensburg", "Paderborn", "Eintracht Braunschweig", "Greuther Fürth", "Hannover 96", "Nürnberg", "Karlsruher SC", "Schalke 04", "Ulm", "Preußen Münster", "Elversberg", 
+],
+
+"Serie B": [
+"Pisa", "Palermo", "Cittadella", "Bari", "Catanzaro", "Modena", "Cremonese", "Frosinone", "Carrarese", "Sampdoria", "Salernitana", "Cosenza", "Juve Stabia", "Brescia", "Cesena", "Mantova", "Sassuolo", "Spezia", "Reggiana", "Südtirol",
+],
+
+"Ligue 2": [
+"Lorient","Caen", "Paris", "Pau", "Guingamp", "Rodez", "Annecy", "Metz", "Red Star", "Dunkerque", "Grenoble", "Ajaccio", "Laval", "Amiens SC", "Troyes", "Bastia", "Martigues", "Clermont", "Rodez ",
+],
+
+"Liga Portugal": [
+"Porto", "Benfica", "Sporting CP", "Sporting Braga", "Vitória Guimarães", "Gil Vicente", "Farense", "Moreirense", "Nacional", "Arouca", "Estoril", "Rio Ave", "Santa Clara", "Boavista", "Casa Pia AC", "Famalicão", "Estrela Amadora", "AVS", "AVS ",
+],
+
+"Ligue 1": [
+"PSG", "Lille", "Nice", "Lens", "Nantes", "Reims", "Olympique Lyonnais", "Monaco", "Olympique Marseille", "Brest", "Saint-Étienne", "Montpellier", "Angers SCO", "Le Havre", "Rennes", "Auxerre", "Strasbourg", "Toulouse", 
+],
+
+"Premier League": [
+"Manchester City", "Tottenham Hotspur", "Arsenal", "Manchester United", "Aston Villa", "Liverpool", "Southampton", "Everton", "Chelsea", "Brighton", "Newcastle United", "Wolverhampton Wanderers", "Fulham", "Crystal Palace", "Brentford", "Bournemouth", "West Ham United", "Leicester City", "Nottingham Forest", "Ipswich Town", "Wolverhampton",
+],
 
 "Bundesliga": [
-"Bayern München", "Borussia Dortmund", "Eintracht Frankfurt", "Union Berlin", "Köln",
-"Freiburg", "Stuttgart", "Bayer Leverkusen", "Hoffenheim", "Darmstadt 98",
-"Bochum", "Wolfsburg", "Heidenheim", "Augsburg", "Borussia M'gladbach",
-"Mainz 05", "RB Leipzig", "Werder Bremen",
+"Borussia Dortmund", "Stuttgart", "Wolfsburg", "Bayer Leverkusen", "Borussia M'gladbach", "Augsburg", "Union Berlin", "Eintracht Frankfurt", "Bayern München", "Hoffenheim", "Mainz 05", "Werder Bremen", "RB Leipzig", "St. Pauli", "Holstein Kiel", "Freiburg", "Heidenheim", "Bochum", "Borussia Mgladbach",
 ],
 
 "Eredivisie": [
-"AZ", "Feyenoord", "Ajax", "PSV", "Sparta Rotterdam",
-"Twente", "Heracles", "Volendam", "PEC Zwolle", "Heerenveen",
-"NEC", "Vitesse", "Excelsior", "Utrecht", "RKC Waalwijk",
-"Go Ahead Eagles", "Almere City", "Fortuna Sittard",
+"PSV", "Feyenoord", "Sparta Rotterdam", "Twente", "Utrecht", "Groningen", "PEC Zwolle", "Almere City", "NAC Breda", "NEC", "Fortuna Sittard", "Go Ahead Eagles", "Heerenveen", "Willem II", "Heracles", "AZ", "RKC Waalwijk", "Ajax",
 ],
+
 "La Liga": [
-"Real Madrid", "Barcelona", "Villarreal", "Real Sociedad", "Sevilla",
-"Real Betis", "Granada", "Girona", "Valencia", "Atlético Madrid",
-"Athletic Bilbao", "Celta de Vigo", "Deportivo Alavés", "Osasuna", "Almería",
-"Rayo Vallecano", "Mallorca", "Las Palmas", "Getafe", "Cádiz",
+"Valencia", "Atlético Madrid", "Barcelona", "Real Madrid", "Real Sociedad", "Real Betis", "Osasuna", "Deportivo Alavés", "Getafe", "Athletic Bilbao", "Girona", "Mallorca", "Villarreal", "Real Valladolid", "Rayo Vallecano", "Leganés", "Sevilla", "Las Palmas", "Celta de Vigo", "Espanyol",
 ],
+
 "Serie A": [
-"Juventus", "Roma", "Napoli", "Lazio", "Milan",
-"Internazionale", "Fiorentina", "Atalanta", "Torino", "Udinese",
-"Lecce", "Hellas Verona", "Monza", "Salernitana", "Empoli",
-"Genoa", "Sassuolo", "Frosinone", "Cagliari", "Bologna",
+"Milan", "Juventus", "Atalanta", "Lazio", "Napoli", "Roma", "Monza", "Internazionale", "Lecce", "Torino", "Parma", "Udinese", "Genoa", "Hellas Verona", "Bologna", "Fiorentina", "Cagliari", "Venezia", "Como", "Empoli", 
 ],
 
 };
+
 
 function getTeamLeague(team) {
             for (const [league, teams] of Object.entries(leagues)) {
@@ -1125,1059 +1016,1019 @@ function getTeamLeague(team) {
         }
 
         const outputLines = [];
-        allData.forEach(row => {
-            if (row.length >= 3) {
-                const team = row[2];
-                const league = getTeamLeague(team);
-                row[2] = league; // Replace the third element with the league information
-                outputLines.push(row.join(",")); // Join the modified parts back into a line
-            } else {
-                // Handle rows that don't have at least 3 elements as needed
-                outputLines.push(row.join(","));
-            }
-        });
+let playerId = 1; // Initialize player ID counter
 
-        const output_data = outputLines.join("\n");
+allData.forEach((row, index) => {
+    // Ensure row has at least 3 elements
+    if (row.length >= 3) {
+        const team = row[2];
+        const league = getTeamLeague(team);
+        row[0] = playerId++; // Update the first element with the incremented player ID
+        row[2] = league; // Replace the third element with the league information
+        outputLines.push(row.join(",")); // Join the modified parts back into a line
+    } else {
+        // Handle rows that don't have at least 3 elements as needed
+        outputLines.push(row.join(","));
+    }
+});
 
-        // Concatenate the extra header row with the fetched CSV data
-        let csvData2 = output_data;
+const output_data = outputLines.join("\n");
+
+// Concatenate the extra header row with the fetched CSV data
+let csvData = output_data;
+
+
 
         // Replace all '\n' characters with actual new rows in the CSV
-        csvData2 = csvData2.split('\\n').join('\n');
+        csvData = csvData.split('\\n').join('\n');
 
 
 
-        
-        var rows = csvData2.trim().split('\n');
-        var header = rows[0].split(',');
-        var data = rows.slice(1).map(function(row) {
-         return row.split(',').map(function(d, i) {
-           if (i >= 3) { // Assuming columns 2 and onwards contain numeric values
-             return parseFloat(d);
-           } else {
-             return d;
-           }
-         });
-        });
-        
-         var margin = { top: 40, right: 80, bottom: 100, left: 100 };
-         var width = 620 - margin.left - margin.right;
-         var height = 415 - margin.top - margin.bottom;
-        
-        var medianLinesVisible = false;
-        
-        
-        var container = d3.select("body")
-         .append("div")
-         .style("position", "relative");
-         
-        
-        var selectX = container.append("select")
-         .attr("id", "select-x")
-         .on("change", updateChart)
-         .style("position", "absolute")
-         .style("left", "80px")
-         .style("top", "0px");
-         
-        
-        var selectY = container.append("select")
-         .attr("id", "select-y")
-         .on("change", updateChart)
-         .style("position", "absolute")
-         .style("left", "330px")
-         .style("top", "0px");
-        
-        
-        var xMedian = d3.median(data, function(d) { return d[header.indexOf(xMetric)]; });
-        var yMedian = d3.median(data, function(d) { return d[header.indexOf(yMetric)]; });
-        
-        
-        var names = data.map(function(row) {
-         return row[1];
-        });
-        
-        
-         header.slice(34).forEach(function(metric) {
-           selectX.append("option")
-             .text(metric)
-             .attr("value", metric);
-           });
-         header.slice(29).forEach(function(metric) {
-           selectY.append("option")
-             .text(metric)
-             .attr("value", metric);
-           });
-        
-         var svg = d3.select("#scatter-plot")
-           .attr("width", width + margin.left + margin.right)
-           .attr("height", height + margin.top + margin.bottom)
-           .append("g")
-           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        
-         var xMetric = header[6];
-         var yMetric = header[8];
-        
-         var xScale = d3.scaleLinear()
-           .domain([0, d3.max(data, function(d) { return d[3]; })])
-           .range([0, width]);
-         var yScale = d3.scaleLinear()
-           .domain([0, d3.max(data, function(d) { return d[3]; })])
-           .range([height, 0]);
-        
-        var xAxis = d3.axisBottom(xScale)
-         .tickSize(0); 
-        var yAxis = d3.axisLeft(yScale)
-         .tickSize(0); 
-        
-        var xExtent = d3.extent(data, function(d) { return d[header.indexOf(xMetric)]; });
-        var yExtent = d3.extent(data, function(d) { return d[header.indexOf(yMetric)]; });
-        
-        svg.append("g")
-         .attr("transform", "translate(0," + height + ")")
-         .call(xAxis)
-         .selectAll("text")
-         .remove();
-        
-        svg.append("g")
-         .call(yAxis)
-         .selectAll("text")
-         .remove();
-        
-        svg.append("text")
-         .attr("class", "x-label")
-         .attr("text-anchor", "end")
-         .attr("x", width)
-         .attr("y", height + margin.top)
-         .text(header[3])
-         .style("font-family", "Arial")
-         .style("font-size", "12px");
-        
-        
-        svg.append("text")
-         .attr("class", "y-label")
-         .attr("text-anchor", "end")
-         .attr("transform", "rotate(-90)")
-         .attr("y", -35)
-         .attr("x", 0)
-         .text(header[3])
-         .style("font-family", "Arial")
-         .style("font-size", "12px");
-        
-        
-        svg.append("g")
-         .attr("class", "x-axis")
-         .attr("transform", "translate(0," + height + ")")
-         .call(d3.axisBottom(xScale).tickSize(0));
-        
-        svg.append("g")
-         .attr("class", "y-axis")
-         .call(d3.axisLeft(yScale).tickSize(0));
-        
-        
-        var clickedCircles = []; // array to keep track of clicked circles
-        var filteredData; // declare filteredData in a higher scope
-        var filteredNames; // declare filteredNames in a higher scope
-        var medianLinesVisible = true;
-        
-        var circles = svg.selectAll("circle")
-         .data(data)
-         .enter()
-         .append("circle")
-         .attr("cx", function(d) { return xScale(d[header.indexOf(xMetric)]); })
-         .attr("cy", function(d) { return yScale(d[header.indexOf(yMetric)]); })
-         .attr("r", 6)
-         .style("fill", "#4682B4B4")
-         .on("click", function(d, i) {
-           var clickedIndex = clickedCircles.indexOf(i);
-           if (clickedIndex === -1) {
-             // circle is not already clicked
-             clickedCircles.push(i); // add to clickedCircles array
-             d3.select(this)
-               .classed("clicked", true) // apply the "clicked" class
-               .classed("hovered", false)
-               .style("fill", "red");
-        svg.append("text")
-          .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-          .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
-          .text(names[i])
-          .classed("player-name", true)
-          .style("font-family", "Arial")
-          .style("font-size", "12px");
-        
-          
-           }
-         });
-        
-        
-        
-        // X-axis median line
-        var xMedianLine = svg.append("line")
-         .attr("class", "x-median")
-         .attr("x1", xScale(xMedian))
-         .attr("y1", 0)
-         .attr("x2", xScale(xMedian))
-         .attr("y2", height)
-         .style("stroke", "red")
-         .style("stroke-dasharray", "4")
-         .style("display", medianLinesVisible ? "block" : "none");
-        
-        // Y-axis median line
-        var yMedianLine = svg.append("line")
-         .attr("class", "y-median")
-         .attr("x1", 0)
-         .attr("y1", yScale(yMedian))
-         .attr("x2", width)
-         .attr("y2", yScale(yMedian))
-         .style("stroke", "red")
-         .style("stroke-dasharray", "4")
-         .style("display", medianLinesVisible ? "block" : "none");
-        
-        
-         updateChart();
-        
-        function updateChart() {
-         xMetric = selectX.property("value");
-         yMetric = selectY.property("value");
-         var selectedLeague = document.getElementById("select-league").value;
-        
-         // Filter data based on the selected league
-        
-         if (selectedLeague !== "all") {
-           filteredData = data.filter(function(d) {
-             return d[header.indexOf('Top 7 Leagues')] === selectedLeague;
-           });
-           filteredNames = names.filter(function(name, i) {
-             return data[i][header.indexOf('Top 7 Leagues')] === selectedLeague;
-           });
-         } else {
-           filteredData = data;
-           filteredNames = names;
-         }
-        
-         // Update scales with filtered data
-         // Update scales with filtered data
-         xScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(xMetric)]; })).nice();
-         yScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(yMetric)]; })).nice();
-        
-         // Toggle median lines visibility
-         if (medianLinesVisible) {
-           // Calculate the new medians based on the selected metrics
-           var xMedian = d3.median(filteredData, function(d) { return d[header.indexOf(xMetric)]; });
-           var yMedian = d3.median(filteredData, function(d) { return d[header.indexOf(yMetric)]; });
-        
-           // X-axis median line
-           xMedianLine
-             .attr("x1", xScale(xMedian))
-             .attr("y1", 0)
-             .attr("x2", xScale(xMedian))
-             .attr("y2", height)
-             .style("display", "block");
-        
-           // Y-axis median line
-           yMedianLine
-             .attr("x1", 0)
-             .attr("y1", yScale(yMedian))
-             .attr("x2", width)
-             .attr("y2", yScale(yMedian))
-             .style("display", "block");
-         } else {
-           xMedianLine.style("display", "none");
-           yMedianLine.style("display", "none");
-         }
-        
-         svg.select(".x-label")
-           .text(xMetric);
-        
-         svg.select(".y-label")
-           .text(yMetric);
-        
-          var circles = svg.selectAll("circle")
-           .data(filteredData, function(d) {
-             return d[0]; // Use unique identifier as the data key
-           });
-        
-         circles.exit().remove();
-         circles.enter()
-         .append("circle")
-         .merge(circles)
-         .attr("cx", function (d) {
-           return xScale(d[header.indexOf(xMetric)]);
-         })
-         .attr("cy", function (d) {
-           return yScale(d[header.indexOf(yMetric)]);
-         })
-         .attr("r", 6)
-         .style("fill", function (d) {
-           return clickedCircles.includes(d[0]) ? "red" : "#4682B4B4";
-         })
-         .classed("highlighted", false)
-         .classed("clicked", function (d) {
-           return clickedCircles.includes(d[0]);
-         })
-         .on("click", null) // Disable click event for users
-         .on("mouseover", function (d) {
-           d3.select(this)
-           tooltip.transition()
-             .duration(200)
-             .style("opacity", 0.9);
-        
-           tooltip.html(filteredNames[filteredData.indexOf(d)] + "<br/>" + xMetric + ": " + d[header.indexOf(xMetric)] + "<br/>" + yMetric + ": " + d[header.indexOf(yMetric)])
-             .style("left", (d3.event.pageX + 10) + "px")
-             .style("top", (d3.event.pageY - 28) + "px");
-         })
-         .on("mouseout", function (d) {
-           var circle = d3.select(this);
-           var index = clickedCircles.indexOf(d[0]);
-        
-           if (!circle.classed("clicked")) {
-             circle
-               .classed("hovered", false)
-               .style("fill", "#4682B4B4");
-           }
-        
-           tooltip.transition()
-             .duration(500)
-             .style("opacity", 0);
-         });
-        
-        
-         // Display player names for clicked circles
-         var clickedCirclesData = filteredData.filter(function(d) {
-           return clickedCircles.includes(d[0]);
-         });
-        
-         var playerNames = svg.selectAll(".player-name")
-           .data(clickedCirclesData, function(d) {
-             return d[0]; // Use unique identifier as the data key
-           });
-        
-         playerNames.exit().remove();
-        
-         playerNames.enter()
-           .append("text")
-           .attr("class", "player-name")
-           .merge(playerNames)
-           .attr("x", function(d) {
-             return xScale(d[header.indexOf(xMetric)]) - 20;
-           })
-           .attr("y", function(d) {
-             return yScale(d[header.indexOf(yMetric)]) + 20;
-           })
-           .style("font-family", "Arial")
-           .style("font-size", "12px")
-           .text(function(d) {
-             return filteredNames[filteredData.indexOf(d)];
-           });
-        
-         svg.select(".x-axis")
-           .transition()
-           .duration(1000)
-           .call(d3.axisBottom(xScale).tickSize(0));
-        
-         svg.select(".y-axis")
-           .transition()
-           .duration(1000)
-           .call(d3.axisLeft(yScale).tickSize(0));
-        }
-        
-        function circleClick(d, i) {
-         var circle = d3.select(this);
-         var identifier = d[0]; // Unique identifier of the data point
-        
-         var index = clickedCircles.indexOf(identifier);
-        
-         if (index > -1) {
-           circle
-             .classed("clicked", false)
-             .style("fill", "#4682B4B4");
-        
-           clickedCircles.splice(index, 1);
-        
-           // Remove the player name text element
-           svg.select(".player-name-" + identifier).remove();
-         } else {
-           circle
-             .classed("clicked", true)
-             .style("fill", "red");
-        
-           clickedCircles.push(identifier);
-        
-           // Append the player name text element
-           svg.append("text")
-             .attr("class", "player-name player-name-" + identifier)
-             .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-             .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
-             .style("font-family", "Arial")
-             .style("font-size", "12px")
-             .text(filteredNames[filteredData.indexOf(d)]);
-         }
-        
-         updateClickedPlayerName(xMetric, yMetric);
-        
-         circles.on("click", function(d, i) {
-           var clickedCircle = d3.select(this);
-           var circleName = filteredNames[i];
-        
-           // Check if the circle is already clicked
-           var isClicked = clickedCircles.includes(circleName);
-        
-           if (isClicked) {
-             // Remove the circle from clickedCircles and reset its style
-             clickedCircles = clickedCircles.filter(function(name) {
-               return name !== circleName;
-             });
-             clickedCircle
-               .style("fill", "#4682B4B4")
-               .classed("clicked", false);
-           } else {
-             // Add the circle to clickedCircles and update its style
-             clickedCircles.push(circleName);
-             clickedCircle
-               .style("fill", "red")
-               .classed("clicked", true);
-           }
-        
-           // Update the chart based on the clicked circles
-           updateChart();
-         });
-        
-         // Restore the style for previously clicked circles
-         circles.each(function(d, i) {
-           var circleName = filteredNames[i];
-           var clicked = clickedCircles.includes(circleName);
-           d3.select(this).classed("clicked", clicked);
-         });
-        
-        
-        }
-        
-        // Set the default search value
-        var defaultSearchValue = "Álex Baena";
-        
-        // Find the index of the default search value in the filteredNames array
-        var defaultSearchIndex = filteredNames.indexOf(defaultSearchValue);
-        
-        // Check if the default search value exists in the filteredNames array
-        if (defaultSearchIndex !== -1) {
-         // Get the dot corresponding to the default search value
-         var defaultSearchDot = circles.filter(function(d, i) {
-           return i === defaultSearchIndex;
-         });
-        
-         // Trigger a click event on the default search dot
-         defaultSearchDot.each(circleClick);
-        }
-        
-      })
-      .catch(error => {
-          console.error('Error fetching or processing data:', error);
-      });
- </script>
- 
- 
- 
- <script>
- 
 
-  const allData2 = [];
-  let isFirstFileProcessed2 = false;
-  const urls2 = [
-  'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx',
-];
-  
-  const fetchPromises2 = urls2.map(url => fetch(url).then(response => response.arrayBuffer()));
-  
-  Promise.all(fetchPromises2)
-      .then(responses => {
-          responses.forEach((data, index) => {
-              const url = urls2[index]; // Get the URL of the current file being processed
-              const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-              const sheetName = workbook.SheetNames[0];
-              const sheet = workbook.Sheets[sheetName];
-              const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-  
-              // Perform transformations
-              // 1. Cut column C and paste it to the end
-              const columnC = jsonData.map(row => row[2]);
-              jsonData.forEach((row, index) => row.push(columnC[index]));
-              jsonData.forEach(row => row.splice(2, 1));
-  
-              // 2. Delete specified columns
-              const columnsToDelete = [27, 28, 29, 30, 59, 61, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85];
-              columnsToDelete.sort((a, b) => b - a); // Sort in descending order
-              columnsToDelete.forEach(col => {
-                  jsonData.forEach(row => row.splice(col, 1));
-              });
-  
-              // 3. Insert new columns and fill with appropriate values
-              if (url === 'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx' && !isFirstFileProcessed) {
-                  // Include header only for the first file ('gk4.xlsx')
-                  jsonData.forEach(row => row.unshift(null)); // Insert empty column at the beginning
-                  jsonData[0][0] = "ID"; // Set header for the new column
-                  isFirstFileProcessed = true; // Mark the first file as processed
-              } else {
-                  // Exclude header for all other files
-                  jsonData.forEach(row => row.unshift(undefined)); // Insert undefined at the beginning
-              }
-  
-              // Fill ID column
-              for (let i = 1; i < jsonData.length; i++) {
-                  jsonData[i][0] = i;
-              }
-  
-              // 4. Replace ", m" with " m" and ", %" with " %"
-              jsonData.forEach(row => {
-                  for (let i = 0; i < row.length; i++) {
-                      if (typeof row[i] === 'string') {
-                          row[i] = row[i].replace(', m', ' m').replace(', %', ' %');
-                      }
-                  }
-              });
-  
-              // 5. Collect the transformed data (excluding header for non-first 'gk4.xlsx')
-              allData2.push(...(url === 'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx' ? jsonData : jsonData.slice(1)));
-          });
-  
-  const leagues = {
-  
-     
-    "Liga Portugal": [
-  "Porto", "Benfica", "Famalicão", "Sporting CP", "Sporting Braga", "Gil Vicente",
-  "Arouca", "Boavista", "Vizela", "Chaves", "Estoril",
-  "Estrela Amadora", "Vitória Guimarães", "Farense",
-  "Casa Pia AC", "Moreirense", "Portimonense", "Rio Ave",
-  ],
-  "Ligue 1": [
-  "PSG", "Nice", "Lens", "Monaco", "Olympique Marseille",
-  "Nantes", "Toulouse", "Lille", "Lorient", "Olympique Lyonnais", "Brest", "Reims",
-  "Montpellier", "Le Havre", "Clermont", "Rennes", "Metz",
-  "Strasbourg",
-  ],
-  "Premier League": [
-  "Chelsea", "Manchester City", "West Ham United", "Tottenham Hotspur", "Arsenal",
-  "Manchester United", "Newcastle United", "Burnley", "Brighton", "Wolverhampton Wanderers",
-  "Fulham", "Liverpool", "Sheffield United", "Nottingham Forest", "Bournemouth",
-  "Aston Villa", "Brentford", "Everton", "Luton Town", "Crystal Palace",
-  ],
-  
-  
-  "Bundesliga": [
-  "Bayern München", "Borussia Dortmund", "Eintracht Frankfurt", "Union Berlin", "Köln",
-  "Freiburg", "Stuttgart", "Bayer Leverkusen", "Hoffenheim", "Darmstadt 98",
-  "Bochum", "Wolfsburg", "Heidenheim", "Augsburg", "Borussia M'gladbach",
-  "Mainz 05", "RB Leipzig", "Werder Bremen",
-  ],
-  
-  "Eredivisie": [
-  "AZ", "Feyenoord", "Ajax", "PSV", "Sparta Rotterdam",
-  "Twente", "Heracles", "Volendam", "PEC Zwolle", "Heerenveen",
-  "NEC", "Vitesse", "Excelsior", "Utrecht", "RKC Waalwijk",
-  "Go Ahead Eagles", "Almere City", "Fortuna Sittard",
-  ],
-  "La Liga": [
-  "Real Madrid", "Barcelona", "Villarreal", "Real Sociedad", "Sevilla",
-  "Real Betis", "Granada", "Girona", "Valencia", "Atlético Madrid",
-  "Athletic Bilbao", "Celta de Vigo", "Deportivo Alavés", "Osasuna", "Almería",
-  "Rayo Vallecano", "Mallorca", "Las Palmas", "Getafe", "Cádiz",
-  ],
-  "Serie A": [
-  "Juventus", "Roma", "Napoli", "Lazio", "Milan",
-  "Internazionale", "Fiorentina", "Atalanta", "Torino", "Udinese",
-  "Lecce", "Hellas Verona", "Monza", "Salernitana", "Empoli",
-  "Genoa", "Sassuolo", "Frosinone", "Cagliari", "Bologna",
-  ],
-  
-  };
-  
-  function getTeamLeague2(team) {
-              for (const [league, teams] of Object.entries(leagues)) {
-                  if (teams.includes(team)) {
-                      return league;
-                  }
-              }
-              return "Unknown League";
-          }
-  
-          const outputLines2 = [];
-          allData2.forEach(row => {
-              if (row.length >= 3) {
-                  const team = row[2];
-                  const league = getTeamLeague2(team);
-                  row[2] = league; // Replace the third element with the league information
-                  outputLines2.push(row.join(",")); // Join the modified parts back into a line
-              } else {
-                  // Handle rows that don't have at least 3 elements as needed
-                  outputLines2.push(row.join(","));
-              }
-          });
-  
-          const output_data2 = outputLines2.join("\n");
-  
-          // Concatenate the extra header row with the fetched CSV data
-          let csvData3 = output_data2;
-  
-          // Replace all '\n' characters with actual new rows in the CSV
-          csvData3 = csvData3.split('\\n').join('\n');
-  
-  
-  
-          
-var rows = csvData3.trim().split('\n');
+var rows = csvData.trim().split('\n');
 var header = rows[0].split(',');
 var data = rows.slice(1).map(function(row) {
-return row.split(',').map(function(d, i) {
-  if (i >= 3) { // Assuming columns 2 and onwards contain numeric values
-    return parseFloat(d);
-  } else {
-    return d;
-  }
-});
+  return row.split(',').map(function(d, i) {
+    if (i >= 3) { // Assuming columns 2 and onwards contain numeric values
+      return parseFloat(d);
+    } else {
+      return d;
+    }
+  });
 });
 
-var margin = { top: 40, right: 80, bottom: 100, left: 100 };
-var width = 620 - margin.left - margin.right;
-var height = 415 - margin.top - margin.bottom;
+  var margin = { top: 40, right: 80, bottom: 100, left: 100 };
+  var width = 1080 - margin.left - margin.right;
+  var height = 720 - margin.top - margin.bottom;
 
 var medianLinesVisible = false;
 
 
-var container = d3.select("body")
-.append("div")
-.style("position", "relative");
-
-
-var selectX = container.append("select")
-.attr("id", "select-x")
-.on("change", updateChart)
-.style("position", "absolute")
-.style("left", "80px")
-.style("top", "0px");
-
-
-var selectY = container.append("select")
-.attr("id", "select-y")
-.on("change", updateChart)
-.style("position", "absolute")
-.style("left", "330px")
-.style("top", "0px");
+var selectX = d3.select("#select-x");
+var selectY = d3.select("#select-y");
+var selectSize = d3.select("#select-size");
 
 
 var xMedian = d3.median(data, function(d) { return d[header.indexOf(xMetric)]; });
 var yMedian = d3.median(data, function(d) { return d[header.indexOf(yMetric)]; });
 
 
+
 var names = data.map(function(row) {
-return row[1];
+  return row[1];
 });
 
 
-header.slice(20).forEach(function(metric) {
-  selectX.append("option")
-    .text(metric)
-    .attr("value", metric);
+  header.slice(3).forEach(function(metric) {
+    selectX.append("option")
+      .text(metric)
+      .attr("value", metric);
+    selectY.append("option")
+      .text(metric)
+      .attr("value", metric);
+    selectSize.append("option")
+      .text(metric)
+      .attr("value", metric);
+    
   });
-header.slice(53).forEach(function(metric) {
-  selectY.append("option")
-    .text(metric)
-    .attr("value", metric);
-  });
 
-var svg = d3.select("#scatter-plot-2")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var xMetric = header[63];
-var yMetric = header[32];
+  var svg = d3.select("#scatter-plot")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var xScale = d3.scaleLinear()
-  .domain([0, d3.max(data, function(d) { return d[3]; })])
-  .range([0, width]);
-var yScale = d3.scaleLinear()
-  .domain([0, d3.max(data, function(d) { return d[3]; })])
-  .range([height, 0]);
+  var xMetric = header[3];
+  var yMetric = header[3];
+  var sizeMetric = header[3];
 
+  var xScale = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return d[3]; })])
+    .range([0, width]);
+  var yScale = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return d[3]; })])
+    .range([height, 0]);
+
+// This code should be placed where you update your scatter plot
+
+// Check if both axes are xG per 90 or Goals per 90
 var xAxis = d3.axisBottom(xScale)
-.tickSize(0); 
+  .tickSize(0); 
 var yAxis = d3.axisLeft(yScale)
-.tickSize(0); 
+  .tickSize(0); 
 
 var xExtent = d3.extent(data, function(d) { return d[header.indexOf(xMetric)]; });
 var yExtent = d3.extent(data, function(d) { return d[header.indexOf(yMetric)]; });
+var sizeExtent = d3.extent(data, function(d) { return d[header.indexOf(sizeMetric)]; });
 
 svg.append("g")
-.attr("transform", "translate(0," + height + ")")
-.call(xAxis)
-.selectAll("text")
-.remove();
+  .attr("transform", "translate(0," + height + ")")
+  .call(xAxis)
+  .selectAll("text")
+  .remove();
 
 svg.append("g")
-.call(yAxis)
-.selectAll("text")
-.remove();
+  .call(yAxis)
+  .selectAll("text")
+  .remove();
 
 svg.append("text")
-.attr("class", "x-label")
-.attr("text-anchor", "end")
-.attr("x", width)
-.attr("y", height + margin.top)
-.text(header[3])
-.style("font-family", "Arial")
-.style("font-size", "12px");
+  .attr("class", "x-label")
+  .attr("text-anchor", "end")
+  .attr("x", width)
+  .attr("y", height + margin.top)
+  .text(header[3])
+  .style("font-family", "Arial")
+  .style("font-size", "12px");
 
 
 svg.append("text")
-.attr("class", "y-label")
-.attr("text-anchor", "end")
-.attr("transform", "rotate(-90)")
-.attr("y", -35)
-.attr("x", 0)
-.text(header[3])
-.style("font-family", "Arial")
-.style("font-size", "12px");
+  .attr("class", "y-label")
+  .attr("text-anchor", "end")
+  .attr("transform", "rotate(-90)")
+  .attr("y", -35)
+  .attr("x", 0)
+  .text(header[3])
+  .style("font-family", "Arial")
+  .style("font-size", "12px");
 
 
 svg.append("g")
-.attr("class", "x-axis")
-.attr("transform", "translate(0," + height + ")")
-.call(d3.axisBottom(xScale).tickSize(0));
+  .attr("class", "x-axis")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(xScale).tickSize(0));
 
 svg.append("g")
-.attr("class", "y-axis")
-.call(d3.axisLeft(yScale).tickSize(0));
+  .attr("class", "y-axis")
+  .call(d3.axisLeft(yScale).tickSize(0));
+
+
+var tooltip = d3.select("body")
+  .append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
+tooltip.style("position", "absolute")
+  .style("background-color", "#f9f9f9")
+  .style("border", "solid")
+  .style("border-width", "1px")
+  .style("border-radius", "5px")
+  .style("padding", "10px")
+  .style("font-size", "12px");
+	
+  document.addEventListener('touchstart', function(event) {
+  // Ensure tooltip is a valid DOM element
+  var tooltip = document.querySelector('#tooltip'); // or use getElementById('tooltip') if it's an ID
+
+  if (tooltip && !tooltip.contains(event.target)) {
+    tooltip.style.display = 'none';
+  }
+});
+
+var names = rows.slice(1).map(function(row) {
+  return row.split(',')[1];
+});
+
+
+
+function updateCirclesData(filteredRows, filteredNames) {
+  circles = svg.selectAll("circle").data(filteredRows);
+}
+
+var searchBar = document.getElementById("search-bar");
+
+searchBar.addEventListener("input", function() {
+  var searchTerm = searchBar.value.toLowerCase();
+
+  if (searchTerm === '') {
+    resetSearch();
+    return;
+  }
+
+  searchTerm = removeSpecialCharsAndDiacritics(searchTerm);
+
+  // Filter circles based on search term
+  circles.classed("highlighted", false);
+
+  circles.filter(function(d, i) {
+      var name = removeSpecialCharsAndDiacritics(filteredNames[i].toLowerCase());
+      return name.includes(searchTerm);
+    })
+    .classed("highlighted", true);
+});
+
+function removeSpecialCharsAndDiacritics(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f\s]/g, '') 
+              .replace(/Ø/g, 'O')
+              .replace(/ø/g, 'o');
+            }
+
+
+
+
 
 
 var clickedCircles = []; // array to keep track of clicked circles
 var filteredData; // declare filteredData in a higher scope
 var filteredNames; // declare filteredNames in a higher scope
-var medianLinesVisible = true;
+
+
+var longPressTimer;
+
 
 var circles = svg.selectAll("circle")
 .data(data)
-.enter()
-.append("circle")
-.attr("cx", function(d) { return xScale(d[header.indexOf(xMetric)]); })
-.attr("cy", function(d) { return yScale(d[header.indexOf(yMetric)]); })
-.attr("r", 6)
-.style("fill", "#4682B4B4")
-.on("click", function(d, i) {
-  var clickedIndex = clickedCircles.indexOf(i);
-  if (clickedIndex === -1) {
-    // circle is not already clicked
-    clickedCircles.push(i); // add to clickedCircles array
-    d3.select(this)
-      .classed("clicked", true) // apply the "clicked" class
-      .classed("hovered", false)
-      .style("fill", "red");
-svg.append("text")
- .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
- .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
- .text(names[i])
- .classed("player-name", true)
- .style("font-family", "Arial")
- .style("font-size", "12px");
+  .enter()
+  .append("circle")
+  .attr("cx", function(d) { return xScale(d[header.indexOf(xMetric)]); })
+  .attr("cy", function(d) { return yScale(d[header.indexOf(yMetric)]); })
+  .attr("r", 8)  .style("fill", "#4682B4B4")
+  .on("mousedown", function(d) {
+        if (isMobileDevice()) {  // Only apply long press on mobile devices
+            var circleElement = d3.select(this);  // Save reference to the clicked circle
 
- 
-  }
-});
+            longPressTimer = setTimeout(function() {
+                // Show tooltip after 3 seconds of holding
+                tooltip.style("opacity", 0.9)
+                    .html("Player: " + filteredNames[filteredData.indexOf(d)])
+                    .style("left", (d3.event.pageX + 10) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+
+                // Add selected circle styles
+                clickedCircles.push(d[0]);
+                circleElement.style("fill", leagueColorScale(d[2]));  // Apply league color
+
+                svg.append("text")
+                    .attr("class", "player-name player-name-" + d[0])
+                    .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
+                    .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
+                    .style("font-family", "Arial")
+                    .style("font-size", "12px")
+                    .style("user-select", "none")
+                    .style("pointer-events", "none")
+                    .text(filteredNames[filteredData.indexOf(d)]);
+            }, 3000); // 3 seconds delay for the long press
+        }
+  })
+  .on("mouseup", function(d) {
+        if (isMobileDevice()) {
+            clearTimeout(longPressTimer);  // Clear the long press timer when the mouse is released
+
+            // Hide the tooltip when the user releases the click
+            tooltip.style("opacity", 0)
+                .style("left", "-1000px")
+                .style("top", "-1000px");
+
+            // Optional: Remove the selected styles or maintain if you want the circle to stay selected
+            var index = clickedCircles.indexOf(d[0]);
+            if (index > -1) {
+                clickedCircles.splice(index, 1);
+                d3.select(this).style("fill", "#4682B4B4");  // Reset the color when unselected
+                svg.select(".player-name-" + d[0]).remove();  // Remove player name
+            }
+        }
+    })
+
+
+  .on("mouseout", function(d) {
+    if (!d3.select(this).classed("clicked")) {
+      // If the circle is not clicked, reset its color to #4682B4B4
+      d3.select(this).attr("r", 5).style("fill", "#4682B4B4");
+    } else {
+      // If the circle is clicked, apply the league color
+      d3.select(this).attr("r", 5).style("fill", leagueColorScale(d[2]));
+    }
+
+    // Hide the tooltip and reset its position
+    tooltip.style("opacity", 0)
+      .style("left", "-1000px")
+      .style("top", "-1000px");
+
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+})
+  .on("mouseout", function(d) {
+    if (!d3.select(this).classed("clicked")) {
+      d3.select(this).attr("r", 5);
+        tooltip.style("opacity", 0)
+        .style("left", "-1000px")  // Move tooltip off-screen
+        .style("top", "-1000px") // Move tooltip off-screen
+        .classed("hovered", false)
+        .style("fill", "#4682B4B4");
+    }
+    
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+  })
+  .on("click", function(d) {
+    var identifier = d[0];  // Unique identifier
+    var index = clickedCircles.indexOf(identifier);
+
+    if (index > -1) {
+      // If already clicked, remove from clickedCircles and reset color
+      clickedCircles.splice(index, 1);
+      d3.select(this).style("fill", "#4682B4B4");  // Reset to default color
+      svg.select(".player-name-" + identifier).remove();  // Remove player name
+    } else {
+      // If not clicked, add to clickedCircles and apply league color
+      clickedCircles.push(identifier);
+      d3.select(this).style("fill", leagueColorScale(d[2]));  // Apply league color
+
+      // Append player name below the circle
+      svg.append("text")
+        .attr("class", "player-name player-name-" + identifier)
+        .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
+        .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
+        .style("font-family", "Arial")
+        .style("font-size", "12px")
+        .style("user-select", "none")      
+        .style("pointer-events", "none")
+        .text(filteredNames[filteredData.indexOf(d)]);
+    }
+  });
+  svg.on("mouseleave", function() {
+  tooltip.style("opacity", 0)
+         .style("left", "-1000px")
+         .style("top", "-1000px");
+         if (isMobileDevice()) {
+            clearTimeout(longPressTimer);  // Clear the long press timer if they leave the element
+        }
+  });
+
+
+
 
 
 
 // X-axis median line
 var xMedianLine = svg.append("line")
-.attr("class", "x-median")
-.attr("x1", xScale(xMedian))
-.attr("y1", 0)
-.attr("x2", xScale(xMedian))
-.attr("y2", height)
-.style("stroke", "red")
-.style("stroke-dasharray", "4")
-.style("display", medianLinesVisible ? "block" : "none");
+  .attr("class", "x-median")
+  .attr("x1", xScale(xMedian))
+  .attr("y1", 0)
+  .attr("x2", xScale(xMedian))
+  .attr("y2", height)
+  .style("stroke", "red")
+  .style("stroke-dasharray", "4")
+  .style("display", medianLinesVisible ? "block" : "none");
 
 // Y-axis median line
 var yMedianLine = svg.append("line")
-.attr("class", "y-median")
-.attr("x1", 0)
-.attr("y1", yScale(yMedian))
-.attr("x2", width)
-.attr("y2", yScale(yMedian))
-.style("stroke", "red")
-.style("stroke-dasharray", "4")
-.style("display", medianLinesVisible ? "block" : "none");
+  .attr("class", "y-median")
+  .attr("x1", 0)
+  .attr("y1", yScale(yMedian))
+  .attr("x2", width)
+  .attr("y2", yScale(yMedian))
+  .style("stroke", "red")
+  .style("stroke-dasharray", "4")
+  .style("display", medianLinesVisible ? "block" : "none");
 
 
-updateChart();
+  updateChart();
 
-function updateChart() {
-xMetric = selectX.property("value");
-yMetric = selectY.property("value");
-var selectedLeague = document.getElementById("select-league").value;
 
-// Filter data based on the selected league
 
-if (selectedLeague !== "all") {
-  filteredData = data.filter(function(d) {
-    return d[header.indexOf('Top 7 Leagues')] === selectedLeague;
-  });
-  filteredNames = names.filter(function(name, i) {
-    return data[i][header.indexOf('Top 7 Leagues')] === selectedLeague;
-  });
-} else {
+
+  function updateChart() {
+  xMetric = selectX.property("value");
+  yMetric = selectY.property("value");
+  var sizeMetric = selectSize.property("value");
+
+
+
+  var selectedLeague = document.getElementById("select-league").value;
+  var selectedAge = document.getElementById("select-age").value;
+  var leagueColorScale = d3.scaleOrdinal()
+  .domain([
+  "Serie A", "Bundesliga", "Premier League", "La Liga", "Ligue 1",
+  "Liga Portugal", "Eredivisie", "Scotland Premiership",
+  "Austrian Bundesliga","Belgium Pro League","Swiss Super League",
+  "Süper Lig","Denmark Superliga","Sweden Allsvenskan","Norway Eliteserien",
+  "Croatia HNL","Serbia SuperLiga","Czech Fortuna Liga","Poland","Ukraine",
+  "Russia","Greece","Israel","J1 League","K League 1","Saudi Pro League",
+  "MLS","LigaMX","Brazil Serie A","Argentina Primera","Uruguay Primera",
+  "Chile","Colombia","Ecuador","Paraguay","Championship",
+  "Segunda Division","Serie B","Bundesliga 2","Ligue 2"
+])
+  .range([
+  "rgba(82,145,255,0.9)", "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
+  "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)", 
+  "rgba(255,143,207,0.8)", "rgba(93,255,178,0.8)", "rgba(255,249,181,0.8)", "rgba(255,104,104,0.8)",
+  "rgba(82,145,255,0.9)", "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
+  "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)", 
+  "rgba(255,143,207,0.8)", "rgba(93,255,178,0.8)", "rgba(255,249,181,0.8)", "rgba(255,104,104,0.8)",
+  "rgba(82,145,255,0.9)", "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
+  "rgba(255,143,207,0.8)", "rgba(255,249,181,0.8)", "rgba(93,255,178,0.8)",  "rgba(255,104,104,0.8)",
+  "rgba(82,145,255,0.9)", "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)", 
+  "rgba(137,210,100,0.8)", "rgba(255,87,149,0.8)", "rgba(255, 240, 100, 0.8)", 
+  "rgba(107,252,246,0.8)", "rgba(255, 165, 132, 0.8)", "rgba(197,142,255,0.8)"
+]);
+  var leagues = [
+  "Serie A", "Bundesliga", "Premier League", "La Liga", "Ligue 1",
+  "Liga Portugal", "Eredivisie", "Scotland Premiership",
+  "Austrian Bundesliga","Belgium Pro League","Swiss Super League",
+  "Süper Lig","Denmark Superliga","Sweden Allsvenskan","Norway Eliteserien",
+  "Croatia HNL","Serbia SuperLiga","Czech Fortuna Liga","Poland","Ukraine",
+  "Russia","Greece","Israel","J1 League","K League 1","Saudi Pro League",
+  "MLS","LigaMX","Brazil Serie A","Argentina Primera","Uruguay Primera",
+  "Chile","Colombia","Ecuador","Paraguay","Championship",
+  "Segunda Division","Serie B","Bundesliga 2","Ligue 2"
+];
+
+
+// Function to get color based on whether the circle is clicked or not
+function getCircleColor(d) {
+  // Check if the circle is clicked
+  if (clickedCircles.includes(d[0])) {
+    return leagueColorScale(d[2]);  // Apply league color if clicked
+  }
+  return "#4682B4B4";  // Default state is #4682B4B4
+}
+
   filteredData = data;
-  filteredNames = names;
-}
+        filteredNames = names;
+      
 
-// Update scales with filtered data
-// Update scales with filtered data
-xScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(xMetric)]; })).nice();
-yScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(yMetric)]; })).nice();
+        
+        if (selectedLeague !== "all") {
+          var leaguesToInclude2 = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1", "Liga Portugal", "Eredivisie"];
+  var leaguesToInclude = ["Premier League", "La Liga", "Bundesliga", "Serie A", "Ligue 1"];
+  var leaguesToInclude3 = ["Scotland Premiership",
+      "Belgium Pro League",
+      "Swiss Super League",
+      "Ukraine",
+      "Poland",
+      "Greece",
+      "Israel",
+      "Russia",
+      "Colombia",
+      "Chile",
+      "Paraguay",
+      "Ecuador",
+      "Austrian Bundesliga",
+      "Süper Lig",
+      "Saudi Pro League",
+      "Brazil Serie A",
+      "Argentina Primera",
+      "Uruguay Primera",
+      "LigaMX",
+      "MLS",
+      "K League 1",
+      "J1 League",
+      "Norway Eliteserien",
+      "Denmark Superliga",
+      "Sweden Allsvenskan",
+      "Czech Fortuna Liga",
+      "Serbia SuperLiga",
+      "Croatia HNL",
+      "Championship",
+      "Segunda Division",
+      "Bundesliga 2",
+      "Serie B",
+      "Ligue 2",
+      "Unknown League"];
+  var leaguesToInclude4 = ["Brazil Serie A",
+      "Argentina Primera",
+      "Uruguay Primera",
+      "Colombia",
+      "Chile",
+      "Paraguay",
+      "Ecuador"];
+  var leaguesToInclude5 = [    "Norway Eliteserien",
+      "Denmark Superliga",
+      "Sweden Allsvenskan"];
+  var leaguesToInclude6 = [      "Czech Fortuna Liga",
+      "Serbia SuperLiga",
+      "Croatia HNL",
+      "Russia",
+      "Ukraine",
+      "Poland"];
 
-// Toggle median lines visibility
-if (medianLinesVisible) {
-  // Calculate the new medians based on the selected metrics
-  var xMedian = d3.median(filteredData, function(d) { return d[header.indexOf(xMetric)]; });
-  var yMedian = d3.median(filteredData, function(d) { return d[header.indexOf(yMetric)]; });
 
-  // X-axis median line
-  xMedianLine
-    .attr("x1", xScale(xMedian))
-    .attr("y1", 0)
-    .attr("x2", xScale(xMedian))
-    .attr("y2", height)
-    .style("display", "block");
+  filteredData = filteredData.filter(function(d) {
+    var league = d[2]; // Assuming d is an array where league is at index 2
 
-  // Y-axis median line
-  yMedianLine
-    .attr("x1", 0)
-    .attr("y1", yScale(yMedian))
-    .attr("x2", width)
-    .attr("y2", yScale(yMedian))
-    .style("display", "block");
-} else {
-  xMedianLine.style("display", "none");
-  yMedianLine.style("display", "none");
-}
-
-svg.select(".x-label")
-  .text(xMetric);
-
-svg.select(".y-label")
-  .text(yMetric);
-
- var circles = svg.selectAll("circle")
-  .data(filteredData, function(d) {
-    return d[0]; // Use unique identifier as the data key
+    if (selectedLeague === "Top 7 Leagues") {
+      return leaguesToInclude2.includes(league); // Check if league is in top 5 leagues
+    } else if (selectedLeague === "Top 5 Leagues") {
+      return leaguesToInclude.includes(league); // Check if league is in top 5 leagues
+    } else if (selectedLeague === "Outside Top 7") {
+      return leaguesToInclude3.includes(league); // Check if league is in top 5 leagues
+    } else if (selectedLeague === "South America") {
+      return leaguesToInclude4.includes(league); // Check if league is in top 5 leagues
+    } else if (selectedLeague === "Scandinavia") {
+      return leaguesToInclude5.includes(league); // Check if league is in top 5 leagues
+    } else if (selectedLeague === "Eastern Europe") {
+      return leaguesToInclude6.includes(league); // Check if league is in top 5 leagues
+    } else {
+      return league && league.trim() === selectedLeague; // Filter based on selected league
+    }
   });
 
-circles.exit().remove();
-circles.enter()
-.append("circle")
-.merge(circles)
-.attr("cx", function (d) {
-  return xScale(d[header.indexOf(xMetric)]);
-})
-.attr("cy", function (d) {
-  return yScale(d[header.indexOf(yMetric)]);
-})
-.attr("r", 6)
-.style("fill", function (d) {
-  return clickedCircles.includes(d[0]) ? "red" : "#4682B4B4";
-})
-.classed("highlighted", false)
-.classed("clicked", function (d) {
-  return clickedCircles.includes(d[0]);
-})
-.on("click", null) // Disable click event for users
-.on("mouseover", function (d) {
-  d3.select(this)
-  tooltip.transition()
-    .duration(200)
-    .style("opacity", 0.9);
-
-  tooltip.html(filteredNames[filteredData.indexOf(d)] + "<br/>" + xMetric + ": " + d[header.indexOf(xMetric)] + "<br/>" + yMetric + ": " + d[header.indexOf(yMetric)])
-    .style("left", (d3.event.pageX + 10) + "px")
-    .style("top", (d3.event.pageY - 28) + "px");
-})
-.on("mouseout", function (d) {
-  var circle = d3.select(this);
-  var index = clickedCircles.indexOf(d[0]);
-
-  if (!circle.classed("clicked")) {
-    circle
-      .classed("hovered", false)
-      .style("fill", "#4682B4B4");
+    // Filter names based on filtered data
+    filteredNames = names.filter(function(name, i) {
+      return filteredData.includes(data[i]); // Assuming data and filteredData have the same structure
+    });
   }
 
-  tooltip.transition()
-    .duration(500)
-    .style("opacity", 0);
-});
+if (selectedAge !== "all") {
+    var ageLimit = parseInt(selectedAge);
+    filteredData = filteredData.filter(function(d) {
+        var age = parseInt(d[header.indexOf('Age')]); // Convert age to integer
+        return age <= ageLimit;
+    });
 
 
-// Display player names for clicked circles
-var clickedCirclesData = filteredData.filter(function(d) {
-  return clickedCircles.includes(d[0]);
-});
-
-var playerNames = svg.selectAll(".player-name")
-  .data(clickedCirclesData, function(d) {
-    return d[0]; // Use unique identifier as the data key
-  });
-
-playerNames.exit().remove();
-
-playerNames.enter()
-  .append("text")
-  .attr("class", "player-name")
-  .merge(playerNames)
-  .attr("x", function(d) {
-    return xScale(d[header.indexOf(xMetric)]) - 20;
-  })
-  .attr("y", function(d) {
-    return yScale(d[header.indexOf(yMetric)]) + 20;
-  })
-  .style("font-family", "Arial")
-  .style("font-size", "12px")
-  .text(function(d) {
-    return filteredNames[filteredData.indexOf(d)];
-  });
-
-svg.select(".x-axis")
-  .transition()
-  .duration(1000)
-  .call(d3.axisBottom(xScale).tickSize(0));
-
-svg.select(".y-axis")
-  .transition()
-  .duration(1000)
-  .call(d3.axisLeft(yScale).tickSize(0));
+    // Filter names based on filtered data
+    filteredNames = names.filter(function(name, i) {
+        return filteredData.includes(data[i]); // Assuming data and filteredData have the same structure
+    });
 }
 
-function circleClick(d, i) {
-var circle = d3.select(this);
-var identifier = d[0]; // Unique identifier of the data point
+var sizeScale = d3.scaleLinear()
+  .domain(d3.extent(filteredData, function(d) { return d[header.indexOf(sizeMetric)]; }))
+  .range([6, 14.8]);  // Adjust the circle size range
 
-var index = clickedCircles.indexOf(identifier);
+  // Update scales with filtered data
+  xScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(xMetric)]; })).nice();
+  yScale.domain(d3.extent(filteredData, function(d) { return d[header.indexOf(yMetric)]; })).nice();
 
-if (index > -1) {
-  circle
-    .classed("clicked", false)
-    .style("fill", "#4682B4B4");
+  
 
-  clickedCircles.splice(index, 1);
+  // Remove the existing median lines and the previous x=y line
+  svg.selectAll(".median-line").remove();
+  svg.selectAll(".xy-line").remove();
+  
+  // Create new median lines
+  if (medianLinesVisible) {
+    // Calculate the new medians based on the selected metrics
+    var xMedian = d3.median(filteredData, function(d) { return d[header.indexOf(xMetric)]; });
+    var yMedian = d3.median(filteredData, function(d) { return d[header.indexOf(yMetric)]; });
 
-  // Remove the player name text element
-  svg.select(".player-name-" + identifier).remove();
-} else {
-  circle
-    .classed("clicked", true)
-    .style("fill", "red");
+    // X-axis median line
+    svg.append("line")
+      .attr("class", "median-line")
+      .attr("x1", xScale(xMedian))
+      .attr("y1", 0)
+      .attr("x2", xScale(xMedian))
+      .attr("y2", height)
+      .style("stroke", "red")
+      .style("stroke-dasharray", "4");
 
-  clickedCircles.push(identifier);
+    // Y-axis median line
+    svg.append("line")
+      .attr("class", "median-line")
+      .attr("x1", 0)
+      .attr("y1", yScale(yMedian))
+      .attr("x2", width)
+      .attr("y2", yScale(yMedian))
+      .style("stroke", "red")
+      .style("stroke-dasharray", "4");
+  }
+  if (
+    ((xMetric === 'xG per 90' || xMetric === 'Goals per 90') &&
+    (yMetric === 'xG per 90' || yMetric === 'Goals per 90')) ||
+    ((xMetric === 'xA per 90' || xMetric === 'Assists per 90') &&
+    (yMetric === 'xA per 90' || yMetric === 'Assists per 90'))
 
-  // Append the player name text element
-  svg.append("text")
-    .attr("class", "player-name player-name-" + identifier)
-    .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
-    .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
+  ) {
+    // Get the smaller maximum value of x and y
+// Calculate the intersection points for the x=y line
+  var minX = d3.min(filteredData, d => d[header.indexOf(xMetric)]);
+  var maxX = d3.max(filteredData, d => d[header.indexOf(xMetric)]);
+  var minY = d3.min(filteredData, d => d[header.indexOf(yMetric)]);
+  var maxY = d3.max(filteredData, d => d[header.indexOf(yMetric)]);
+
+// Get the smaller max between the x and y axes
+  var maxVal = Math.min(maxX, maxY);
+
+// Get the larger min between the x and y axes
+  var minVal = Math.max(minX, minY);
+
+// Now draw the line only within these bounds
+  svg.append("line")
+    .attr("class", "xy-line")
+    .attr("x1", xScale(minVal))
+    .attr("y1", yScale(minVal))
+    .attr("x2", xScale(maxVal))
+    .attr("y2", yScale(maxVal))
+    .style("stroke", "green")
+    .style("stroke-dasharray", "4");
+  }
+
+
+  svg.select(".x-label")
+    .text(xMetric);
+
+  svg.select(".y-label")
+    .text(yMetric);
+
+    circles = svg.selectAll("circle")
+    .data(filteredData)
+
+  circles.exit().remove();
+
+  circles.enter()
+  .append("circle")
+  .merge(circles)
+  .attr("cx", function(d) {
+    return xScale(d[header.indexOf(xMetric)]);
+  })
+  .attr("cy", function(d) {
+    return yScale(d[header.indexOf(yMetric)]);
+  })
+  .attr("r", function(d) {
+    return sizeScale(d[header.indexOf(sizeMetric)]);  // Set the circle radius
+  })
+  .style("fill", function(d) {
+    return getCircleColor(d);  // Set color based on click state and league
+  })
+  .on("mouseover", function(d) {
+    d3.select(this).style("fill", "red");  // Temporarily change color to red on hover
+    tooltip.transition().duration(200).style("opacity", 0.9);
+    tooltip.html(filteredNames[filteredData.indexOf(d)] + "<br/>" + xMetric + ": " + d[header.indexOf(xMetric)] + "<br/>" + yMetric + ": " + d[header.indexOf(yMetric)] + "<br/>" + sizeMetric + ": " + d[header.indexOf(sizeMetric)])
+      .style("left", (d3.event.pageX + 10) + "px")
+      .style("top", (d3.event.pageY - 28) + "px");
+  })
+  .on("mouseout", function(d) {
+    // Revert to original color (either league color or red if clicked)
+    d3.select(this).style("fill", getCircleColor(d));
+    tooltip.transition().duration(500).style("opacity", 0);
+  })
+  .on("click", function(d) {
+    var identifier = d[0];  // Use unique identifier for the circle
+    var index = clickedCircles.indexOf(identifier);
+
+    if (index > -1) {
+      // If already clicked, remove from clickedCircles and remove the name
+      clickedCircles.splice(index, 1);
+      d3.selectAll(".player-name-" + identifier).remove();  // Remove name
+      if (!isBulkSelection) {
+        updateChart();  // Only update the chart if not in bulk selection mode
+      }    } else {
+      // If not clicked, add to clickedCircles and show the name
+      clickedCircles.push(identifier);
+
+      // Append the player name below the circle
+      svg.append("text")
+        .attr("class", "player-name player-name-" + identifier)
+        .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
+        .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
+        .style("font-family", "Arial")
+        .style("font-size", "12px")
+        .style("user-select", "none")      
+        .style("pointer-events", "none")
+        .text(filteredNames[filteredData.indexOf(d)]);
+    }
+
+    // Update the circle color after the click
+    d3.select(this).style("fill", getCircleColor(d));
+  });
+
+  svg.selectAll(".player-name").remove(); // Remove existing player names
+
+  // Display player names for clicked circles
+  var clickedCirclesData = filteredData.filter(function(d) {
+    return clickedCircles.includes(d[0]);
+  });
+
+  var playerNames = svg.selectAll(".player-name")
+    .data(clickedCirclesData, function(d) {
+      return d[0]; // Use unique identifier as the data key
+    });
+
+  playerNames.exit().remove();
+
+  playerNames.enter()
+    .append("text")
+    .attr("class", "player-name")
+    .merge(playerNames)
+    .attr("x", function(d) {
+      return xScale(d[header.indexOf(xMetric)]) - 20;
+    })
+    .attr("y", function(d) {
+      return yScale(d[header.indexOf(yMetric)]) + 20;
+    })
     .style("font-family", "Arial")
     .style("font-size", "12px")
-    .text(filteredNames[filteredData.indexOf(d)]);
+    .style("user-select", "none")      
+    .style("pointer-events", "none")
+    .text(function(d) {
+      return filteredNames[filteredData.indexOf(d)];
+    });
+
+    updateCirclesData(filteredData, filteredNames);
+
+
+  svg.select(".x-axis")
+    .transition()
+    .duration(1000)
+    .call(d3.axisBottom(xScale).tickSize(0));
+
+  svg.select(".y-axis")
+    .transition()
+    .duration(1000)
+    .call(d3.axisLeft(yScale).tickSize(0));
+
+
 }
 
-updateClickedPlayerName(xMetric, yMetric);
 
-circles.on("click", function(d, i) {
-  var clickedCircle = d3.select(this);
-  var circleName = filteredNames[i];
 
-  // Check if the circle is already clicked
-  var isClicked = clickedCircles.includes(circleName);
 
-  if (isClicked) {
-    // Remove the circle from clickedCircles and reset its style
-    clickedCircles = clickedCircles.filter(function(name) {
-      return name !== circleName;
-    });
-    clickedCircle
-      .style("fill", "#4682B4B4")
-      .classed("clicked", false);
+document.getElementById('select-y').addEventListener('change', function(event) {
+    updateChart(event.target.value); // Call updateChart with the selected value
+});
+
+
+document.getElementById('select-x').addEventListener('change', function(event) {
+    updateChart(event.target.value); // Call updateChart with the selected value
+});
+
+
+document.getElementById('select-league').addEventListener('change', function(event) {
+  updateChart('all');
+    updateChart(event.target.value); // Call updateChart with the selected value
+});
+
+
+
+document.getElementById('select-age').addEventListener('change', function(event) {
+  updateChart('all');
+
+    updateChart(event.target.value); // Call updateChart with the selected value
+});
+document.getElementById('select-size').addEventListener('change', function(event) {
+    updateChart(event.target.value); // Call updateChart with the selected value
+});
+
+
+
+
+
+
+function circleClick(d, i) {
+  var circle = d3.select(this);
+  var identifier = d[0]; // Unique identifier of the data point
+
+  var index = clickedCircles.indexOf(identifier);
+
+  if (index > -1) {
+    circle
+      .classed("clicked", false)
+      .style("fill", "#4682B4B4");
+
+    clickedCircles.splice(index, 1);
+
+    // Remove the player name text element
+    svg.select(".player-name-" + identifier).remove();
   } else {
-    // Add the circle to clickedCircles and update its style
-    clickedCircles.push(circleName);
-    clickedCircle
-      .style("fill", "red")
-      .classed("clicked", true);
+    circle
+      .classed("clicked", true)
+      .style("fill", "red");
+
+    clickedCircles.push(identifier);
+
+    // Append the player name text element
+    svg.append("text")
+      .attr("class", "player-name player-name-" + identifier)
+      .attr("x", xScale(d[header.indexOf(xMetric)]) - 20)
+      .attr("y", yScale(d[header.indexOf(yMetric)]) + 20)
+      .style("font-family", "Arial")
+      .style("font-size", "12px")
+      .style("user-select", "none")      
+      .style("pointer-events", "none")
+      .text(filteredNames[filteredData.indexOf(d)]);
   }
 
-  // Update the chart based on the clicked circles
-  updateChart();
-});
+  updateClickedPlayerName(xMetric, yMetric);
 
-// Restore the style for previously clicked circles
-circles.each(function(d, i) {
-  var circleName = filteredNames[i];
-  var clicked = clickedCircles.includes(circleName);
-  d3.select(this).classed("clicked", clicked);
-});
+  circles.on("click", function(d, i) {
+    var clickedCircle = d3.select(this);
+    var circleName = filteredNames[i];
+
+    // Check if the circle is already clicked
+    var isClicked = clickedCircles.includes(circleName);
+
+    if (isClicked) {
+      // Remove the circle from clickedCircles and reset its style
+      clickedCircles = clickedCircles.filter(function(name) {
+        return name !== circleName;
+      });
+      clickedCircle
+        .style("fill", "#4682B4B4")
+        .classed("clicked", false);
+    } else {
+      // Add the circle to clickedCircles and update its style
+      clickedCircles.push(circleName);
+      clickedCircle
+        .style("fill", "red")
+        .classed("clicked", true);
+    }
+
+    // Update the chart based on the clicked circles
+    updateChart();
+  });
+
+  // Restore the style for previously clicked circles
+  circles.each(function(d, i) {
+    var circleName = filteredNames[i];
+    var clicked = clickedCircles.includes(circleName);
+    d3.select(this).classed("clicked", clicked);
+  });
 
 
 }
 
-// Set the default search value
-var defaultSearchValue = "Álex Baena";
 
-// Find the index of the default search value in the filteredNames array
-var defaultSearchIndex = filteredNames.indexOf(defaultSearchValue);
-
-// Check if the default search value exists in the filteredNames array
-if (defaultSearchIndex !== -1) {
-// Get the dot corresponding to the default search value
-var defaultSearchDot = circles.filter(function(d, i) {
-  return i === defaultSearchIndex;
-});
-
-// Trigger a click event on the default search dot
-defaultSearchDot.each(circleClick);
+function updateClickedPlayerName() {
+  svg.selectAll(".player-name")
+    .attr("x", function(d) {
+      return xScale(d[header.indexOf(xMetric)]) - 20;
+    })
+    .attr("y", function(d) {
+      return yScale(d[header.indexOf(yMetric)]) + 20;
+    })
+    .text(function(d) {
+      return clickedCircles.includes(d[0]) ? filteredNames[filteredData.indexOf(d)] : "";
+    });
 }
 
-        })
-        .catch(error => {
-            console.error('Error fetching or processing data:', error);
-        });
- </script>
 
 
-<footer class="footer">
-   
-  <div class="google-play-container">
-
-  <a href='https://play.google.com/store/apps/details?id=com.datamb.datamb.webviewflutter&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'></a>
-<a href='https://apps.apple.com/app/datamb/id6456224067?l=en-GB'><img alt='Download on the App Store' src='https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg'></a></div>
-<div class="logo">
-    <img src="https://i.imgur.com/UurMbGS.png" alt="Álex Baena football stats and data visuals. 2024/25 Álex Baena player data profile compared to top 7 league players. Radar comparison and plot charts" />
-  </div>
-
-  <p class="description">DataMB</p>
-  <p class="info">© All Rights Reserved</p>
-  <hr class="divider" />
-  <div class="sub-footer">
-    <nav>
-      <a class="terms" target="_blank" href="https://datamb.football/privacy">Privacy</a>
-      <a class="privacy" target="_blank" href="mailto:datamb.football@gmail.com">Contact</a>
-      <a class="glossary" target="_blank" href="https://datamb.football/glossary">Glossary</a>
-    </nav>
-    <nav>
-      <a target="_blank" href="https://twitter.com/datamb_" class="twitter-link">
-                <svg width="23" height="22" fill="#000000" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-      </a>
-    </nav>
-  </div>
-</footer>
+function resetSearch() {
+  searchBar.value = '';
+  circles.classed("highlighted", false);
+}
 
 
-</body>
-</html>
+
+function resetMedianLines() {
+  svg.selectAll(".median-line").remove();
+}
+
+
+var toggleButton = document.getElementById("toggle-median-lines");
+toggleButton.addEventListener("click", function() {
+  medianLinesVisible = !medianLinesVisible; // toggle the visibility state
+
+  if (medianLinesVisible) {
+    updateChart();
+  } else {
+    svg.selectAll(".median-line").remove(); // Remove existing median lines
+  }
+});
+
+})
+.catch(error => {
+    console.error('Error fetching or processing data:', error);
+});
+
+function refreshChart() {
+  const button = document.getElementById('toggle-median-lines');
+  
+  if (button) {
+    // Simulate two clicks on the button
+    button.click();
+    button.click();
+  }
+}
+
+
+let isBulkSelection = false; // Global flag to track bulk selection
+
+function selectAllCircles() {
+  isBulkSelection = true;  // Disable chart update during bulk selection
+  const circles = d3.selectAll('#scatter-plot circle');
+
+  // Loop through each circle and trigger a click event
+  circles.each(function() {
+    // Trigger the existing click event on each circle
+    const clickEvent = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+    this.dispatchEvent(clickEvent);  // 'this' refers to the current circle element
+  });
+
+  isBulkSelection = false;  // Re-enable chart update after bulk selection
+  refreshChart()
+}
+</script>
+
+
+
+
+<a href="https://datamb.football/proplotgk24/" target="_self" rel="noopener noreferrer">
+  <button class="button-1" role="button">GK</button></a>
+
+<a href="https://datamb.football/proplotcb24/" target="_self" rel="noopener noreferrer">
+  <button class="button-2" role="button">CB</button></a>
+
+<a href="https://datamb.football/proplotfb24/" target="_self" rel="noopener noreferrer">
+  <button class="button-3" role="button">FB</button></a>
+
+<a href="https://datamb.football/proplotcm24/" target="_self" rel="noopener noreferrer">
+  <button class="button-4" role="button">CM</button></a>
+
+<a href="https://datamb.football/proplotfw24/" target="_self" rel="noopener noreferrer">
+  <button class="button-5" role="button">FW</button></a>
+
+<a href="https://datamb.football/proplotst24/" target="_self" rel="noopener noreferrer">
+  <button class="button-6" role="button">ST</button></a>
+
+  <a href="https://datamb.football/proplotst/" target="_self" rel="noopener noreferrer">
+    <button class="button-7" role="button">&#8594; 23/24</button></a>
+  
+    <div class="dark-mode-toggle" onclick="toggleDarkMode()">
+      <div class="toggle-icon"></div>
+    </div>
+
+
+<script>
+
+    // Function to toggle dark mode
+    function toggleDarkMode() {
+      const body = document.querySelector("body");
+      body.classList.toggle("dark-mode");
+
+      // Store the user's preference in local storage
+      const isDarkMode = body.classList.contains("dark-mode");
+      localStorage.setItem("darkMode", isDarkMode);
+    }
+
+    // Check if user has a stored preference for dark mode
+    const storedDarkMode = localStorage.getItem("darkMode");
+
+    if (storedDarkMode === "true") {
+      const body = document.querySelector("body");
+      body.classList.add("dark-mode");
+    }
+
+  </script>
+		
+    <script>// Function to capture and download the chart area
+      function captureChart() {
+          // Get the SVG element
+          const svg = document.getElementById('scatter-plot');
+          const tooltip = d3.select("#tooltip");
+      
+          // Create a canvas element
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Set canvas size to match SVG
+          const svgRect = svg.getBoundingClientRect();
+          canvas.width = svgRect.width;
+          canvas.height = svgRect.height;
+          
+          // Fill canvas with a white background
+          ctx.fillStyle = '#FFFFFF';  // Set background to white
+          ctx.fillRect(0, 0, canvas.width, canvas.height);  // Fill the entire canvas
+          
+          // Create an image from the SVG
+          const img = new Image();
+          const svgData = new XMLSerializer().serializeToString(svg);
+          
+          // Properly encode the SVG data
+          const encodedData = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
+          img.src = encodedData;
+      
+          img.onload = function() {
+              // Draw the image on the canvas (on top of the white background)
+              ctx.drawImage(img, 0, 0);
+              
+              // Convert canvas to image and trigger download
+              const dataURL = canvas.toDataURL('image/png');
+              const link = document.createElement('a');
+              link.download = 'chart-screenshot.png';
+              link.href = dataURL;
+              link.click();
+          };
+      }
+      
+  
+      // Add click event listener to the screenshot icon
+      document.querySelector('.button-screenshot').addEventListener('click', captureChart);
+  </script>
+  <script>
+    function isMobileDevice() {
+      return /Mobi|Android/i.test(navigator.userAgent);
+    }
+
+
+  </script>
+  
+      
+  <br>		
+  <br>		
+  <br>		
+  <br>
+    
+  </body>
+  </html>
+  
+  
