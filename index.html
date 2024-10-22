@@ -1313,8 +1313,7 @@ var circles = svg.selectAll("circle")
         .style("pointer-events", "none")
         .text(filteredNames[filteredData.indexOf(d)]);
 
-        if ('ontouchstart' in window || navigator.maxTouchPoints) {
-            // Hide the tooltip after X seconds (e.g., 2000 milliseconds) only on mobile
+        if (isMobileDevice()) {            // Hide the tooltip after X seconds (e.g., 2000 milliseconds) only on mobile
             setTimeout(function() {
                 tooltip.style("opacity", 0)
                     .style("left", "-1000px")  // Move tooltip off-screen
@@ -1987,7 +1986,13 @@ function selectAllCircles() {
       // Add click event listener to the screenshot icon
       document.querySelector('.button-screenshot').addEventListener('click', captureChart);
   </script>
+ <script>
+  function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+  }
 
+
+</script>
 		
 <br>		
 <br>		
