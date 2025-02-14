@@ -266,30 +266,34 @@ display: none;
 }
 #toggleSort {
     appearance: none;
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    left: 365px;
-    transform: translateX(-100%);
+    width: 25px;
+    height: 25px;
+    position: relative;
+    display: inline-block;
+    left: 318px;
     font-size: 14px;
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: transparent;
-    top: 53px; /* Align with other controls */
+    border: none;
+    cursor: pointer;
 }
 
-    #toggleSort:not(:checked)::before {
-        content: "\f105"; /* ion-ios-arrow-up */
-        font-family: "Ionicons";
-    }
+#toggleSort:not(:checked)::before {
+    content: "\f105";
+    font-family: "Ionicons";
+}
 
-    /* Descending arrow (checked state) */
-    #toggleSort:checked::before {
-        content: "\f10e"; /* ion-ios-arrow-down */
-        font-family: "Ionicons";
+#toggleSort:checked::before {
+    content: "\f10e";
+    font-family: "Ionicons";
+}
+
+@media only screen and (max-width: 900px) {
+    #toggleSort {
+        left: 320px;
+        margin: 1px 0;
     }
+}
 
    </style>
 </head>
