@@ -105,8 +105,12 @@ select {
 
 
 .metric-selector {
-    width: 280px; /* Adjust the width as needed */
-    margin-left: 4px;
+    width: 280px;
+    transition: width 0.3s ease;
+}
+
+.metric-selector.with-toggle {
+    width: 248px;
 }
 
 /* Style for the table rows */
@@ -258,41 +262,31 @@ display: none;
   display: none;
 }
 
-.metric-selector {
-    width: 260px; /* Adjust the width as needed */
-    margin-left: 0px;
-}
 
 }
 #toggleSort {
     appearance: none;
-    width: 25px;
-    height: 14px;
+    margin-right: 11px;
+    width: 18px;
+    height: 18px;
     position: relative;
     display: inline-block;
-    left: 318px;
-    font-size: 14px;
+    font-size: 12px;
     text-align: center;
     background: transparent;
     border: none;
     cursor: pointer;
+    vertical-align: middle;
 }
 
 #toggleSort:not(:checked)::before {
-    content: "\f105";
+    content: "\f262";
     font-family: "Ionicons";
 }
 
 #toggleSort:checked::before {
-    content: "\f10e";
+    content: "\f25f";
     font-family: "Ionicons";
-}
-
-@media only screen and (max-width: 900px) {
-    #toggleSort {
-        left: 320px;
-        margin: 1px 0;
-    }
 }
 
    </style>
@@ -300,7 +294,7 @@ display: none;
 <script type="text/javascript">document.body.style.visibility="hidden";</script><div id="SFctr" data-org="31002" data-mfl="64c215764c0b6076026762a3"><div style="clear:both"></div></div><script type="text/javascript" src="https://cdn.membershipworks.com/mfl.js"></script>
 <body>
     <select id="metric" class="metric-selector">
-    </select>
+    </select><input type="checkbox" id="toggleSort" style="display: none;">
     <select id="position">
         <option value="Goalkeeper">Goalkeeper</option>
         <option value="Centre-back">Centre-back</option>
@@ -382,7 +376,6 @@ display: none;
       </div><br><br><div class="half-spacing"></div>
       <div class="result-container">
         <table id="playerTable" style="display: none;">
-            <input type="checkbox" id="toggleSort" style="display: none;">
             <tr><th id="metricHeader"></th></tr>
         </table>
     </div>
@@ -925,15 +918,15 @@ function handleSelectorsChange() {
     const selectedPosition = positionSelect.value;
     const selectedLeague = leagueSelect.value;
     const metricOptions = metricSelect.querySelectorAll('option');
-    const extraBreak = document.querySelector('.half-spacing');
+    const metricSelector = document.querySelector('.metric-selector');
 
-    // Show or hide the toggleSortButton and manage <br> tag based on the selected metric
+    // Show or hide the toggleSortButton and adjust metric selector width
     if (selectedMetricIndex === 82 || selectedMetricIndex === 83 || selectedMetricIndex === 84 || selectedMetricIndex === 85) {
-        toggleSortButton.style.display = 'inline-block'; // Show the button
-        if (extraBreak) extraBreak.style.display = 'none'; // Hide the extra spacing
+        toggleSortButton.style.display = 'inline-block';
+        metricSelector.classList.add('with-toggle');
     } else {
-        toggleSortButton.style.display = 'none'; // Hide the button
-        if (extraBreak) extraBreak.style.display = 'block'; // Show the extra spacing
+        toggleSortButton.style.display = 'none';
+        metricSelector.classList.remove('with-toggle');
     }
 
     if (selectedMetricIndex === 5) {
