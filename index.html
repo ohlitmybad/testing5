@@ -267,7 +267,7 @@ display: none;
 #toggleSort {
     appearance: none;
     width: 25px;
-    height: 25px;
+    height: 14px;
     position: relative;
     display: inline-block;
     left: 318px;
@@ -925,12 +925,15 @@ function handleSelectorsChange() {
     const selectedPosition = positionSelect.value;
     const selectedLeague = leagueSelect.value;
     const metricOptions = metricSelect.querySelectorAll('option');
+    const extraBreak = document.querySelector('.half-spacing');
 
-    // Show or hide the toggleSortButton based on the selected metric
+    // Show or hide the toggleSortButton and manage <br> tag based on the selected metric
     if (selectedMetricIndex === 82 || selectedMetricIndex === 83 || selectedMetricIndex === 84 || selectedMetricIndex === 85) {
-        toggleSortButton.style.display = 'inline-block'; // Show the button for column 54
+        toggleSortButton.style.display = 'inline-block'; // Show the button
+        if (extraBreak) extraBreak.style.display = 'none'; // Hide the extra spacing
     } else {
-        toggleSortButton.style.display = 'none'; // Hide the button for all other metrics
+        toggleSortButton.style.display = 'none'; // Hide the button
+        if (extraBreak) extraBreak.style.display = 'block'; // Show the extra spacing
     }
 
     if (selectedMetricIndex === 5) {
