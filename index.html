@@ -462,6 +462,10 @@ window.handleMembershipLogin = function() {
     document.getElementById('loadingContainer').style.display = 'flex';
     // Make body visible again
     document.body.style.visibility = "visible";
+    // Hide loading container after a short delay to ensure it is visible
+    setTimeout(() => {
+        document.getElementById('loadingContainer').style.display = 'none';
+    }, 100); // Adjust the timeout value as needed
 }
 
 // Listen for membership works events
