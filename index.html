@@ -401,54 +401,6 @@ h1 {
         display: block;
     }
 
-.loading-container {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  z-index: 9998;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.loading-text {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.loading-bar {
-  width: 300px;
-  height: 10px;
-  background: #eee;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.loading-progress {
-  width: 0%;
-  height: 100%;
-  background: #2196F3;
-  border-radius: 5px;
-  animation: progress 2s ease-in-out infinite;
-}
-
-@keyframes progress {
-  0% {
-    width: 0%;
-  }
-  50% {
-    width: 100%;
-  }
-  100% {
-    width: 0%;
-  }
-}
 
   </style>
 </head>
@@ -458,12 +410,6 @@ h1 {
 
     <div class="spinner" id="spinner">
   <div class="spinner-icon"></div>
-</div>
-<div class="loading-container" id="loadingContainer">
-  <div class="loading-text">Loading data...</div>
-  <div class="loading-bar">
-    <div class="loading-progress"></div>
-  </div>
 </div>
   <div class="combo-box">
     <input type="text" id="searchInput" class="search-bar" placeholder="Search for a player...">
