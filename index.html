@@ -458,22 +458,27 @@ h1 {
 <script>
 // Create a function to handle visibility after login
 window.handleMembershipLogin = function() {
-    // Show loading container
     document.getElementById('loadingContainer').style.display = 'flex';
-    // Make body visible again
-    document.body.style.visibility = "visible";
-    // Hide loading container after a short delay to ensure it is visible
-    setTimeout(() => {
-        document.getElementById('loadingContainer').style.display = 'none';
-    }, 100); // Adjust the timeout value as needed
-}
 
-// Listen for membership works events
+    // Wait a bit before making the page visible
+    setTimeout(function() {
+        document.body.style.visibility = "visible";
+        document.getElementById('loadingContainer').style.display = 'none';
+    }, 100);  // Small delay to ensure everything loads properly
+};
+
 window.addEventListener('message', function(event) {
     if (event.data === 'membership-authenticated') {
         handleMembershipLogin();
     }
 });
+
+// Ensure it properly checks for authentication in Safari
+setTimeout(function() {
+    if (window.MembershipWorks && window.MembershipWorks.isAuthenticated) {
+        handleMembershipLogin();
+    }
+}, 500);  // 
 
 // Also handle case where user is already logged in
 if (window.MembershipWorks && window.MembershipWorks.isAuthenticated) {
