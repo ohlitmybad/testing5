@@ -349,10 +349,6 @@ worker.onmessage = function(event) {
     allData = event.data;
     document.getElementById('loadingContainer').style.display = 'none';
     
-    // Only set body visibility if membership works isn't controlling it
-    if (!window.MembershipWorks || window.MembershipWorks.isAuthenticated) {
-        document.body.style.visibility = "visible";
-    }
 
 
 
