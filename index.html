@@ -402,7 +402,6 @@ h1 {
     }
 
 .loading-container {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -410,7 +409,7 @@ h1 {
   height: 100%;
   background: rgba(255, 255, 255, 0.9);
   z-index: 9998;
-  display: flex;
+  display: none; /* Only one display property */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -475,6 +474,14 @@ window.addEventListener('message', function(event) {
 if (window.MembershipWorks && window.MembershipWorks.isAuthenticated) {
     handleMembershipLogin();
 }
+
+worker.onerror = function(error) {
+    console.error('Worker error:', error);
+    document.getElementById('loadingContainer').style.display = 'none';
+    if (!window.MembershipWorks || window.MembershipWorks.isAuthenticated) {
+        document.body.style.visibility = "visible";
+    }
+};
 </script>
 
     <div class="spinner" id="spinner">
