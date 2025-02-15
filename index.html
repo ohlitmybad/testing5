@@ -402,7 +402,6 @@ h1 {
     }
 
 .loading-container {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -410,7 +409,6 @@ h1 {
   height: 100%;
   background: rgba(255, 255, 255, 0.9);
   z-index: 9998;
-  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -462,35 +460,27 @@ h1 {
 <script>
 // Create a function to handle visibility after login
 window.handleMembershipLogin = function() {
-    // Show loading container
     const loadingContainer = document.getElementById('loadingContainer');
     if (loadingContainer) {
         loadingContainer.style.display = 'flex';
+        // Force browser reflow
+        loadingContainer.offsetHeight;
     }
-    // Make body visible again
     document.body.style.visibility = "visible";
 }
 
 // Multiple ways to detect authentication
 function checkAuthentication() {
-    // Check if MembershipWorks object exists and is authenticated
-    if (window.MembershipWorks && window.MembershipWorks.isAuthenticated) {
+    if (document.cookie.includes('mw_logged_in=true') || 
+        (window.MembershipWorks && window.MembershipWorks.isAuthenticated)) {
         handleMembershipLogin();
         return;
     }
-    
-    // Check if user is logged in via cookie or other means
-    if (document.cookie.includes('mw_logged_in=true')) {
-        handleMembershipLogin();
-        return;
-    }
-    
-    // If not authenticated, check again in 100ms
-    setTimeout(checkAuthentication, 100);
+    requestAnimationFrame(checkAuthentication);
 }
 
 // Start checking for authentication
-checkAuthentication();
+requestAnimationFrame(checkAuthentication);
 
 // Also listen for membership works events
 window.addEventListener('message', function(event) {
