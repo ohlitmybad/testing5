@@ -455,26 +455,19 @@ h1 {
 <body>
 <script type="text/javascript">document.body.style.visibility="hidden";</script><div id="SFctr" data-org="31002" data-mfl="64c215764c0b6076026762a3"><div style="clear:both"></div></div><script type="text/javascript" src="https://cdn.membershipworks.com/mfl.js"></script>
 <script>
-// Create a function to handle visibility after login
-window.handleMembershipLogin = function() {
-    // Show loading container
-    document.getElementById('loadingContainer').style.display = 'flex';
-    // Make body visible again
-    document.body.style.visibility = "visible";
-}
+        function handleMembershipLogin() {
+            var script = document.createElement('script');
+            script.src = 'main.js';
+            document.body.appendChild(script);
+        }
 
-// Listen for membership works events
-window.addEventListener('message', function(event) {
-    if (event.data === 'membership-authenticated') {
-        handleMembershipLogin();
-    }
-});
+        window.addEventListener('message', function(event) {
+            if (event.data === 'membership-authenticated') {
+                handleMembershipLogin();
+            }
+        });
 
-// Also handle case where user is already logged in
-if (window.MembershipWorks && window.MembershipWorks.isAuthenticated) {
-    handleMembershipLogin();
-}
-</script>
+    </script>
 
     <div class="spinner" id="spinner">
   <div class="spinner-icon"></div>
