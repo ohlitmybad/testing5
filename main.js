@@ -348,6 +348,7 @@ worker.postMessage({ urls: [
 worker.onmessage = function(event) {
     allData = event.data;
 
+    console.log('Data loaded:', allData);
 
 
 
