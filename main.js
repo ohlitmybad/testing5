@@ -2520,7 +2520,6 @@ const metricsToInclude = {
     'Save %': samePositionAndLeagueSaveRatePercentage
 };
 
-
 // Filter out the excluded metrics based on position
 const playerPosition = selectedPlayer.position;
 const metricsToCompute = Object.keys(metricsToInclude).filter(metric => 
@@ -3004,45 +3003,45 @@ else if (selectedSection === 'samePositionAndLeagueWithMinutes') {
 
 
 ]
-        };
+};
 
-        // Reorder the metrics data array based on the selected player's position
-        if (selectedPlayer.position in positionOrder) {
-            const orderedMetricsData = positionOrder[selectedPlayer.position].map(metricName => metricsData.find(metric => metric.name === metricName));
-            metricsData.splice(0, metricsData.length, ...orderedMetricsData);
-        }
+// Reorder the metrics data array based on the selected player's position
+if (selectedPlayer.position in positionOrder) {
+    const orderedMetricsData = positionOrder[selectedPlayer.position].map(metricName => metricsData.find(metric => metric.name === metricName));
+    metricsData.splice(0, metricsData.length, ...orderedMetricsData);
+}
 
 // Modify your sorting logic to conditionally perform sorting based on the state of the sortEnabled variable
 if (sortEnabled) {
-metricsData.sort((a, b) => {
-const rankA = a.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
-const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
+    metricsData.sort((a, b) => {
+        const rankA = a.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
+        const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
-    // Handle "N/A" ranks by assigning a default value (e.g., Infinity)
-    const defaultRank = Infinity;
+        // Handle "N/A" ranks by assigning a default value (e.g., Infinity)
+        const defaultRank = Infinity;
 
-    // Convert "N/A" ranks to a default value
-    const numericRankA = rankA === "N/A" ? defaultRank : parseInt(rankA);
-    const numericRankB = rankB === "N/A" ? defaultRank : parseInt(rankB);
+        // Convert "N/A" ranks to a default value
+        const numericRankA = rankA === "N/A" ? defaultRank : parseInt(rankA);
+        const numericRankB = rankB === "N/A" ? defaultRank : parseInt(rankB);
 
-    // Compare ranks
-    return numericRankA - numericRankB;
-});
+        // Compare ranks
+        return numericRankA - numericRankB;
+    });
 }
 
     // Construct HTML for metrics
 // Construct HTML for metrics
 const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData2 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
+    const filteredData2 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
-            // Get the current value for the selected player and metric
-            const currentValue2 = getMetricValueFunction(filteredData2, selectedPlayer, metric.name);
+    // Get the current value for the selected player and metric
+    const currentValue2 = getMetricValueFunction(filteredData2, selectedPlayer, metric.name);
 
-            // Calculate the rank bar width
-            const rankBarWidth2 = 100 - (((playerRank - 1) / filteredData2.length) * 100);
+    // Calculate the rank bar width
+    const rankBarWidth2 = 100 - (((playerRank - 1) / filteredData2.length) * 100);
 
 
     // Interpolate between blue and red based on rank
@@ -3074,13 +3073,13 @@ const metricsHTML = metricsData.map(metric => {
 }).join('');
 
 // Construct player results HTML
-    playerResults = `
-        ${metricsHTML}
-          `;
-          const selectedAge = parseInt(ageSelect.value);
-        const filteredData2 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
+playerResults = `
+    ${metricsHTML}
+      `;
+const selectedAge = parseInt(ageSelect.value);
+const filteredData2 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
-   
+
 // Define the exclusion mapping
 
 const exclusionMapping = {
@@ -3363,7 +3362,7 @@ document.getElementById('chartButton').innerHTML = `
 </div> `;
         
 
-    createPizzaChart(rankData, player.player);
+createPizzaChart(rankData, player.player);
 // JavaScript part
 let userExclusions = new Set();
 
@@ -5419,45 +5418,45 @@ updateChart();
 
 
 ]
-        };
+};
 
-        // Reorder the metrics data array based on the selected player's position
-        if (selectedPlayer.position in positionOrder) {
-            const orderedMetricsData = positionOrder[selectedPlayer.position].map(metricName => metricsData.find(metric => metric.name === metricName));
-            metricsData.splice(0, metricsData.length, ...orderedMetricsData);
-        }
+// Reorder the metrics data array based on the selected player's position
+if (selectedPlayer.position in positionOrder) {
+    const orderedMetricsData = positionOrder[selectedPlayer.position].map(metricName => metricsData.find(metric => metric.name === metricName));
+    metricsData.splice(0, metricsData.length, ...orderedMetricsData);
+}
 
 // Modify your sorting logic to conditionally perform sorting based on the state of the sortEnabled variable
 if (sortEnabled) {
-metricsData.sort((a, b) => {
-const rankA = a.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
-const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
+    metricsData.sort((a, b) => {
+        const rankA = a.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
+        const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
-    // Handle "N/A" ranks by assigning a default value (e.g., Infinity)
-    const defaultRank = Infinity;
+        // Handle "N/A" ranks by assigning a default value (e.g., Infinity)
+        const defaultRank = Infinity;
 
-    // Convert "N/A" ranks to a default value
-    const numericRankA = rankA === "N/A" ? defaultRank : parseInt(rankA);
-    const numericRankB = rankB === "N/A" ? defaultRank : parseInt(rankB);
+        // Convert "N/A" ranks to a default value
+        const numericRankA = rankA === "N/A" ? defaultRank : parseInt(rankA);
+        const numericRankB = rankB === "N/A" ? defaultRank : parseInt(rankB);
 
-    // Compare ranks
-    return numericRankA - numericRankB;
-});
+        // Compare ranks
+        return numericRankA - numericRankB;
+    });
 }
 
     // Construct HTML for metrics
- // Construct HTML for metrics
- const metricsHTML = metricsData.map(metric => {
+// Construct HTML for metrics
+const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData5 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
+    const filteredData5 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
-            // Get the current value for the selected player and metric
-            const currentValue5 = getMetricValueFunction(filteredData5, selectedPlayer, metric.name);
+    // Get the current value for the selected player and metric
+    const currentValue5 = getMetricValueFunction(filteredData5, selectedPlayer, metric.name);
 
-            // Calculate the rank bar width
-            const rankBarWidth5 = 100 - (((playerRank - 1) / filteredData5.length) * 100);
+    // Calculate the rank bar width
+    const rankBarWidth5 = 100 - (((playerRank - 1) / filteredData5.length) * 100);
 
 
     // Interpolate between blue and red based on rank
@@ -5489,13 +5488,13 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 }).join('');
 
 // Construct player results HTML
-    playerResults = `    
+playerResults = `    
         ${metricsHTML}
           `;
-          const selectedAge = parseInt(ageSelect.value);
-        const filteredData5 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
+const selectedAge = parseInt(ageSelect.value);
+const filteredData5 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
-   
+
 // Define the exclusion mapping
 
 const exclusionMapping = {
