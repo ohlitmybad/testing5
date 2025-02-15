@@ -348,12 +348,7 @@ worker.postMessage({ urls: [
 worker.onmessage = function(event) {
     allData = event.data;
     console.log('Data loaded:', allData);
-    document.getElementById('loadingContainer').style.display = 'none';
-    
-    // Only set body visibility if membership works isn't controlling it
-    if (!window.MembershipWorks || window.MembershipWorks.isAuthenticated) {
-        document.body.style.visibility = "visible";
-    }
+
 
 
 
