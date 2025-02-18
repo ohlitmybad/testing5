@@ -864,27 +864,37 @@ function parseCSV(csv) {
     });
   }
 
-  
   function calculateRankForMetric(data, metric, filterFn, transformFn) {
-    const filteredData = filterFn ? data.filter(filterFn) : data;
-
-    // Apply transformation function if provided
-    const transformedData = transformFn ? filteredData.map(transformFn) : filteredData;
-
-    // Use a Map to store unique players based on their name and team
+    // Use Map for better performance with unique values
     const uniquePlayers = new Map();
-
-    for (const player of transformedData) {
+    
+    // Single pass for filtering and transformation
+    for (const player of data) {
+        // Skip players with 0 value early
+        if (player[metric] === 0) continue;
+        
+        // Apply filter early to reduce processing
+        if (filterFn && !filterFn(player)) continue;
+        
         const key = `${player.player}-${player.team}`;
-        if (!uniquePlayers.has(key)) {
-            uniquePlayers.set(key, player);
-        }
+        
+        // Apply transformation if needed
+        const value = transformFn ? 
+            transformFn(player)[metric] : 
+            player[metric];
+            
+        uniquePlayers.set(key, {
+            player: player.player,
+            team: player.team,
+            [metric]: value
+        });
     }
 
     // Convert Map to array and sort by metric (Descending order)
-    const sortedData = Array.from(uniquePlayers.values()).sort((a, b) => b[metric] - a[metric]);
+    const sortedData = Array.from(uniquePlayers.values())
+        .sort((a, b) => b[metric] - a[metric]);
 
-    // Assign ranks efficiently in a single pass (O(n))
+    // Assign ranks efficiently in a single pass
     let rank = 1;
     let prevValue = null;
     const playerRanks = [];
@@ -899,7 +909,7 @@ function parseCSV(csv) {
         }
 
         if (currentValue !== prevValue) {
-            rank = i + 1; // Rank is based on position in sorted list
+            rank = i + 1;
             prevValue = currentValue;
         }
 
@@ -2476,8 +2486,6 @@ const metricsHTML = metricsData.map(metric => {
     }
 }).join('');
 
-
-
     // Construct player results HTML
     playerResults = `
         ${metricsHTML}
@@ -2491,245 +2499,245 @@ const filteredData1 = parseCSV(csvData).filter(player =>
 
 const exclusionMapping = {
     'Goalkeeper': [
-    'Defensive duels',
-    'Tackles',
-    'Tackles (PAdj)',
-    'Shots blocked',
-    'Interceptions',
-    'Interceptions (PAdj)',
-    'Attacking actions',
-    'Goals',
-    'Non-penalty goals',
-    'Expected goals',
-    'Headed goals',
-    'Shots',
-    'Assists',
-    'Crosses',
-    'Crosses to box',
-    'Dribbles attempted',
-    'Offensive duels',
-    'Touches in box',
-    'Progressive carries',
-    'Accelerations',
-    'Fouls suffered',
-    'Forward passes',
-    'Expected assists',
-    'Shot assists',
-    'Key passes',
-    'Passes to fin 3rd',
-    'Passes to pen box',
-    'Through passes',
-    'Deep completions',
-    'Progressive passes',
-    'Shots conceded',
-    'xG conceded',
-    'Defensive duel %',
-    'Aerial duel %',
-    'SoT %',
-    'Goal conversion',
-    'Cross %',
-    'Dribble success %',
-    'Offensive duel %',
-    'Forward pass %',
-    'Pass to fin 3rd %',
-    'Pass to pen box %',
-    'Progressive pass %',
-    'Pre-assists',
-    'Duels',
-    'Duel %',
-    'Poss +/-',
-    'Forward pass ratio',
-    'xA per 100 passes',
-    'Creativity ratio',
-    'Goals + assists',
-    'NPG+A',
-    'xG + xA',
-    'Goals - xG',
-    'Successful dribbles',
-    'Shots on target',
-    'Accurate crosses',
-    'Offensive duels won',
-    'Defensive duels won',
-    'Aerial duels won',
-    'Passes completed',
-    'Fwd passes comp',
-    'Through passes comp',
-    'Prog passes comp',
-    'Poss won-lost',
-    'Progressive actions',
-    'Duels won',
-    'Non-penalty xG',
-    'npxG/Shot',
-    'npxG + xA',
-    'Touches',
-    'Prog action rate',
-    'Prog passes (PAdj)',
-    'Carrying frequency',
-    'xG per 100T',
-    'Shot frequency',
-    'Dribbles per 100T',
-    'Goal per 100T',
-    'Short passes comp', 'Long passes comp', 'Possessions won'
-    ],
-    'Centre-back': [
-    'Long passes comp', 'Short passes comp', 'SoT %', 'Defensive duels won', 'Long passes', 'Short passes', 
-    'Possessions won',
-    'Tackles',
-    'Shots blocked',
-    'Interceptions',
-    'Attacking actions',
-    'Goals',
-    'Non-penalty goals',
-    'Expected goals',
-    'Headed goals',
-    'Shots',
-    'Assists',
-    'Crosses',
-    'Crosses to box',
-    'Dribbles attempted',
-    'Offensive duels',
-    'Touches in box',
-    'Accelerations',
-    'Fouls suffered',
-    'Forward passes',
-    'Expected assists',
-    'Shot assists',
-    'Key passes',
-    'Passes to fin 3rd',
-    'Passes to pen box',
-    'Through passes',
-    'Deep completions',
-    'Shots conceded',
-    'Clean sheets',
-    'xG conceded',
-    'Prevented goals',
-    'Line exits',
-    'Goal conversion',
-    'Cross %',
-    'Dribble success %',
-    'Offensive duel %',
-    'Forward pass %',
-    'Pass to fin 3rd %',
-    'Pass to pen box %',
-    'Progressive pass %',
-    'Save %',
-    'Pre-assists',
-    'Duels',
-    'Duel %',
-    'Poss +/-',
-    'Forward pass ratio',
-    'xA per 100 passes',
-    'Creativity ratio',
-    'Goals + assists',
-    'NPG+A',
-    'xG + xA',
-    'Goals - xG',
-    'Successful dribbles',
-    'Shots on target',
-    'Accurate crosses',
-    'Offensive duels won',
-    'Defensive duels won',
-    'Aerial duels won',
-    'Passes completed',
-    'Fwd passes comp',
-    'Through passes comp',
-    'Prog passes comp',
-    'Saves',
-    'Poss won-lost',
-    'Progressive actions',
-    'Duels won',
-    'Non-penalty xG',
-    'npxG/Shot',
-    'npxG + xA',
-    'Touches',
-    'Prog action rate',
-    'Prog passes (PAdj)',
-    'Carrying frequency',
-    'xG per 100T',
-    'Shot frequency',
-    'Dribbles per 100T',
-    'Goal per 100T'
-    ], 
-    'Full-back': [
-    'Short passes', 'Long passes','Passes', 'Short pass %', 'Long pass %', 'Aerial duels', 
-    'Defensive duels',
-    'Tackles',
-    'Shots blocked',
-    'Interceptions',
-    'Goals',
-    'Non-penalty goals',
-    'Expected goals',
-    'Headed goals',
-    'Shots',
-    'Assists',
-    'Crosses to box',
-    'Dribbles attempted',
-    'Offensive duels',
-    'Touches in box',
-    'Accelerations',
-    'Fouls suffered',
-    'Forward passes',
-    'Shot assists',
-    'Key passes',
-    'Passes to fin 3rd',
-    'Passes to pen box',
-    'Through passes',
-    'Deep completions',
-    'Shots conceded',
-    'Clean sheets',
-    'xG conceded',
-    'Prevented goals',
-    'Line exits',
-    'SoT %',
-    'Goal conversion',
-    'Dribble success %',
-    'Offensive duel %',
-    'Forward pass %',
-    'Pass to fin 3rd %',
-    'Pass to pen box %',
-    'Progressive pass %',
-    'Save %',
-    'Pre-assists',
-    'Duels',
-    'Duel %',
-    'Poss +/-',
-    'Forward pass ratio',
-    'xA per 100 passes',
-    'Creativity ratio',
-    'Goals + assists',
-    'NPG+A',
-    'xG + xA',
-    'Goals - xG',
-    'Successful dribbles',
-    'Shots on target',
-    'Accurate crosses',
-    'Offensive duels won',
-    'Defensive duels won',
-    'Aerial duels won',
-    'Passes completed',
-    'Fwd passes comp',
-    'Short passes comp',
-    'Long passes comp',
-    'Through passes comp',
-    'Prog passes comp',
-    'Saves',
-    'Poss won-lost',
-    'Progressive actions',
-    'Duels won',
-    'Non-penalty xG',
-    'npxG/Shot',
-    'npxG + xA',
-    'Touches',
-    'Prog action rate',
-    'Prog passes (PAdj)',
-    'Carrying frequency',
-    'xG per 100T',
-    'Shot frequency',
-    'Dribbles per 100T',
-    'Goal per 100T'
-    ]
-    ,
-    'Midfielder': [
+        'Defensive duels',
+        'Tackles',
+        'Tackles (PAdj)',
+        'Shots blocked',
+        'Interceptions',
+        'Interceptions (PAdj)',
+        'Attacking actions',
+        'Goals',
+        'Non-penalty goals',
+        'Expected goals',
+        'Headed goals',
+        'Shots',
+        'Assists',
+        'Crosses',
+        'Crosses to box',
+        'Dribbles attempted',
+        'Offensive duels',
+        'Touches in box',
+        'Progressive carries',
+        'Accelerations',
+        'Fouls suffered',
+        'Forward passes',
+        'Expected assists',
+        'Shot assists',
+        'Key passes',
+        'Passes to fin 3rd',
+        'Passes to pen box',
+        'Through passes',
+        'Deep completions',
+        'Progressive passes',
+        'Shots conceded',
+        'xG conceded',
+        'Defensive duel %',
+        'Aerial duel %',
+        'SoT %',
+        'Goal conversion',
+        'Cross %',
+        'Dribble success %',
+        'Offensive duel %',
+        'Forward pass %',
+        'Pass to fin 3rd %',
+        'Pass to pen box %',
+        'Progressive pass %',
+        'Pre-assists',
+        'Duels',
+        'Duel %',
+        'Poss +/-',
+        'Forward pass ratio',
+        'xA per 100 passes',
+        'Creativity ratio',
+        'Goals + assists',
+        'NPG+A',
+        'xG + xA',
+        'Goals - xG',
+        'Successful dribbles',
+        'Shots on target',
+        'Accurate crosses',
+        'Offensive duels won',
+        'Defensive duels won',
+        'Aerial duels won',
+        'Passes completed',
+        'Fwd passes comp',
+        'Through passes comp',
+        'Prog passes comp',
+        'Poss won-lost',
+        'Progressive actions',
+        'Duels won',
+        'Non-penalty xG',
+        'npxG/Shot',
+        'npxG + xA',
+        'Touches',
+        'Prog action rate',
+        'Prog passes (PAdj)',
+        'Carrying frequency',
+        'xG per 100T',
+        'Shot frequency',
+        'Dribbles per 100T',
+        'Goal per 100T',
+        'Short passes comp', 'Long passes comp', 'Possessions won'
+        ],
+        'Centre-back': [
+        'Long passes comp', 'Short passes comp', 'SoT %', 'Defensive duels won', 'Long passes', 'Short passes', 
+        'Possessions won',
+        'Tackles',
+        'Shots blocked',
+        'Interceptions',
+        'Attacking actions',
+        'Goals',
+        'Non-penalty goals',
+        'Expected goals',
+        'Headed goals',
+        'Shots',
+        'Assists',
+        'Crosses',
+        'Crosses to box',
+        'Dribbles attempted',
+        'Offensive duels',
+        'Touches in box',
+        'Accelerations',
+        'Fouls suffered',
+        'Forward passes',
+        'Expected assists',
+        'Shot assists',
+        'Key passes',
+        'Passes to fin 3rd',
+        'Passes to pen box',
+        'Through passes',
+        'Deep completions',
+        'Shots conceded',
+        'Clean sheets',
+        'xG conceded',
+        'Prevented goals',
+        'Line exits',
+        'Goal conversion',
+        'Cross %',
+        'Dribble success %',
+        'Offensive duel %',
+        'Forward pass %',
+        'Pass to fin 3rd %',
+        'Pass to pen box %',
+        'Progressive pass %',
+        'Save %',
+        'Pre-assists',
+        'Duels',
+        'Duel %',
+        'Poss +/-',
+        'Forward pass ratio',
+        'xA per 100 passes',
+        'Creativity ratio',
+        'Goals + assists',
+        'NPG+A',
+        'xG + xA',
+        'Goals - xG',
+        'Successful dribbles',
+        'Shots on target',
+        'Accurate crosses',
+        'Offensive duels won',
+        'Defensive duels won',
+        'Aerial duels won',
+        'Passes completed',
+        'Fwd passes comp',
+        'Through passes comp',
+        'Prog passes comp',
+        'Saves',
+        'Poss won-lost',
+        'Progressive actions',
+        'Duels won',
+        'Non-penalty xG',
+        'npxG/Shot',
+        'npxG + xA',
+        'Touches',
+        'Prog action rate',
+        'Prog passes (PAdj)',
+        'Carrying frequency',
+        'xG per 100T',
+        'Shot frequency',
+        'Dribbles per 100T',
+        'Goal per 100T'
+        ], 
+        'Full-back': [
+        'Short passes', 'Long passes','Passes', 'Short pass %', 'Long pass %', 'Aerial duels', 
+        'Defensive duels',
+        'Tackles',
+        'Shots blocked',
+        'Interceptions',
+        'Goals',
+        'Non-penalty goals',
+        'Expected goals',
+        'Headed goals',
+        'Shots',
+        'Assists',
+        'Crosses to box',
+        'Dribbles attempted',
+        'Offensive duels',
+        'Touches in box',
+        'Accelerations',
+        'Fouls suffered',
+        'Forward passes',
+        'Shot assists',
+        'Key passes',
+        'Passes to fin 3rd',
+        'Passes to pen box',
+        'Through passes',
+        'Deep completions',
+        'Shots conceded',
+        'Clean sheets',
+        'xG conceded',
+        'Prevented goals',
+        'Line exits',
+        'SoT %',
+        'Goal conversion',
+        'Dribble success %',
+        'Offensive duel %',
+        'Forward pass %',
+        'Pass to fin 3rd %',
+        'Pass to pen box %',
+        'Progressive pass %',
+        'Save %',
+        'Pre-assists',
+        'Duels',
+        'Duel %',
+        'Poss +/-',
+        'Forward pass ratio',
+        'xA per 100 passes',
+        'Creativity ratio',
+        'Goals + assists',
+        'NPG+A',
+        'xG + xA',
+        'Goals - xG',
+        'Successful dribbles',
+        'Shots on target',
+        'Accurate crosses',
+        'Offensive duels won',
+        'Defensive duels won',
+        'Aerial duels won',
+        'Passes completed',
+        'Fwd passes comp',
+        'Short passes comp',
+        'Long passes comp',
+        'Through passes comp',
+        'Prog passes comp',
+        'Saves',
+        'Poss won-lost',
+        'Progressive actions',
+        'Duels won',
+        'Non-penalty xG',
+        'npxG/Shot',
+        'npxG + xA',
+        'Touches',
+        'Prog action rate',
+        'Prog passes (PAdj)',
+        'Carrying frequency',
+        'xG per 100T',
+        'Shot frequency',
+        'Dribbles per 100T',
+        'Goal per 100T'
+        ]
+        ,
+        'Midfielder': [
     'Cross %', 'Short pass %', 'Long pass %', 'Prog passes (PAdj)', 'Aerial duels', 'Short passes', 'Long passes', 
     'Goals', 'Defensive duels won', 'Possessions won', 'Defensive duels', 'Tackles', 'Shots blocked', 'Interceptions', 
     'Non-penalty goals',
@@ -3806,44 +3814,6 @@ const exclusionMapping = {
     'Through passes',
     'Deep completions',
     'Shots conceded',
-    'Clean sheets',
-    'xG conceded',
-    'Prevented goals',
-    'Line exits',
-    'Goal conversion',
-    'Cross %',
-    'Dribble success %',
-    'Offensive duel %',
-    'Forward pass %',
-    'Pass to fin 3rd %',
-    'Pass to pen box %',
-    'Progressive pass %',
-    'Save %',
-    'Pre-assists',
-    'Duels',
-    'Duel %',
-    'Poss +/-',
-    'Forward pass ratio',
-    'xA per 100 passes',
-    'Creativity ratio',
-    'Goals + assists',
-    'NPG+A',
-    'xG + xA',
-    'Goals - xG',
-    'Successful dribbles',
-    'Shots on target',
-    'Accurate crosses',
-    'Offensive duels won',
-    'Defensive duels won',
-    'Aerial duels won',
-    'Passes completed',
-    'Fwd passes comp',
-    'Through passes comp',
-    'Prog passes comp',
-    'Saves',
-    'Poss won-lost',
-    'Progressive actions',
-    'Duels won',
     'Non-penalty xG',
     'npxG/Shot',
     'npxG + xA',
@@ -4764,7 +4734,6 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 });
 }
 
-    // Construct HTML for metrics
     // Construct HTML for metrics
     const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
@@ -5967,7 +5936,6 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 }
 
     // Construct HTML for metrics
-    // Construct HTML for metrics
     const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
         const filteredData4 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position &&
@@ -7008,8 +6976,6 @@ updateChart();
           'Possessions won',
           'Defensive duels',
           'Defensive duels won',
-          'Defensive duels won %',
-          'Aerial duels',
           'Aerial duels won',
           'Aerial duels won %',
           'Sliding tackles',
@@ -7590,7 +7556,7 @@ const exclusionMapping = {
     'Through passes comp',
     'Prog passes comp',
     'Saves',
-    'Goals + assists', 'Long pass %', 'Short pass %', 'Cross %', 'Aerial duel %', 'Defensive duel %', 'Long passes', 'Short passes', 'Passes', 'Aerial duels', 'Successful dribbles', 
+    'Poss won-lost',
     'Progressive actions',
     'Duels won',
     'Non-penalty xG',
@@ -8341,7 +8307,7 @@ updateChart();
             'Aerial duels won %',
             'Defensive duels won'
           ]
-          };
+        };
 
         // Reorder the metrics data array based on the selected player's position
         if (selectedPlayer.position in positionOrder) {
@@ -8367,7 +8333,6 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 });
 }
 
-    // Construct HTML for metrics
     // Construct HTML for metrics
     const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
@@ -8500,8 +8465,7 @@ const exclusionMapping = {
     'xG per 100T',
     'Shot frequency',
     'Dribbles per 100T',
-    'Goal per 100T',
-    'Short passes comp', 'Long passes comp', 'Possessions won'
+    'Goal per 100T'
     ],
     'Centre-back': [
     'Long passes comp', 'Short passes comp', 'SoT %', 'Defensive duels won', 'Long passes', 'Short passes', 
@@ -9541,7 +9505,7 @@ updateChart();
             'Aerial duels won %',
             'Defensive duels won'
           ]
-          };
+        };
 
         // Reorder the metrics data array based on the selected player's position
         if (selectedPlayer.position in positionOrder) {
@@ -10738,7 +10702,7 @@ updateChart();
             'Aerial duels won %',
             'Defensive duels won'
           ]
-          };
+        };
 
         // Reorder the metrics data array based on the selected player's position
         if (selectedPlayer.position in positionOrder) {
