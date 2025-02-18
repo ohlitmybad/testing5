@@ -388,75 +388,83 @@ worker.onmessage = function(event) {
     allData = event.data;
     document.getElementById('loadingContainer').style.display = 'none';
 
+    // Add this at the top level of your code
+    let parsedDataCache = null;
 
+    function displayPlayerRankings(player) {
+        // Parse data only once and cache it
+        if (!parsedDataCache) {
+            parsedDataCache = parseCSV(csvData);
+        }
+        const parsedData = parsedDataCache;
+        
+        // Rest of your existing code using parsedData instead of parseCSV(csvData)
+        // ...
+    }
 
+    const leagues = {
 
+        "Liga Portugal": [
+            "Porto", "Benfica", "Sporting CP", "Sporting Braga", "Vitória Guimarães", "Gil Vicente", "Farense", "Moreirense", "Nacional", "Arouca", "Estoril", "Rio Ave", "Santa Clara", "Boavista", "Casa Pia AC", "Famalicão", "Estrela Amadora", "AVS", "AVS ",
+            ],
+            
+            "Ligue 1": [
+            "PSG", "Lille", "Nice", "Lens", "Nantes", "Reims", "Olympique Lyonnais", "Monaco", "Olympique Marseille", "Brest", "Saint-Étienne", "Montpellier", "Angers SCO", "Le Havre", "Rennes", "Auxerre", "Strasbourg", "Toulouse", 
+            ],
+            
+            "Premier League": [
+            "Manchester City", "Tottenham Hotspur", "Arsenal", "Manchester United", "Aston Villa", "Liverpool", "Southampton", "Everton", "Chelsea", "Brighton", "Newcastle United", "Wolverhampton Wanderers", "Fulham", "Crystal Palace", "Brentford", "Bournemouth", "West Ham United", "Leicester City", "Nottingham Forest", "Ipswich Town", "Wolverhampton",
+            ],
+            
+            "Bundesliga": [
+            "Borussia Dortmund", "Stuttgart", "Wolfsburg", "Bayer Leverkusen", "Borussia M'gladbach", "Augsburg", "Union Berlin", "Eintracht Frankfurt", "Bayern München", "Hoffenheim", "Mainz 05", "Werder Bremen", "RB Leipzig", "St. Pauli", "Holstein Kiel", "Freiburg", "Heidenheim", "Bochum", "Borussia Mgladbach",
+            ],
+            
+            "Eredivisie": [
+            "PSV", "Feyenoord", "Sparta Rotterdam", "Twente", "Utrecht", "Groningen", "PEC Zwolle", "Almere City", "NAC Breda", "NEC", "Fortuna Sittard", "Go Ahead Eagles", "Heerenveen", "Willem II", "Heracles", "AZ", "RKC Waalwijk", "Ajax",
+            ],
+            
+            "La Liga": [
+            "Valencia", "Atlético Madrid", "Barcelona", "Real Madrid", "Real Sociedad", "Real Betis", "Osasuna", "Deportivo Alavés", "Getafe", "Athletic Bilbao", "Girona", "Mallorca", "Villarreal", "Real Valladolid", "Rayo Vallecano", "Leganés", "Sevilla", "Las Palmas", "Celta de Vigo", "Espanyol",
+            ],
+            
+            "Serie A": [
+            "Milan", "Juventus", "Atalanta", "Lazio", "Napoli", "Roma", "Monza", "Internazionale", "Lecce", "Torino", "Parma", "Udinese", "Genoa", "Hellas Verona", "Bologna", "Fiorentina", "Cagliari", "Venezia", "Como", "Empoli", 
+            ],
+            
 
+        "Ecuador Serie A": [
+  "Universidad", "Técnico Universitario", "Orense", "Mushuc Runa", 
+  "Macará", "Libertad (ECU)", "LDU Quito", "Independiente del Valle", 
+  "Imbabura", "Emelec", "El Nacional", "Deportivo Cuenca", 
+  "Delfin", "Cumbayá", "Barcelona (ECU)", "Aucas", "Guayaquil City", "Gualaceo",
+],
 
-        const leagues = {
+"Chile Primera": [
+  "Ñublense", "Unión La Calera", "Unión Española", "Universidad de Chile", 
+  "Universidad Católica", "Palestino", "O'Higgins", "Huachipato", 
+  "Everton (CHI)", "Deportes Iquique", "Coquimbo Unido", "Copiapó", 
+  "Colo Colo", "Cobresal", "Cobreloa", "Audax Italiano", "Curicó Unido", "Magallanes",
+],
 
-            "Liga Portugal": [
-                "Porto", "Benfica", "Sporting CP", "Sporting Braga", "Vitória Guimarães", "Gil Vicente", "Farense", "Moreirense", "Nacional", "Arouca", "Estoril", "Rio Ave", "Santa Clara", "Boavista", "Casa Pia AC", "Famalicão", "Estrela Amadora", "AVS", "AVS ",
-                ],
-                
-                "Ligue 1": [
-                "PSG", "Lille", "Nice", "Lens", "Nantes", "Reims", "Olympique Lyonnais", "Monaco", "Olympique Marseille", "Brest", "Saint-Étienne", "Montpellier", "Angers SCO", "Le Havre", "Rennes", "Auxerre", "Strasbourg", "Toulouse", 
-                ],
-                
-                "Premier League": [
-                "Manchester City", "Tottenham Hotspur", "Arsenal", "Manchester United", "Aston Villa", "Liverpool", "Southampton", "Everton", "Chelsea", "Brighton", "Newcastle United", "Wolverhampton Wanderers", "Fulham", "Crystal Palace", "Brentford", "Bournemouth", "West Ham United", "Leicester City", "Nottingham Forest", "Ipswich Town", "Wolverhampton",
-                ],
-                
-                "Bundesliga": [
-                "Borussia Dortmund", "Stuttgart", "Wolfsburg", "Bayer Leverkusen", "Borussia M'gladbach", "Augsburg", "Union Berlin", "Eintracht Frankfurt", "Bayern München", "Hoffenheim", "Mainz 05", "Werder Bremen", "RB Leipzig", "St. Pauli", "Holstein Kiel", "Freiburg", "Heidenheim", "Bochum", "Borussia Mgladbach",
-                ],
-                
-                "Eredivisie": [
-                "PSV", "Feyenoord", "Sparta Rotterdam", "Twente", "Utrecht", "Groningen", "PEC Zwolle", "Almere City", "NAC Breda", "NEC", "Fortuna Sittard", "Go Ahead Eagles", "Heerenveen", "Willem II", "Heracles", "AZ", "RKC Waalwijk", "Ajax",
-                ],
-                
-                "La Liga": [
-                "Valencia", "Atlético Madrid", "Barcelona", "Real Madrid", "Real Sociedad", "Real Betis", "Osasuna", "Deportivo Alavés", "Getafe", "Athletic Bilbao", "Girona", "Mallorca", "Villarreal", "Real Valladolid", "Rayo Vallecano", "Leganés", "Sevilla", "Las Palmas", "Celta de Vigo", "Espanyol",
-                ],
-                
-                "Serie A": [
-                "Milan", "Juventus", "Atalanta", "Lazio", "Napoli", "Roma", "Monza", "Internazionale", "Lecce", "Torino", "Parma", "Udinese", "Genoa", "Hellas Verona", "Bologna", "Fiorentina", "Cagliari", "Venezia", "Como", "Empoli", 
-                ],
-                
-
-            "Ecuador Serie A": [
-      "Universidad", "Técnico Universitario", "Orense", "Mushuc Runa", 
-      "Macará", "Libertad (ECU)", "LDU Quito", "Independiente del Valle", 
-      "Imbabura", "Emelec", "El Nacional", "Deportivo Cuenca", 
-      "Delfin", "Cumbayá", "Barcelona (ECU)", "Aucas", "Guayaquil City", "Gualaceo",
-   ],
-
-   "Chile Primera": [
-      "Ñublense", "Unión La Calera", "Unión Española", "Universidad de Chile", 
-      "Universidad Católica", "Palestino", "O'Higgins", "Huachipato", 
-      "Everton (CHI)", "Deportes Iquique", "Coquimbo Unido", "Copiapó", 
-      "Colo Colo", "Cobresal", "Cobreloa", "Audax Italiano", "Curicó Unido", "Magallanes",
-   ],
-
+  
     
-      
-   "Paraguay Primera": [
-      "Tacuary", "Sportivo Trinidense", "Sportivo Luqueño", "Sportivo Ameliano", 
-      "Sol de América", "Olimpia", "Nacional Asunción", "Libertad", 
-      "Guaraní", "General Caballero JLM", "Cerro Porteño", "2 de Mayo", "Resistencia", "Guaireña",
-   ],
+"Paraguay Primera": [
+  "Tacuary", "Sportivo Trinidense", "Sportivo Luqueño", "Sportivo Ameliano", 
+  "Sol de América", "Olimpia", "Nacional Asunción", "Libertad", 
+  "Guaraní", "General Caballero JLM", "Cerro Porteño", "2 de Mayo", "Resistencia", "Guaireña",
+],
 
 
-   "Colombia Primera A": [
-      "Águilas Doradas", "Tolima", "Santa Fe", "Medellín", 
-      "Patriotas Boyacá", "Once Caldas", "Millonarios", "La Equidad", 
-      "Junior", "Jaguares de Córdoba", "Fortaleza (COL)", "Envigado", 
-      "Deportivo Pereira", "Deportivo Pasto", "Deportivo Cali", "Boyacá Chicó", 
-      "Atlético Nacional", "Atlético Bucaramanga", "América de Cali", "Alianza", "Atlético Huila", "Unión Magdalena",
-   ],
+"Colombia Primera A": [
+  "Águilas Doradas", "Tolima", "Santa Fe", "Medellín", 
+  "Patriotas Boyacá", "Once Caldas", "Millonarios", "La Equidad", 
+  "Junior", "Jaguares de Córdoba", "Fortaleza (COL)", "Envigado", 
+  "Deportivo Pereira", "Deportivo Pasto", "Deportivo Cali", "Boyacá Chicó", 
+  "Atlético Nacional", "Atlético Bucaramanga", "América de Cali", "Alianza", "Atlético Huila", "Unión Magdalena",
+],
 
-   
-"Argentina Primera": [
+ "Argentina Primera": [
 "Argentinos Juniors", "Atlético Tucumán", "Banfield", "Barracas Central", "Belgrano",
 "Boca Juniors", "Central Córdoba SdE", "Defensa y Justicia", "Deportivo Riestra", "Estudiantes",
 "Gimnasia La Plata", "Godoy Cruz", "Huracán", "Independiente", "Independiente Rivadavia",
@@ -959,7 +967,12 @@ function displaySelectedPlayer() {
 
 
 function displayPlayerRankings(player) {
-    const parsedData = parseCSV(csvData);
+    // Parse data only once and cache it
+    if (!parsedDataCache) {
+        parsedDataCache = parseCSV(csvData);
+    }
+    const parsedData = parsedDataCache;
+    
     const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position  &&
     p.team === player.team);
     const ageSelect = document.getElementById('ageSelect');
@@ -4278,86 +4291,6 @@ document.getElementById('chartButton').innerHTML = `
                 <!-- Checkboxes will be generated here by JavaScript -->
             </div>
 </div> `;
-        
-
-    createPizzaChart(rankData, player.player);
-// JavaScript part
-let userExclusions = new Set();
-
-// Function to populate checkboxes in the dropdown
-function populateMetricControls() {
-    const metricControlsDiv = document.getElementById('metric-controls');
-    metricControlsDiv.innerHTML = ''; // Clear any existing content
-
-    Object.keys(metricsToInclude).forEach(metric => {
-        const isExcluded = exclusionMapping[playerPosition]?.includes(metric) || userExclusions.has(metric);
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.setAttribute('data-metric', metric);
-        checkbox.checked = !isExcluded;
-
-        const label = document.createElement('label');
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(metric));
-        
-        metricControlsDiv.appendChild(label);
-
-        // Add event listener to handle changes
-        checkbox.addEventListener('change', function() {
-            if (this.checked) {
-                // Remove the metric from userExclusions and exclusionMapping
-                userExclusions.delete(metric);
-
-                // Remove the metric from exclusionMapping array for the player's position
-                const index = exclusionMapping[playerPosition]?.indexOf(metric);
-                if (index !== -1) {
-                    exclusionMapping[playerPosition].splice(index, 1);
-                }
-            } else {
-                userExclusions.add(metric);
-            }
-            updateChart();
-        });
-    });
-}
-function toggleDropdown() {
-    document.querySelector('.dropdown').classList.toggle('show');
-}
-
-// Function to update the chart based on current exclusions
-
-// Function to update the chart based on current exclusions
-function updateChart() {
-    // Filter out the excluded metrics based on position and user selections
-    const metricsToCompute = Object.keys(metricsToInclude).filter(metric => 
-        !exclusionMapping[playerPosition]?.includes(metric) && !userExclusions.has(metric)
-    );
-
-    const rankData = {};
-
-    // Compute the rank data only for the included metrics
-    metricsToCompute.forEach(metric => {
-        const data = metricsToInclude[metric];
-        const playerData = data.find(rank => rank.player === player.player && rank.team === player.team);
-
-        rankData[metric] =  playerData.rank === "N/A" || playerData.rank === "0"
-            ? 1
-            : playerData.rank === 1
-                ? 0
-                : playerData.rank / filteredData2.length;
-    });
-
-    // Redraw the chart with the updated rank data
-    createPizzaChart(rankData, player.player);
-}
-document.querySelector('.dropbtn').addEventListener('click', toggleDropdown);
-
-// Initial setup: populate the dropdown with checkboxes
-populateMetricControls();
-
-// Initial chart rendering
-updateChart();
-
 }
      else if (selectedSection === 'position') {
     // Define the metrics and their corresponding data
@@ -10324,11 +10257,6 @@ function populateMetricControls() {
         });
     });
 }
-function toggleDropdown() {
-    document.querySelector('.dropdown').classList.toggle('show');
-}
-
-// Function to update the chart based on current exclusions
 
 // Function to update the chart based on current exclusions
 function updateChart() {
@@ -10354,6 +10282,7 @@ function updateChart() {
     // Redraw the chart with the updated rank data
     createPizzaChart(rankData, player.player);
 }
+
 document.querySelector('.dropbtn').addEventListener('click', toggleDropdown);
 
 // Initial setup: populate the dropdown with checkboxes
