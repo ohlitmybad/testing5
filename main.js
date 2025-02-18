@@ -391,16 +391,7 @@ worker.onmessage = function(event) {
     // Add this at the top level of your code
     let parsedDataCache = null;
 
-    function displayPlayerRankings(player) {
-        // Parse data only once and cache it
-        if (!parsedDataCache) {
-            parsedDataCache = parseCSV(csvData);
-        }
-        const parsedData = parsedDataCache;
-        
-        // Rest of your existing code using parsedData instead of parseCSV(csvData)
-        // ...
-    }
+
 
     const leagues = {
 
