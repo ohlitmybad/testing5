@@ -3,9 +3,10 @@ self.onmessage = async function(event) {
     
     const BATCH_SIZE = 6; // Process 6 files at a time
     const cache = new Map();
+    let urls = event.data.urls;
     let allData = [];
     let processedFiles = 0;
-    let urls = event.data.urls;
+    
     // Process files in batches
     async function processBatch(startIndex) {
         const endIndex = Math.min(startIndex + BATCH_SIZE, urls.length);
@@ -96,6 +97,6 @@ self.onmessage = async function(event) {
         }
     }
 
-    // Start processing immediately
+    // Start processing with first batch
     await processBatch(0);
 };
