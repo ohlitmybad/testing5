@@ -2405,7 +2405,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 }// Construct HTML for metrics
 const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-    const filteredData1 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
+    const filteredData1 = parsedData.filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
         (!selectedAge || player.age <= selectedAge));
         const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
             // Get the current value for the selected player and metric
@@ -2451,7 +2451,7 @@ const metricsHTML = metricsData.map(metric => {
         ${metricsHTML}
          `;
          const selectedAge = parseInt(ageSelect.value);
-const filteredData1 = parseCSV(csvData).filter(player => 
+const filteredData1 = parsedData.filter(player => 
     player.position === selectedPlayer.position && 
     player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge)
@@ -3615,7 +3615,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 // Construct HTML for metrics
 const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData2 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
+        const filteredData2 = parsedData.filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -3659,7 +3659,7 @@ const metricsHTML = metricsData.map(metric => {
         ${metricsHTML}
           `;
           const selectedAge = parseInt(ageSelect.value);
-        const filteredData2 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
+        const filteredData2 = parsedData.filter(player => player.position === selectedPlayer.position && player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
    
 // Define the exclusion mapping
@@ -4816,7 +4816,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
     // Construct HTML for metrics
     const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData3 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position &&
+        const filteredData3 = parsedData.filter(player => player.position === selectedPlayer.position &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -4861,7 +4861,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
         ${metricsHTML}
           `;
           const selectedAge = parseInt(ageSelect.value);
-        const filteredData3 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position &&
+        const filteredData3 = parsedData.filter(player => player.position === selectedPlayer.position &&
     (!selectedAge || player.age <= selectedAge) );
    
 // Define the exclusion mapping
@@ -6017,7 +6017,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
     // Construct HTML for metrics
     const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData4 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position &&
+        const filteredData4 = parsedData.filter(player => player.position === selectedPlayer.position &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -6062,7 +6062,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
         ${metricsHTML}
           `;
           const selectedAge = parseInt(ageSelect.value);
-        const filteredData4 = parseCSV(csvData).filter(player => player.position === selectedPlayer.position &&
+        const filteredData4 = parsedData.filter(player => player.position === selectedPlayer.position &&
     (!selectedAge || player.age <= selectedAge) );
    
     
@@ -7217,7 +7217,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
  // Construct HTML for metrics
  const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData5 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
+        const filteredData5 = parsedData.filter(player => player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -7261,7 +7261,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
         ${metricsHTML}
           `;
           const selectedAge = parseInt(ageSelect.value);
-        const filteredData5 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
+        const filteredData5 = parsedData.filter(player => player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
    
 // Define the exclusion mapping
@@ -8417,7 +8417,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
     // Construct HTML for metrics
     const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData6 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
+        const filteredData6 = parsedData.filter(player => player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -8462,7 +8462,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
         ${metricsHTML}
           `;
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData6 = parseCSV(csvData).filter(player => player.league === selectedPlayer.league &&
+        const filteredData6 = parsedData.filter(player => player.league === selectedPlayer.league &&
     (!selectedAge || player.age <= selectedAge) );
    
 // Define the exclusion mapping
@@ -9617,7 +9617,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
 // Construct HTML for metrics
 const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData7 = parseCSV(csvData).filter(player =>
+        const filteredData7 = parsedData.filter(player =>
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -9662,7 +9662,7 @@ const metricsHTML = metricsData.map(metric => {
         ${metricsHTML}
           `;
           const selectedAge = parseInt(ageSelect.value);
-        const filteredData7 = parseCSV(csvData).filter(player =>
+        const filteredData7 = parsedData.filter(player =>
     (!selectedAge || player.age <= selectedAge) );
    
 // Define the exclusion mapping
@@ -10818,7 +10818,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
   // Construct HTML for metrics
   const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
-        const filteredData8 = parseCSV(csvData).filter(player =>
+        const filteredData8 = parsedData.filter(player =>
     (!selectedAge || player.age <= selectedAge) );
     const playerRank = metric.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
 
@@ -10861,7 +10861,7 @@ const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.
         ${metricsHTML}
           `;
           const selectedAge = parseInt(ageSelect.value);
-        const filteredData8 = parseCSV(csvData).filter(player =>
+        const filteredData8 = parsedData.filter(player =>
     (!selectedAge || player.age <= selectedAge) );
    
 // Define the exclusion mapping
@@ -11544,7 +11544,7 @@ updateChart();
 
 
 
-const parsedData = parseCSV(csvData);
+const parsedData = parsecsv(csvData);
 populatePlayerOptions();
 
 function populatePlayerOptions() {
