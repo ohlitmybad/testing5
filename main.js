@@ -385,7 +385,7 @@ worker.postMessage({ urls: [
 ] });
 
 worker.onmessage = function(event) {
-    allData = event.data;
+    allData = event.data.data;
     document.getElementById('loadingContainer').style.display = 'none';
 
 
