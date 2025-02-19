@@ -11544,7 +11544,7 @@ updateChart();
 
 
 
-const parsedData = parsecsv(csvData);
+const parsedData = parseCSV(csvData);
 populatePlayerOptions();
 
 function populatePlayerOptions() {
