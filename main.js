@@ -367,25 +367,6 @@ const loadingProgress = document.querySelector('.loading-progress');
 const loadingText = document.querySelector('.loading-text');
 const loadingContainer = document.getElementById('loadingContainer');
 
-worker.onmessage = function(event) {
-    switch(event.data.type) {
-        case 'progress':
-            loadingProgress.style.width = `${event.data.progress}%`;
-            loadingText.textContent = `Loading data... ${event.data.progress}%`;
-            break;
-            
-        case 'complete':
-            allData = event.data.data;
-            loadingContainer.style.display = 'none';
-            initializeApp(); // Your initialization function
-            break;
-            
-        case 'error':
-            loadingText.textContent = 'Error loading data. Please refresh the page.';
-            console.error('Loading error:', event.data.error);
-            break;
-    }
-};
 
 worker.postMessage({ urls: [
     'https://datamb.football/database/CURRENT/PRO2425/GK/GK.xlsx',
@@ -409,7 +390,26 @@ worker.postMessage({ urls: [
 ] });
 
 worker.onmessage = function(event) {
-    allData = event.data;
+    if (event.data.type) {
+        // Handle progress/status messages
+        switch(event.data.type) {
+            case 'progress':
+                loadingProgress.style.width = `${event.data.progress}%`;
+                loadingText.textContent = `Loading data... ${event.data.progress}%`;
+                break;
+                
+            case 'complete':
+                allData = event.data.data;
+                loadingContainer.style.display = 'none';
+                initializeApp(); // Your initialization function
+                break;
+                
+            case 'error':
+                loadingText.textContent = 'Error loading data. Please refresh the page.';
+                console.error('Loading error:', event.data.error);
+                break;
+        }
+    } else {    allData = event.data;
     document.getElementById('loadingContainer').style.display = 'none';
 
 
@@ -12305,7 +12305,7 @@ document.getElementById('toggleSortingButton').addEventListener('change', functi
 });
 
 
-};function toggleActive(element) {
+}};function toggleActive(element) {
   element.classList.toggle('active');
 }
 
