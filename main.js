@@ -864,8 +864,6 @@ function parseCSV(csv) {
       };
     });
   }
-
-  
   function calculateRankForMetric(data, metric, filterFn, transformFn) {
     // Early filtering and transformation to minimize data processing
     let processedData = filterFn ? data.filter(filterFn) : data;
@@ -889,11 +887,12 @@ function parseCSV(csv) {
     let currentRank = 1;
     let prevValue = null;
 
-    for (const player of sortedData) {
+    for (let i = 0; i < sortedData.length; i++) {
+        const player = sortedData[i];
         const currentValue = player[metric];
         
         if (currentValue !== prevValue) {
-            currentRank = playerRanks.length + 1;
+            currentRank = i + 1;  // Use index + 1 instead of playerRanks.length + 1
             prevValue = currentValue;
         }
 
