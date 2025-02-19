@@ -2499,22 +2499,32 @@ if (selectedAge && selectedAge !== '') {
         }
 
 // Modify your sorting logic to conditionally perform sorting based on the state of the sortEnabled variable
+// Modify your sorting logic to conditionally perform sorting based on the state of the sortEnabled variable
 if (sortEnabled) {
-  metricsData.sort((a, b) => {
-const rankA = a.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
-const rankB = b.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team).rank;
+    metricsData.sort((a, b) => {
+        // Add null checks for a.data and b.data
+        if (!a.data || !b.data) return 0;
 
-    // Handle "N/A" ranks by assigning a default value (e.g., Infinity)
-    const defaultRank = Infinity;
+        // Safely find ranks with null checks
+        const playerA = a.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team);
+        const playerB = b.data.find(rank => rank.player === selectedPlayer.player && rank.team === selectedPlayer.team);
 
-    // Convert "N/A" ranks to a default value
-    const numericRankA = rankA === "N/A" ? defaultRank : parseInt(rankA);
-    const numericRankB = rankB === "N/A" ? defaultRank : parseInt(rankB);
+        // Get ranks with null checks
+        const rankA = playerA?.rank || "N/A";
+        const rankB = playerB?.rank || "N/A";
 
-    // Compare ranks
-    return numericRankA - numericRankB;
-});
-}// Construct HTML for metrics
+        // Handle "N/A" ranks by assigning a default value (e.g., Infinity)
+        const defaultRank = Infinity;
+
+        // Convert "N/A" ranks to a default value
+        const numericRankA = rankA === "N/A" ? defaultRank : parseInt(rankA);
+        const numericRankB = rankB === "N/A" ? defaultRank : parseInt(rankB);
+
+        // Compare ranks
+        return numericRankA - numericRankB;
+    });
+}
+// Construct HTML for metrics
 const metricsHTML = metricsData.map(metric => {
     const selectedAge = parseInt(ageSelect.value);
     const filteredData1 = parseCSV(csvData).filter(player => player.position === positionToNumber[selectedPlayer.position] && player.league === leagueToNumber[selectedPlayer.league] &&
