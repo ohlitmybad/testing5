@@ -363,7 +363,26 @@ function updateCurrentMetricValue(parsedData, selectedPlayer, metric) {
 let allData = [];
 let worker = new Worker('xlsxWorker.js');
 
-worker.postMessage({ type: 'start' });
+worker.postMessage({ urls: [
+    'https://datamb.football/database/CURRENT/PRO2425/GK/GK.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2024/GK/GK.xlsx',
+    'https://datamb.football/database/CURRENT/TOP72425/GK/GK.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2425/CB/CB.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2024/CB/CB.xlsx',
+    'https://datamb.football/database/CURRENT/TOP72425/CB/CB.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2425/FB/FB.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2024/FB/FB.xlsx',
+    'https://datamb.football/database/CURRENT/TOP72425/FB/FB.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2425/CM/CM.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2024/CM/CM.xlsx',
+    'https://datamb.football/database/CURRENT/TOP72425/CM/CM.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2425/FW/FW.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2024/FW/FW.xlsx',
+    'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2425/ST/ST.xlsx',
+    'https://datamb.football/database/CURRENT/PRO2024/ST/ST.xlsx',
+    'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx'
+] });
 
 
 worker.onmessage = function(event) {
