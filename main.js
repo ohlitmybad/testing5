@@ -963,7 +963,6 @@ function displaySelectedPlayer() {
     
 }
 
-
 function displayPlayerRankings(player) {
     // Parse data only once and cache it
     if (!parsedDataCache) {
@@ -971,15 +970,20 @@ function displayPlayerRankings(player) {
     }
     const parsedData = parsedDataCache;
     
-    const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position  &&
-    p.team === player.team);
-    const ageSelect = document.getElementById('ageSelect');
-    const selectedAge = parseInt(ageSelect.value);
-    const filteredData = selectedAge ? parsedData.filter(p => p.age <= selectedAge) : parsedData;
+    const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position && p.team === player.team);
+    
+    // Apply ALL filters at once
+    const selectedAge = parseInt(document.getElementById('ageSelect').value);
+    const filteredData = parsedData.filter(p => {
+        // Age filter
+        if (selectedAge && p.age > selectedAge) return false;
+        return true;
+    });
     const toggleMetrics = document.getElementById('toggleMetrics').checked; // Check if toggle is toggled
     const getMetricValueFunction = toggleMetrics ? updateCurrentMetricValue : getCurrentMetricValue;
 
 
+	
 // Metric: defActions
 const samePositionAndLeagueActions = calculateRankForMetric(filteredData, 'defActions', p => p.position === selectedPlayer.position && p.league === selectedPlayer.league);
 const samePositionAndLeagueActionsWithMinutes = calculateRankForMetric(filteredData, 'defActions', p => p.position === selectedPlayer.position && p.league === selectedPlayer.league, p => ({...p, defActions: Math.round(p.defActions * p.minutes / 90)}));
