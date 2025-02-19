@@ -1,4 +1,3 @@
-
       // Function to handle spinner display
       function showSpinner() {
         spinner.style.display = 'block';
