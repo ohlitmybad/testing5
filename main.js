@@ -866,107 +866,80 @@ function parseCSV(csv) {
   }
 
   
-  function calculateRankForMetric(data, metric, filterFn, transformFn) {
-    const filteredData = filterFn ? data.filter(filterFn) : data;
-
-    // Apply transformation function if provided
-    const transformedData = transformFn ? filteredData.map(transformFn) : filteredData;
-
-    // Use a Map to store unique players based on their name and team
-    const uniquePlayers = new Map();
-
-    for (const player of transformedData) {
-        const key = `${player.player}-${player.team}`;
-        if (!uniquePlayers.has(key)) {
-            uniquePlayers.set(key, player);
-        }
-    }
-
-    // Convert Map to array and sort by metric (Descending order)
-    const sortedData = Array.from(uniquePlayers.values()).sort((a, b) => b[metric] - a[metric]);
-
-    // Assign ranks efficiently in a single pass (O(n))
-    let rank = 1;
-    let prevValue = null;
-    const playerRanks = [];
-
-    for (let i = 0; i < sortedData.length; i++) {
-        const player = sortedData[i];
-        const currentValue = player[metric];
-
-        if (currentValue === 0) {
-            playerRanks.push({ player: player.player, team: player.team, rank: "N/A" });
-            continue;
-        }
-
-        if (currentValue !== prevValue) {
-            rank = i + 1; // Rank is based on position in sorted list
-            prevValue = currentValue;
-        }
-
-        playerRanks.push({ player: player.player, team: player.team, rank });
-    }
-
-    return playerRanks;
-}
-
-
-
-
 function getRankSuffix(rank) {
     // Check if rank is "N/A"
     if (rank === "N/A") {
-        return ''; // Return empty string for "N/A"
+      return ''; // Return empty string for "N/A"
     }
-
     const lastDigit = rank % 10;
     const lastTwoDigits = rank % 100;
     if (lastTwoDigits >= 11 && lastTwoDigits <= 13) {
-        return 'th';
+      return 'th';
     }
     switch (lastDigit) {
-        case 1: return 'st';
-        case 2: return 'nd';
-        case 3: return 'rd';
-        default: return 'th';
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
     }
-}
-
-
-// Define a global variable to track sorting preference
-let sortEnabled = true;
-
-
-
-
-
-function displaySelectedPlayer() {
-  document.getElementById('spinner').style.display = 'block';
-  const playerSelect = document.getElementById('playerSelect');
-  const selectedIndex = playerSelect.selectedIndex;
-  const selectedPlayerName = playerSelect.options[selectedIndex].value;
-  const selectedPlayerPosition = playerSelect.options[selectedIndex].textContent.split(', ')[1]; // Extract position
-  const selectedPlayerTeam = playerSelect.options[selectedIndex].textContent.split(', ')[2]; // Extract position
-  const selectedPlayer = {
+    }
+    
+    
+    // Define a global variable to track sorting preference
+    let sortEnabled = true;
+    
+    
+    function displaySelectedPlayer() {
+    document.getElementById('spinner').style.display = 'block';
+    const playerSelect = document.getElementById('playerSelect');
+    const selectedIndex = playerSelect.selectedIndex;
+    const selectedPlayerName = playerSelect.options[selectedIndex].value;
+    const selectedPlayerPosition = playerSelect.options[selectedIndex].textContent.split(', ')[1]; // Extract position
+    const selectedPlayerTeam = playerSelect.options[selectedIndex].textContent.split(', ')[2]; // Extract position
+    const selectedPlayer = {
     player: selectedPlayerName,
     team: selectedPlayerTeam,
     position: selectedPlayerPosition // Include position in the selectedPlayer object
-  };
-  displayPlayerRankings(selectedPlayer);
-  document.getElementById('spinner').style.display = 'none';
+    };
+    displayPlayerRankings(selectedPlayer);
+    document.getElementById('spinner').style.display = 'none';
     
-}
-
-
-function displayPlayerRankings(player) {
-    const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position  &&
-    p.team === player.team);
-    const ageSelect = document.getElementById('ageSelect');
-    const selectedAge = parseInt(ageSelect.value);
-    const filteredData = selectedAge ? parsedData.filter(p => p.age <= selectedAge) : parsedData;
-    const toggleMetrics = document.getElementById('toggleMetrics').checked; // Check if toggle is toggled
-    const getMetricValueFunction = toggleMetrics ? updateCurrentMetricValue : getCurrentMetricValue;
-
+    }
+    
+    
+    function calculateRankForMetric(data, metric, filterFn, transformFn) {
+        const processedData = (filterFn ? data.filter(filterFn) : data).map(transformFn || (p => p));
+        
+        // Store the first occurrence of each unique player-team combo
+        const uniquePlayers = new Map();
+        for (const player of processedData) {
+            const key = `${player.player}-${player.team}`;
+            if (!uniquePlayers.has(key)) {
+                uniquePlayers.set(key, player);
+            }
+        }
+        // Sort unique players by metric (Descending order)
+        const sortedData = [...uniquePlayers.values()].sort((a, b) => b[metric] - a[metric]);
+        
+        // Assign ranks
+        let rank = 1, prevValue = null;
+        return sortedData.map((player, i) => {
+            if (player[metric] === 0) return { player: player.player, team: player.team, rank: "N/A" };
+            if (player[metric] !== prevValue) rank = i + 1;
+            prevValue = player[metric];
+            return { player: player.player, team: player.team, rank };
+        });
+    }
+    
+    function displayPlayerRankings(player) {
+        
+        const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position && p.team === player.team);
+        const selectedAge = parseInt(document.getElementById('ageSelect').value);
+        const toggleMetrics = document.getElementById('toggleMetrics').checked;
+        const getMetricValueFunction = toggleMetrics ? updateCurrentMetricValue : getCurrentMetricValue;
+        
+        const filteredData = selectedAge ? parsedData.filter(p => p.age <= selectedAge) : parsedData;
+    
 
 // Metric: defActions
 const samePositionAndLeagueActions = calculateRankForMetric(filteredData, 'defActions', p => p.position === selectedPlayer.position && p.league === selectedPlayer.league);
