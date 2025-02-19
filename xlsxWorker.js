@@ -3,10 +3,31 @@ self.onmessage = async function(event) {
     
     const BATCH_SIZE = 6; // Process 6 files at a time
     const cache = new Map();
-    let urls = event.data.urls;
     let allData = [];
     let processedFiles = 0;
     
+    // Define URLs directly in worker
+    const urls = [
+        'https://datamb.football/database/CURRENT/PRO2425/GK/GK.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2024/GK/GK.xlsx',
+        'https://datamb.football/database/CURRENT/TOP72425/GK/GK.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2425/CB/CB.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2024/CB/CB.xlsx',
+        'https://datamb.football/database/CURRENT/TOP72425/CB/CB.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2425/FB/FB.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2024/FB/FB.xlsx',
+        'https://datamb.football/database/CURRENT/TOP72425/FB/FB.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2425/CM/CM.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2024/CM/CM.xlsx',
+        'https://datamb.football/database/CURRENT/TOP72425/CM/CM.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2425/FW/FW.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2024/FW/FW.xlsx',
+        'https://datamb.football/database/CURRENT/TOP72425/FW/FW.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2425/ST/ST.xlsx',
+        'https://datamb.football/database/CURRENT/PRO2024/ST/ST.xlsx',
+        'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx'
+    ];
+
     // Process files in batches
     async function processBatch(startIndex) {
         const endIndex = Math.min(startIndex + BATCH_SIZE, urls.length);
@@ -97,6 +118,6 @@ self.onmessage = async function(event) {
         }
     }
 
-    // Start processing with first batch
+    // Start processing immediately
     await processBatch(0);
 };
