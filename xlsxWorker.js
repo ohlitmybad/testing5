@@ -1,7 +1,7 @@
 self.onmessage = async function(event) {
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
     
-    const BATCH_SIZE = 18; // Increased batch size for modern browsers
+    const BATCH_SIZE = 9; // Increased batch size for modern browsers
     const cache = new Map();
     let urls = event.data.urls;
     let allData = [];
@@ -20,9 +20,16 @@ self.onmessage = async function(event) {
         cellText: false,
         cellStyles: false,
         cellFormula: false,
-        dense: true, // Use dense array format for better performance
+        dense: true,
         raw: true,
-        sheetStubs: false
+        sheetStubs: false,
+        WTF: false,
+        cellHTML: false,
+        bookVBA: false,
+        numbers: true,    // Added: force number parsing
+        dateNF: false,    // Added: skip date formatting
+        sheets: [0],      // Added: only load first sheet
+        codepage: 0       // Added: skip codepage checks
     };
 
     // Process files in batches
@@ -36,48 +43,46 @@ self.onmessage = async function(event) {
                 return cache.get(url);
             }
 
-            // Optimize fetch with appropriate settings
             const response = await fetch(url, {
                 method: 'GET',
                 mode: 'cors',
                 priority: 'high',
-                cache: 'force-cache'
+                cache: 'force-cache',
+                keepalive: true
             });
             
-            // Use streaming for better memory efficiency
             const buffer = await response.arrayBuffer();
-            
-            // Optimize XLSX reading
             const workbook = XLSX.read(new Uint8Array(buffer), xlsxOptions);
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
             
-            // Optimize JSON conversion
-            let jsonData = XLSX.utils.sheet_to_json(sheet, {
-                header: 1,
-                raw: true,
-                defval: '',
-                blankrows: false
-            });
-
-            // Pre-allocate array for row processing
-            const processedData = new Array(jsonData.length);
+            // Skip the sheet_to_json conversion and directly access the data
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const range = XLSX.utils.decode_range(sheet['!ref']);
             
-            // Optimize row processing
-            const fileIndex = urls.indexOf(url);
-            const label = getPositionLabel(fileIndex);
+            // Pre-allocate array with exact size needed
+            const rowCount = range.e.r + 1;
+            const processedData = new Array(rowCount);
             
-            for (let i = 0; i < jsonData.length; i++) {
-                if (fileIndex !== 0 && i === 0) {
-                    processedData[i] = null;
+            // Direct cell access instead of conversion to JSON
+            for (let R = 0; R <= range.e.r; R++) {
+                const row = new Array(93); // Pre-allocate with known column count
+                for (let C = 0; C <= Math.min(92, range.e.c); C++) {
+                    const cell = sheet[XLSX.utils.encode_cell({r: R, c: C})];
+                    row[C] = cell ? cell.v : ''; // .v gives raw value
+                }
+                
+                if (startIndex + index !== 0 && R === 0) {
+                    processedData[R] = null;
                     continue;
                 }
                 
-                const row = jsonData[i].slice(0, 93); // Trim to 93 columns
-                // Optimize array operations
-                row.splice(2, 0, label); // Insert label at position 2
-                processedData[i] = row;
+                // Insert position label
+                row.splice(2, 0, getPositionLabel(urls.indexOf(url)));
+                processedData[R] = row;
             }
+            
+            // Clear references
+            workbook.Sheets = null;
+            workbook.SheetNames = null;
             
             cache.set(url, processedData);
             return processedData;
