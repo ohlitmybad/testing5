@@ -907,32 +907,9 @@ function getRankSuffix(rank) {
     }
     
     
-    function calculateRankForMetric(data, metric, filterFn, transformFn) {
-        const processedData = (filterFn ? data.filter(filterFn) : data).map(transformFn || (p => p));
-        
-        // Store the first occurrence of each unique player-team combo
-        const uniquePlayers = new Map();
-        for (const player of processedData) {
-            const key = `${player.player}-${player.team}`;
-            if (!uniquePlayers.has(key)) {
-                uniquePlayers.set(key, player);
-            }
-        }
-        // Sort unique players by metric (Descending order)
-        const sortedData = [...uniquePlayers.values()].sort((a, b) => b[metric] - a[metric]);
-        
-        // Assign ranks
-        let rank = 1, prevValue = null;
-        return sortedData.map((player, i) => {
-            if (player[metric] === 0) return { player: player.player, team: player.team, rank: "N/A" };
-            if (player[metric] !== prevValue) rank = i + 1;
-            prevValue = player[metric];
-            return { player: player.player, team: player.team, rank };
-        });
-    }
     
       function calculateRankForMetric(data, metric, filterFn, transformFn) {
-          const processedData = (filterFn ? data.filter(filterFn) : data).map(transformFn || (p => p));
+          const processedData = data.map(transformFn || (p => p));
           
           // Store the first occurrence of each unique player-team combo
           const uniquePlayers = new Map();
