@@ -868,47 +868,43 @@ function parseCSV(csv) {
   
   function calculateRankForMetric(data, metric, filterFn, transformFn) {
     const filteredData = filterFn ? data.filter(filterFn) : data;
-
-    // Apply transformation function if provided
     const transformedData = transformFn ? filteredData.map(transformFn) : filteredData;
 
-    // Use a Map to store unique players based on their name and team
-    const uniquePlayers = new Map();
-
-    for (const player of transformedData) {
+    // Use a Set for uniqueness instead of a Map
+    const seen = new Set();
+    const uniquePlayers = transformedData.filter(player => {
         const key = `${player.player}-${player.team}`;
-        if (!uniquePlayers.has(key)) {
-            uniquePlayers.set(key, player);
-        }
-    }
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 
-    // Convert Map to array and sort by metric (Descending order)
-    const sortedData = Array.from(uniquePlayers.values()).sort((a, b) => b[metric] - a[metric]);
+    // Sort players by metric (Descending order)
+    uniquePlayers.sort((a, b) => b[metric] - a[metric]);
 
-    // Assign ranks efficiently in a single pass (O(n))
+    // Assign ranks efficiently
     let rank = 1;
     let prevValue = null;
-    const playerRanks = [];
-
-    for (let i = 0; i < sortedData.length; i++) {
-        const player = sortedData[i];
+    for (let i = 0; i < uniquePlayers.length; i++) {
+        const player = uniquePlayers[i];
         const currentValue = player[metric];
 
         if (currentValue === 0) {
-            playerRanks.push({ player: player.player, team: player.team, rank: "N/A" });
+            player.rank = "N/A";
             continue;
         }
 
         if (currentValue !== prevValue) {
-            rank = i + 1; // Rank is based on position in sorted list
+            rank = i + 1;
             prevValue = currentValue;
         }
 
-        playerRanks.push({ player: player.player, team: player.team, rank });
+        player.rank = rank;
     }
 
-    return playerRanks;
+    return uniquePlayers;
 }
+
 
 
 
