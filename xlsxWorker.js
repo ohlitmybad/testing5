@@ -60,7 +60,7 @@ self.onmessage = async function(event) {
             const rowCount = range.e.r + 1;
             const processedData = new Array(rowCount);
             
-            // Calculate the absolute file index once, outside the loop
+            // Calculate the absolute file index once
             const fileIndex = startIndex + batchIndex;
             
             for (let R = 0; R <= range.e.r; R++) {
@@ -76,7 +76,7 @@ self.onmessage = async function(event) {
                     continue;
                 }
                 
-                row.splice(2, 0, getPositionLabel(fileIndex));  // Use fileIndex here
+                row.splice(2, 0, getPositionLabel(fileIndex));
                 processedData[R] = row;
             }
             
