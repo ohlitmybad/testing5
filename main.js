@@ -867,7 +867,6 @@ function parseCSV(csv) {
 
   
   function calculateRankForMetric(data, metric, filterFn, transformFn) {
-    const filteredData = filterFn ? data.filter(filterFn) : data;
 
     // Apply transformation function if provided
     const transformedData = transformFn ? filteredData.map(transformFn) : filteredData;
