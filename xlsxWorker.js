@@ -90,14 +90,10 @@ self.onmessage = async function(event) {
 
         const batchResults = await Promise.all(batchPromises);
         
-        // Optimize batch merging
-        let currentIndex = allData.length;
-        batchResults.forEach((data, index) => {
+        // Process batch results
+        batchResults.forEach((data) => {
             if (!data) return;
-            
-            if (startIndex + index === 0) {
-                allData.push(...data);
-            } else {
+            if (data.some(row => row !== null)) {
                 allData.push(...data.filter(row => row !== null));
             }
         });
