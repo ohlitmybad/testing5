@@ -1885,7 +1885,7 @@ const leagueRankXGAndxAPerNinetyWithMinutes = calculateRankForMetric(sameLeague,
 const positionRankXGAndxAPerNinety = calculateRankForMetric(samePosition, 'xGAndxAPerNinety');
 const positionRankXGAndxAPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
 const samePositionAndLeagueXGAndxAPerNinety = calculateRankForMetric(samePositionAndLeague, 'xGAndxAPerNinety');
-const samePositionAndLeagueXGAndxAPerNinetyWithMinutes = calculateRankForMetric(filteredData, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
+const samePositionAndLeagueXGAndxAPerNinetyWithMinutes = calculateRankForMetric(samePositionAndLeague, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
 // Metric: xAPer100Passes
 const allCsvRankXAPer100Passes = calculateRankForMetric(baseFiltered, 'xAPer100Passes');
 const leagueRankXAPer100Passes = calculateRankForMetric(sameLeague, 'xAPer100Passes');
