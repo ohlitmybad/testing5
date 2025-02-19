@@ -1,71 +1,102 @@
 self.onmessage = async function(event) {
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
     
-    const urls = event.data.urls;
-    const positions = {
-        0: 'Goalkeeper', 1: 'Goalkeeper', 2: 'Goalkeeper',
-        3: 'Centre-back', 4: 'Centre-back', 5: 'Centre-back',
-        6: 'Full-back', 7: 'Full-back', 8: 'Full-back',
-        9: 'Midfielder', 10: 'Midfielder', 11: 'Midfielder',
-        12: 'Winger', 13: 'Winger', 14: 'Winger',
-        15: 'Striker', 16: 'Striker', 17: 'Striker'
-    };
-
+    const BATCH_SIZE = 6; // Process 6 files at a time
+    const cache = new Map();
+    let urls = event.data.urls;
     let allData = [];
-    const BATCH_SIZE = 6; // Process 6 files at a time for balance between speed and memory
+    let processedFiles = 0;
+    
+    // Process files in batches
+    async function processBatch(startIndex) {
+        const endIndex = Math.min(startIndex + BATCH_SIZE, urls.length);
+        const batchUrls = urls.slice(startIndex, endIndex);
+        
+        const batchPromises = batchUrls.map(async (url) => {
+            if (cache.has(url)) {
+                return cache.get(url);
+            }
 
-    try {
-        for (let i = 0; i < urls.length; i += BATCH_SIZE) {
-            const batchUrls = urls.slice(i, Math.min(i + BATCH_SIZE, urls.length));
+            const response = await fetch(url);
+            const data = await response.arrayBuffer();
             
-            // Fetch all files in current batch concurrently
-            const batchPromises = batchUrls.map(async (url, batchIndex) => {
-                const response = await fetch(url);
-                const arrayBuffer = await response.arrayBuffer();
-                const position = positions[i + batchIndex];
-                
-                // Process each file as soon as it's downloaded
-                const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { 
-                    header: 1,
-                    raw: false, // Convert to strings for faster processing
-                    defval: '' // Use empty string for empty cells
-                });
-
-                // Process rows directly during conversion
-                return jsonData.slice(1).map(row => {
-                    const processedRow = row.slice(0, 93);
-                    processedRow.splice(2, 0, position);
-                    return processedRow;
-                });
+            // Optimize XLSX reading
+            const workbook = XLSX.read(new Uint8Array(data), {
+                type: 'array',
+                cellDates: false,
+                cellNF: false,
+                cellText: false
             });
-
-            // Wait for current batch to complete
-            const batchResults = await Promise.all(batchPromises);
             
-            // Combine batch results
-            batchResults.forEach(data => {
-                allData.push(...data);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            let jsonData = XLSX.utils.sheet_to_json(sheet, {
+                header: 1,
+                raw: true,
+                defval: ''
             });
 
-            // Report progress
-            self.postMessage({
-                type: 'progress',
-                progress: Math.min(100, Math.round((i + BATCH_SIZE) / urls.length * 100))
-            });
+            // Trim data to 93 columns
+            jsonData = jsonData.map(row => row.slice(0, 93));
+            
+            // Determine position label
+            let label;
+            const fileIndex = urls.indexOf(url);
+            if (fileIndex >= 0 && fileIndex <= 2) label = 'Goalkeeper';
+            else if (fileIndex >= 3 && fileIndex <= 5) label = 'Centre-back';
+            else if (fileIndex >= 6 && fileIndex <= 8) label = 'Full-back';
+            else if (fileIndex >= 9 && fileIndex <= 11) label = 'Midfielder';
+            else if (fileIndex >= 12 && fileIndex <= 14) label = 'Winger';
+            else if (fileIndex >= 15 && fileIndex <= 17) label = 'Striker';
+            else label = 'Unknown';
+
+            // Process rows
+            for (let i = 0; i < jsonData.length; i++) {
+                if (fileIndex !== 0 && i === 0) continue;
+                // Shift columns and insert label
+                const row = jsonData[i];
+                for (let j = row.length - 1; j >= 2; j--) {
+                    row[j] = row[j - 1];
+                }
+                row[2] = label;
+            }
+
+            cache.set(url, jsonData);
+            return jsonData;
+        });
+
+        const batchResults = await Promise.all(batchPromises);
+        
+        // Merge batch results
+        batchResults.forEach((jsonData, index) => {
+            if (startIndex + index === 0) {
+                allData.push(...jsonData);
+            } else {
+                allData.push(...jsonData.slice(1));
+            }
+        });
+
+        processedFiles += batchResults.length;
+        
+        // Report progress
+        self.postMessage({
+            type: 'progress',
+            progress: (processedFiles / urls.length) * 100
+        });
+
+        // Process next batch if needed
+        if (endIndex < urls.length) {
+            setTimeout(() => processBatch(endIndex), 0);
+        } else {
+            // All batches processed, send final data
+            const transferableData = {
+                data: allData,
+                type: 'complete'
+            };
+            self.postMessage(transferableData);
         }
-
-        // Send completed data
-        self.postMessage({
-            type: 'complete',
-            data: allData
-        });
-
-    } catch (error) {
-        self.postMessage({
-            type: 'error',
-            error: error.message
-        });
     }
+
+    // Start processing with first batch
+    await processBatch(0);
 };
