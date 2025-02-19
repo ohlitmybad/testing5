@@ -1,14 +1,10 @@
 self.onmessage = async function(event) {
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
     
-    const BATCH_SIZE = 9; // Increased batch size for modern browsers
+    const BATCH_SIZE = 6; // Process 6 files at a time
     const cache = new Map();
     let allData = [];
     let processedFiles = 0;
-    
-    // Pre-allocate array for better memory management
-    const estimatedTotalRows = 20000; // Adjust based on expected data size
-    allData = new Array(estimatedTotalRows);
     
     // Define URLs directly in worker
     const urls = [
@@ -32,88 +28,72 @@ self.onmessage = async function(event) {
         'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx'
     ];
 
-    // Optimize XLSX reading configuration
-    const xlsxOptions = {
-        type: 'array',
-        cellDates: false,
-        cellNF: false,
-        cellText: false,
-        cellStyles: false,
-        cellFormula: false,
-        dense: true, // Use dense array format for better performance
-        raw: true,
-        sheetStubs: false
-    };
-
     // Process files in batches
     async function processBatch(startIndex) {
         const endIndex = Math.min(startIndex + BATCH_SIZE, urls.length);
         const batchUrls = urls.slice(startIndex, endIndex);
         
-        // Use Promise.all with optimized fetch
         const batchPromises = batchUrls.map(async (url) => {
             if (cache.has(url)) {
                 return cache.get(url);
             }
 
-            // Optimize fetch with appropriate settings
-            const response = await fetch(url, {
-                method: 'GET',
-                mode: 'cors',
-                priority: 'high',
-                cache: 'force-cache'
-            });
-            
-            // Use streaming for better memory efficiency
-            const buffer = await response.arrayBuffer();
+            const response = await fetch(url);
+            const data = await response.arrayBuffer();
             
             // Optimize XLSX reading
-            const workbook = XLSX.read(new Uint8Array(buffer), xlsxOptions);
+            const workbook = XLSX.read(new Uint8Array(data), {
+                type: 'array',
+                cellDates: false,
+                cellNF: false,
+                cellText: false
+            });
+            
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
-            
-            // Optimize JSON conversion
             let jsonData = XLSX.utils.sheet_to_json(sheet, {
                 header: 1,
                 raw: true,
-                defval: '',
-                blankrows: false
+                defval: ''
             });
 
-            // Pre-allocate array for row processing
-            const processedData = new Array(jsonData.length);
+            // Trim data to 93 columns
+            jsonData = jsonData.map(row => row.slice(0, 93));
             
-            // Optimize row processing
+            // Determine position label
+            let label;
             const fileIndex = urls.indexOf(url);
-            const label = getPositionLabel(fileIndex);
-            
+            if (fileIndex >= 0 && fileIndex <= 2) label = 'Goalkeeper';
+            else if (fileIndex >= 3 && fileIndex <= 5) label = 'Centre-back';
+            else if (fileIndex >= 6 && fileIndex <= 8) label = 'Full-back';
+            else if (fileIndex >= 9 && fileIndex <= 11) label = 'Midfielder';
+            else if (fileIndex >= 12 && fileIndex <= 14) label = 'Winger';
+            else if (fileIndex >= 15 && fileIndex <= 17) label = 'Striker';
+            else label = 'Unknown';
+
+            // Process rows
             for (let i = 0; i < jsonData.length; i++) {
-                if (fileIndex !== 0 && i === 0) {
-                    processedData[i] = null;
-                    continue;
+                if (fileIndex !== 0 && i === 0) continue;
+                // Shift columns and insert label
+                const row = jsonData[i];
+                for (let j = row.length - 1; j >= 2; j--) {
+                    row[j] = row[j - 1];
                 }
-                
-                const row = jsonData[i].slice(0, 93); // Trim to 93 columns
-                // Optimize array operations
-                row.splice(2, 0, label); // Insert label at position 2
-                processedData[i] = row;
+                row[2] = label;
             }
-            
-            cache.set(url, processedData);
-            return processedData;
+
+            cache.set(url, jsonData);
+            return jsonData;
         });
 
         const batchResults = await Promise.all(batchPromises);
         
-        // Optimize batch merging
-        let currentIndex = allData.length;
-        batchResults.forEach((data, index) => {
-            if (!data) return;
-            
+        // Merge batch results
+        batchResults.forEach((jsonData, index) => {
             if (startIndex + index === 0) {
-                allData.push(...data);
+                allData.push(...jsonData);
             } else {
-                allData.push(...data.filter(row => row !== null));
+                allData.push(...jsonData.slice(1));
             }
         });
 
@@ -125,27 +105,17 @@ self.onmessage = async function(event) {
             progress: (processedFiles / urls.length) * 100
         });
 
+        // Process next batch if needed
         if (endIndex < urls.length) {
-            // Use requestAnimationFrame equivalent for workers
             setTimeout(() => processBatch(endIndex), 0);
         } else {
-            // Optimize final data transfer
-            self.postMessage({
-                type: 'complete',
-                data: allData.filter(Boolean) // Remove any null entries
-            });
+            // All batches processed, send final data
+            const transferableData = {
+                data: allData,
+                type: 'complete'
+            };
+            self.postMessage(transferableData);
         }
-    }
-
-    // Helper function for position labels
-    function getPositionLabel(fileIndex) {
-        if (fileIndex <= 2) return 'Goalkeeper';
-        if (fileIndex <= 5) return 'Centre-back';
-        if (fileIndex <= 8) return 'Full-back';
-        if (fileIndex <= 11) return 'Midfielder';
-        if (fileIndex <= 14) return 'Winger';
-        if (fileIndex <= 17) return 'Striker';
-        return 'Unknown';
     }
 
     // Start processing immediately
