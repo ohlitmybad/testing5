@@ -866,10 +866,10 @@ function parseCSV(csv) {
   }
 
   
-  function calculateRankForMetric(data, metric, filterFn, transformFn) {
+  function calculateRankForMetric(data, metric, transformFn) {
 
     // Apply transformation function if provided
-    const transformedData = transformFn ? filteredData.map(transformFn) : filteredData;
+    const transformedData = transformFn ? data.map(transformFn) : data;
 
     // Use a Map to store unique players based on their name and team
     const uniquePlayers = new Map();
@@ -11793,4 +11793,3 @@ window.onclick = function(event) {
         }
     }
 }
-
