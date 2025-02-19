@@ -885,24 +885,29 @@ function parseCSV(csv) {
     const sortedData = Object.values(uniquePlayersObj)
         .sort((a, b) => b[metric] - a[metric]);
 
-    // Single pass ranking with early termination if needed
-    const playerRanks = sortedData.map((player, index) => {
-        const prevPlayer = sortedData[index - 1];
-        const rank = prevPlayer && prevPlayer[metric] === player[metric] 
-            ? playerRanks[index - 1].rank 
-            : index + 1;
-            
-        return { 
-            player: player.player, 
-            team: player.team, 
-            rank 
-        };
-    });
+    // Single pass ranking
+    const playerRanks = [];
+    let currentRank = 1;
+    let prevValue = null;
+
+    for (let i = 0; i < sortedData.length; i++) {
+        const player = sortedData[i];
+        const currentValue = player[metric];
+
+        if (currentValue !== prevValue) {
+            currentRank = i + 1;
+            prevValue = currentValue;
+        }
+
+        playerRanks.push({
+            player: player.player,
+            team: player.team,
+            rank: currentRank
+        });
+    }
 
     return playerRanks;
 }
-
-
 
 
 function getRankSuffix(rank) {
