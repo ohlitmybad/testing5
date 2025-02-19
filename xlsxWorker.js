@@ -38,7 +38,7 @@ self.onmessage = async function(event) {
         const batchUrls = urls.slice(startIndex, endIndex);
         
         // Use Promise.all with optimized fetch
-        const batchPromises = batchUrls.map(async (url) => {
+        const batchPromises = batchUrls.map(async (url, batchIndex) => {
             if (cache.has(url)) {
                 return cache.get(url);
             }
@@ -70,7 +70,7 @@ self.onmessage = async function(event) {
                     row[C] = cell ? cell.v : ''; // .v gives raw value
                 }
                 
-                if (startIndex + index !== 0 && R === 0) {
+                if (startIndex + batchIndex !== 0 && R === 0) {
                     processedData[R] = null;
                     continue;
                 }
