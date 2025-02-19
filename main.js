@@ -907,45 +907,48 @@ function getRankSuffix(rank) {
     }
     
     
+ function calculateRankForMetric(data, metric, transformFn) {
+
+        const processedData = data.map(transformFn || (p => p));
+        
+        // Store the first occurrence of each unique player-team combo
+        const uniquePlayers = new Map();
+        for (const player of processedData) {
+            const key = `${player.player}-${player.team}`;
+            if (!uniquePlayers.has(key)) {
+                uniquePlayers.set(key, player);
+            }
+        }
+        // Sort unique players by metric (Descending order)
+        const sortedData = [...uniquePlayers.values()].sort((a, b) => b[metric] - a[metric]);
+        
+        // Assign ranks
+        let rank = 1, prevValue = null;
+        return sortedData.map((player, i) => {
+            if (player[metric] === 0) return { player: player.player, team: player.team, rank: "N/A" };
+            if (player[metric] !== prevValue) rank = i + 1;
+            prevValue = player[metric];
+            return { player: player.player, team: player.team, rank };
+        });
+    }
     
-      function calculateRankForMetric(data, metric, filterFn, transformFn) {
-          const processedData = data.map(transformFn || (p => p));
-          
-          // Store the first occurrence of each unique player-team combo
-          const uniquePlayers = new Map();
-          for (const player of processedData) {
-              const key = `${player.player}-${player.team}`;
-              if (!uniquePlayers.has(key)) {
-                  uniquePlayers.set(key, player);
-              }
-          }
-          // Sort unique players by metric (Descending order)
-          const sortedData = [...uniquePlayers.values()].sort((a, b) => b[metric] - a[metric]);
-          
-          // Assign ranks
-          let rank = 1, prevValue = null;
-          return sortedData.map((player, i) => {
-              if (player[metric] === 0) return { player: player.player, team: player.team, rank: "N/A" };
-              if (player[metric] !== prevValue) rank = i + 1;
-              prevValue = player[metric];
-              return { player: player.player, team: player.team, rank };
-          });
-      }
-      
-      function displayPlayerRankings(player) {
-          
-          const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position && p.team === player.team);
-          const selectedAge = parseInt(document.getElementById('ageSelect').value);
-          const toggleMetrics = document.getElementById('toggleMetrics').checked;
-          const getMetricValueFunction = toggleMetrics ? updateCurrentMetricValue : getCurrentMetricValue;
-          
-    // Pre-filter data sets that will be reused
+    function displayPlayerRankings(player) {
+        
+        const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position && p.team === player.team);
+        const selectedAge = parseInt(document.getElementById('ageSelect').value);
+        const toggleMetrics = document.getElementById('toggleMetrics').checked;
+        const getMetricValueFunction = toggleMetrics ? updateCurrentMetricValue : getCurrentMetricValue;
+        
     const baseFiltered = selectedAge ? parsedData.filter(p => p.age <= selectedAge) : parsedData;
+
     const samePositionAndLeague = baseFiltered.filter(p => p.position === selectedPlayer.position && p.league === selectedPlayer.league);
+
     const samePosition = baseFiltered.filter(p => p.position === selectedPlayer.position);
+
     const sameLeague = baseFiltered.filter(p => p.league === selectedPlayer.league);
 
-	      
+
+
 
 // Metric: defActions
 const samePositionAndLeagueActions = calculateRankForMetric(samePositionAndLeague, 'defActions');
@@ -955,7 +958,7 @@ const positionRankActionsWithMinutes = calculateRankForMetric(samePosition, 'def
 const leagueRankActions = calculateRankForMetric(sameLeague, 'defActions');
 const leagueRankActionsWithMinutes = calculateRankForMetric(sameLeague, 'defActions', p => ({...p, defActions: Math.round(p.defActions * p.minutes / 90)}));
 const allCsvRankActions = calculateRankForMetric(baseFiltered, 'defActions');
-const allCsvRankActionsWithMinutes = calculateRankForMetric(baseFiltered, 'defActions', p => true, p => ({...p, defActions: Math.round(p.defActions * p.minutes / 90)}));
+const allCsvRankActionsWithMinutes = calculateRankForMetric(baseFiltered, 'defActions', p => ({...p, defActions: Math.round(p.defActions * p.minutes / 90)}));
 
 
 // Metric: defDuels
@@ -966,12 +969,12 @@ const samePositionAndLeagueDuelsWithMinutes = calculateRankForMetric(samePositio
 const leagueRankDuels = calculateRankForMetric(sameLeague, 'defDuels');
 const leagueRankDuelsWithMinutes = calculateRankForMetric(sameLeague, 'defDuels', p => ({...p, defDuels: Math.round(p.defDuels * p.minutes / 90)}));
 const allCsvRankDuels = calculateRankForMetric(baseFiltered, 'defDuels');
-const allCsvRankDuelsWithMinutes = calculateRankForMetric(baseFiltered, 'defDuels', p => true, p => ({...p, defDuels: Math.round(p.defDuels * p.minutes / 90)}));
+const allCsvRankDuelsWithMinutes = calculateRankForMetric(baseFiltered, 'defDuels', p => ({...p, defDuels: Math.round(p.defDuels * p.minutes / 90)}));
 
 // Metric: aerialDuels 
 const allCsvRankAerialDuels = calculateRankForMetric(baseFiltered, 'aerialDuels');
 const leagueRankAerialDuels = calculateRankForMetric(sameLeague, 'aerialDuels');
-const allCsvRankAerialDuelsWithMinutes = calculateRankForMetric(baseFiltered, 'aerialDuels', p => true, p => ({...p, aerialDuels: Math.round(p.aerialDuels * p.minutes / 90)}));
+const allCsvRankAerialDuelsWithMinutes = calculateRankForMetric(baseFiltered, 'aerialDuels', p => ({...p, aerialDuels: Math.round(p.aerialDuels * p.minutes / 90)}));
 const leagueRankAerialDuelsWithMinutes = calculateRankForMetric(sameLeague, 'aerialDuels', p => ({...p, aerialDuels: Math.round(p.aerialDuels * p.minutes / 90)}));
 const positionRankAerialDuels = calculateRankForMetric(samePosition, 'aerialDuels');
 const positionRankAerialDuelsWithMinutes = calculateRankForMetric(samePosition, 'aerialDuels', p => ({...p, aerialDuels: Math.round(p.aerialDuels * p.minutes / 90)}));
@@ -982,7 +985,7 @@ const samePositionAndLeagueAerialDuelsWithMinutes = calculateRankForMetric(sameP
 // Metric: slidingTackles
 const allCsvRankSlidingTackles = calculateRankForMetric(baseFiltered, 'slidingTackles');
 const leagueRankSlidingTackles = calculateRankForMetric(sameLeague, 'slidingTackles');
-const allCsvRankSlidingTacklesWithMinutes = calculateRankForMetric(baseFiltered, 'slidingTackles', p => true, p => ({...p, slidingTackles: Math.round(p.slidingTackles * p.minutes / 90)}));
+const allCsvRankSlidingTacklesWithMinutes = calculateRankForMetric(baseFiltered, 'slidingTackles', p => ({...p, slidingTackles: Math.round(p.slidingTackles * p.minutes / 90)}));
 const leagueRankSlidingTacklesWithMinutes = calculateRankForMetric(sameLeague, 'slidingTackles', p => ({...p, slidingTackles: Math.round(p.slidingTackles * p.minutes / 90)}));
 const positionRankSlidingTackles = calculateRankForMetric(samePosition, 'slidingTackles');
 const positionRankSlidingTacklesWithMinutes = calculateRankForMetric(samePosition, 'slidingTackles', p => ({...p, slidingTackles: Math.round(p.slidingTackles * p.minutes / 90)}));
@@ -1002,7 +1005,7 @@ const samePositionAndLeaguePAdjSlidingTacklesWithMinutes = calculateRankForMetri
 // Metric: shotsBlocked
 const allCsvRankShotsBlocked = calculateRankForMetric(baseFiltered, 'shotsBlocked');
 const leagueRankShotsBlocked = calculateRankForMetric(sameLeague, 'shotsBlocked');
-const allCsvRankShotsBlockedWithMinutes = calculateRankForMetric(baseFiltered, 'shotsBlocked', p => true, p => ({...p, shotsBlocked: Math.round(p.shotsBlocked * p.minutes / 90)}));
+const allCsvRankShotsBlockedWithMinutes = calculateRankForMetric(baseFiltered, 'shotsBlocked', p => ({...p, shotsBlocked: Math.round(p.shotsBlocked * p.minutes / 90)}));
 const leagueRankShotsBlockedWithMinutes = calculateRankForMetric(sameLeague, 'shotsBlocked', p => ({...p, shotsBlocked: Math.round(p.shotsBlocked * p.minutes / 90)}));
 const positionRankShotsBlocked = calculateRankForMetric(samePosition, 'shotsBlocked');
 const positionRankShotsBlockedWithMinutes = calculateRankForMetric(samePosition, 'shotsBlocked', p => ({...p, shotsBlocked: Math.round(p.shotsBlocked * p.minutes / 90)}));
@@ -1012,7 +1015,7 @@ const samePositionAndLeagueShotsBlockedWithMinutes = calculateRankForMetric(same
 // Metric: interceptions
 const allCsvRankInterceptions = calculateRankForMetric(baseFiltered, 'interceptions');
 const leagueRankInterceptions = calculateRankForMetric(sameLeague, 'interceptions');
-const allCsvRankInterceptionsWithMinutes = calculateRankForMetric(baseFiltered, 'interceptions', p => true, p => ({...p, interceptions: Math.round(p.interceptions * p.minutes / 90)}));
+const allCsvRankInterceptionsWithMinutes = calculateRankForMetric(baseFiltered, 'interceptions', p => ({...p, interceptions: Math.round(p.interceptions * p.minutes / 90)}));
 const leagueRankInterceptionsWithMinutes = calculateRankForMetric(sameLeague, 'interceptions', p => ({...p, interceptions: Math.round(p.interceptions * p.minutes / 90)}));
 const positionRankInterceptions = calculateRankForMetric(samePosition, 'interceptions');
 const positionRankInterceptionsWithMinutes = calculateRankForMetric(samePosition, 'interceptions', p => ({...p, interceptions: Math.round(p.interceptions * p.minutes / 90)}));
@@ -1034,7 +1037,7 @@ const samePositionAndLeaguePAdjInterceptionsWithMinutes = calculateRankForMetric
 // Metric: successfulAttackingActions
 const allCsvRankSuccessfulAttackingActions = calculateRankForMetric(baseFiltered, 'successfulAttackingActions');
 const leagueRankSuccessfulAttackingActions = calculateRankForMetric(sameLeague, 'successfulAttackingActions');
-const allCsvRankSuccessfulAttackingActionsWithMinutes = calculateRankForMetric(baseFiltered, 'successfulAttackingActions', p => true, p => ({...p, successfulAttackingActions: Math.round(p.successfulAttackingActions * p.minutes / 90)}));
+const allCsvRankSuccessfulAttackingActionsWithMinutes = calculateRankForMetric(baseFiltered, 'successfulAttackingActions', p => ({...p, successfulAttackingActions: Math.round(p.successfulAttackingActions * p.minutes / 90)}));
 const leagueRankSuccessfulAttackingActionsWithMinutes = calculateRankForMetric(sameLeague, 'successfulAttackingActions', p => ({...p, successfulAttackingActions: Math.round(p.successfulAttackingActions * p.minutes / 90)}));
 const positionRankSuccessfulAttackingActions = calculateRankForMetric(samePosition, 'successfulAttackingActions');
 const positionRankSuccessfulAttackingActionsWithMinutes = calculateRankForMetric(samePosition, 'successfulAttackingActions', p => ({...p, successfulAttackingActions: Math.round(p.successfulAttackingActions * p.minutes / 90)}));
@@ -1044,7 +1047,7 @@ const samePositionAndLeagueSuccessfulAttackingActionsWithMinutes = calculateRank
 // Metric: goals
 const allCsvRankGoals = calculateRankForMetric(baseFiltered, 'goals');
 const leagueRankGoals = calculateRankForMetric(sameLeague, 'goals');
-const allCsvRankGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'goals', p => true, p => ({...p, goals: Math.round(p.goals * p.minutes / 90)}));
+const allCsvRankGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'goals', p => ({...p, goals: Math.round(p.goals * p.minutes / 90)}));
 const leagueRankGoalsWithMinutes = calculateRankForMetric(sameLeague, 'goals', p => ({...p, goals: Math.round(p.goals * p.minutes / 90)}));
 const positionRankGoals = calculateRankForMetric(samePosition, 'goals');
 const positionRankGoalsWithMinutes = calculateRankForMetric(samePosition, 'goals', p => ({...p, goals: Math.round(p.goals * p.minutes / 90)}));
@@ -1054,7 +1057,7 @@ const samePositionAndLeagueGoalsWithMinutes = calculateRankForMetric(samePositio
 // Metric: nonPenaltyGoals
 const allCsvRankNonPenaltyGoals = calculateRankForMetric(baseFiltered, 'nonPenaltyGoals');
 const leagueRankNonPenaltyGoals = calculateRankForMetric(sameLeague, 'nonPenaltyGoals');
-const allCsvRankNonPenaltyGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'nonPenaltyGoals', p => true, p => ({...p, nonPenaltyGoals: Math.round(p.nonPenaltyGoals * p.minutes / 90)}));
+const allCsvRankNonPenaltyGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'nonPenaltyGoals', p => ({...p, nonPenaltyGoals: Math.round(p.nonPenaltyGoals * p.minutes / 90)}));
 const leagueRankNonPenaltyGoalsWithMinutes = calculateRankForMetric(sameLeague, 'nonPenaltyGoals', p => ({...p, nonPenaltyGoals: Math.round(p.nonPenaltyGoals * p.minutes / 90)}));
 const positionRankNonPenaltyGoals = calculateRankForMetric(samePosition, 'nonPenaltyGoals');
 const positionRankNonPenaltyGoalsWithMinutes = calculateRankForMetric(samePosition, 'nonPenaltyGoals', p => ({...p, nonPenaltyGoals: Math.round(p.nonPenaltyGoals * p.minutes / 90)}));
@@ -1064,7 +1067,7 @@ const samePositionAndLeagueNonPenaltyGoalsWithMinutes = calculateRankForMetric(s
 // Metric: xG
 const allCsvRankXG = calculateRankForMetric(baseFiltered, 'xG');
 const leagueRankXG = calculateRankForMetric(sameLeague, 'xG');
-const allCsvRankXGWithMinutes = calculateRankForMetric(baseFiltered, 'xG', p => true, p => ({...p, xG: p.xG * p.minutes}));
+const allCsvRankXGWithMinutes = calculateRankForMetric(baseFiltered, 'xG', p => ({...p, xG: p.xG * p.minutes}));
 const leagueRankXGWithMinutes = calculateRankForMetric(sameLeague, 'xG', p => ({...p, xG: p.xG * p.minutes}));
 const positionRankXG = calculateRankForMetric(samePosition, 'xG');
 const positionRankXGWithMinutes = calculateRankForMetric(samePosition, 'xG', p => ({...p, xG: p.xG * p.minutes}));
@@ -1074,7 +1077,7 @@ const samePositionAndLeagueXGWithMinutes = calculateRankForMetric(samePositionAn
 // Metric: headGoals
 const allCsvRankHeadGoals = calculateRankForMetric(baseFiltered, 'headGoals');
 const leagueRankHeadGoals = calculateRankForMetric(sameLeague, 'headGoals');
-const allCsvRankHeadGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'headGoals', p => true, p => ({...p, headGoals: Math.round(p.headGoals * p.minutes / 90)}));
+const allCsvRankHeadGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'headGoals', p => ({...p, headGoals: Math.round(p.headGoals * p.minutes / 90)}));
 const leagueRankHeadGoalsWithMinutes = calculateRankForMetric(sameLeague, 'headGoals', p => ({...p, headGoals: Math.round(p.headGoals * p.minutes / 90)}));
 const positionRankHeadGoals = calculateRankForMetric(samePosition, 'headGoals');
 const positionRankHeadGoalsWithMinutes = calculateRankForMetric(samePosition, 'headGoals', p => ({...p, headGoals: Math.round(p.headGoals * p.minutes / 90)}));
@@ -1084,7 +1087,7 @@ const samePositionAndLeagueHeadGoalsWithMinutes = calculateRankForMetric(samePos
 // Metric: shots
 const allCsvRankShots = calculateRankForMetric(baseFiltered, 'shots');
 const leagueRankShots = calculateRankForMetric(sameLeague, 'shots');
-const allCsvRankShotsWithMinutes = calculateRankForMetric(baseFiltered, 'shots', p => true, p => ({...p, shots: Math.round(p.shots * p.minutes / 90)}));
+const allCsvRankShotsWithMinutes = calculateRankForMetric(baseFiltered, 'shots', p => ({...p, shots: Math.round(p.shots * p.minutes / 90)}));
 const leagueRankShotsWithMinutes = calculateRankForMetric(sameLeague, 'shots', p => ({...p, shots: Math.round(p.shots * p.minutes / 90)}));
 const positionRankShots = calculateRankForMetric(samePosition, 'shots');
 const positionRankShotsWithMinutes = calculateRankForMetric(samePosition, 'shots', p => ({...p, shots: Math.round(p.shots * p.minutes / 90)}));
@@ -1094,7 +1097,7 @@ const samePositionAndLeagueShotsWithMinutes = calculateRankForMetric(samePositio
 // Metric: assists
 const allCsvRankAssists = calculateRankForMetric(baseFiltered, 'assists');
 const leagueRankAssists = calculateRankForMetric(sameLeague, 'assists');
-const allCsvRankAssistsWithMinutes = calculateRankForMetric(baseFiltered, 'assists', p => true, p => ({...p, assists: Math.round(p.assists * p.minutes / 90)}));
+const allCsvRankAssistsWithMinutes = calculateRankForMetric(baseFiltered, 'assists', p => ({...p, assists: Math.round(p.assists * p.minutes / 90)}));
 const leagueRankAssistsWithMinutes = calculateRankForMetric(sameLeague, 'assists', p => ({...p, assists: Math.round(p.assists * p.minutes / 90)}));
 const positionRankAssists = calculateRankForMetric(samePosition, 'assists');
 const positionRankAssistsWithMinutes = calculateRankForMetric(samePosition, 'assists', p => ({...p, assists: Math.round(p.assists * p.minutes / 90)}));
@@ -1104,7 +1107,7 @@ const samePositionAndLeagueAssistsWithMinutes = calculateRankForMetric(samePosit
 // Metric: crosses
 const allCsvRankCrosses = calculateRankForMetric(baseFiltered, 'crosses');
 const leagueRankCrosses = calculateRankForMetric(sameLeague, 'crosses');
-const allCsvRankCrossesWithMinutes = calculateRankForMetric(baseFiltered, 'crosses', p => true, p => ({...p, crosses: Math.round(p.crosses * p.minutes / 90)}));
+const allCsvRankCrossesWithMinutes = calculateRankForMetric(baseFiltered, 'crosses', p => ({...p, crosses: Math.round(p.crosses * p.minutes / 90)}));
 const leagueRankCrossesWithMinutes = calculateRankForMetric(sameLeague, 'crosses', p => ({...p, crosses: Math.round(p.crosses * p.minutes / 90)}));
 const positionRankCrosses = calculateRankForMetric(samePosition, 'crosses');
 const positionRankCrossesWithMinutes = calculateRankForMetric(samePosition, 'crosses', p => ({...p, crosses: Math.round(p.crosses * p.minutes / 90)}));
@@ -1114,7 +1117,7 @@ const samePositionAndLeagueCrossesWithMinutes = calculateRankForMetric(samePosit
 // Metric: crossesToGoalieBox
 const allCsvRankCrossesToGoalieBox = calculateRankForMetric(baseFiltered, 'crossesToGoalieBox');
 const leagueRankCrossesToGoalieBox = calculateRankForMetric(sameLeague, 'crossesToGoalieBox');
-const allCsvRankCrossesToGoalieBoxWithMinutes = calculateRankForMetric(baseFiltered, 'crossesToGoalieBox', p => true, p => ({...p, crossesToGoalieBox: Math.round(p.crossesToGoalieBox * p.minutes / 90)}));
+const allCsvRankCrossesToGoalieBoxWithMinutes = calculateRankForMetric(baseFiltered, 'crossesToGoalieBox', p => ({...p, crossesToGoalieBox: Math.round(p.crossesToGoalieBox * p.minutes / 90)}));
 const leagueRankCrossesToGoalieBoxWithMinutes = calculateRankForMetric(sameLeague, 'crossesToGoalieBox', p => ({...p, crossesToGoalieBox: Math.round(p.crossesToGoalieBox * p.minutes / 90)}));
 const positionRankCrossesToGoalieBox = calculateRankForMetric(samePosition, 'crossesToGoalieBox');
 const positionRankCrossesToGoalieBoxWithMinutes = calculateRankForMetric(samePosition, 'crossesToGoalieBox', p => ({...p, crossesToGoalieBox: Math.round(p.crossesToGoalieBox * p.minutes / 90)}));
@@ -1124,7 +1127,7 @@ const samePositionAndLeagueCrossesToGoalieBoxWithMinutes = calculateRankForMetri
 // Metric: dribbles
 const allCsvRankDribbles = calculateRankForMetric(baseFiltered, 'dribbles');
 const leagueRankDribbles = calculateRankForMetric(sameLeague, 'dribbles');
-const allCsvRankDribblesWithMinutes = calculateRankForMetric(baseFiltered, 'dribbles', p => true, p => ({...p, dribbles: Math.round(p.dribbles * p.minutes / 90)}));
+const allCsvRankDribblesWithMinutes = calculateRankForMetric(baseFiltered, 'dribbles', p => ({...p, dribbles: Math.round(p.dribbles * p.minutes / 90)}));
 const leagueRankDribblesWithMinutes = calculateRankForMetric(sameLeague, 'dribbles', p => ({...p, dribbles: Math.round(p.dribbles * p.minutes / 90)}));
 const positionRankDribbles = calculateRankForMetric(samePosition, 'dribbles');
 const positionRankDribblesWithMinutes = calculateRankForMetric(samePosition, 'dribbles', p => ({...p, dribbles: Math.round(p.dribbles * p.minutes / 90)}));
@@ -1134,7 +1137,7 @@ const samePositionAndLeagueDribblesWithMinutes = calculateRankForMetric(samePosi
 // Metric: offensiveDuels
 const allCsvRankOffensiveDuels = calculateRankForMetric(baseFiltered, 'offensiveDuels');
 const leagueRankOffensiveDuels = calculateRankForMetric(sameLeague, 'offensiveDuels');
-const allCsvRankOffensiveDuelsWithMinutes = calculateRankForMetric(baseFiltered, 'offensiveDuels', p => true, p => ({...p, offensiveDuels: Math.round(p.offensiveDuels * p.minutes / 90)}));
+const allCsvRankOffensiveDuelsWithMinutes = calculateRankForMetric(baseFiltered, 'offensiveDuels', p => ({...p, offensiveDuels: Math.round(p.offensiveDuels * p.minutes / 90)}));
 const leagueRankOffensiveDuelsWithMinutes = calculateRankForMetric(sameLeague, 'offensiveDuels', p => ({...p, offensiveDuels: Math.round(p.offensiveDuels * p.minutes / 90)}));
 const positionRankOffensiveDuels = calculateRankForMetric(samePosition, 'offensiveDuels');
 const positionRankOffensiveDuelsWithMinutes = calculateRankForMetric(samePosition, 'offensiveDuels', p => ({...p, offensiveDuels: Math.round(p.offensiveDuels * p.minutes / 90)}));
@@ -1144,7 +1147,7 @@ const samePositionAndLeagueOffensiveDuelsWithMinutes = calculateRankForMetric(sa
 // Metric: touchesInBox
 const allCsvRankTouchesInBox = calculateRankForMetric(baseFiltered, 'touchesInBox');
 const leagueRankTouchesInBox = calculateRankForMetric(sameLeague, 'touchesInBox');
-const allCsvRankTouchesInBoxWithMinutes = calculateRankForMetric(baseFiltered, 'touchesInBox', p => true, p => ({...p, touchesInBox: Math.round(p.touchesInBox * p.minutes / 90)}));
+const allCsvRankTouchesInBoxWithMinutes = calculateRankForMetric(baseFiltered, 'touchesInBox', p => ({...p, touchesInBox: Math.round(p.touchesInBox * p.minutes / 90)}));
 const leagueRankTouchesInBoxWithMinutes = calculateRankForMetric(sameLeague, 'touchesInBox', p => ({...p, touchesInBox: Math.round(p.touchesInBox * p.minutes / 90)}));
 const positionRankTouchesInBox = calculateRankForMetric(samePosition, 'touchesInBox');
 const positionRankTouchesInBoxWithMinutes = calculateRankForMetric(samePosition, 'touchesInBox', p => ({...p, touchesInBox: Math.round(p.touchesInBox * p.minutes / 90)}));
@@ -1154,7 +1157,7 @@ const samePositionAndLeagueTouchesInBoxWithMinutes = calculateRankForMetric(same
 // Metric: progressiveRuns
 const allCsvRankProgressiveRuns = calculateRankForMetric(baseFiltered, 'progressiveRuns');
 const leagueRankProgressiveRuns = calculateRankForMetric(sameLeague, 'progressiveRuns');
-const allCsvRankProgressiveRunsWithMinutes = calculateRankForMetric(baseFiltered, 'progressiveRuns', p => true, p => ({...p, progressiveRuns: Math.round(p.progressiveRuns * p.minutes / 90)}));
+const allCsvRankProgressiveRunsWithMinutes = calculateRankForMetric(baseFiltered, 'progressiveRuns', p => ({...p, progressiveRuns: Math.round(p.progressiveRuns * p.minutes / 90)}));
 const leagueRankProgressiveRunsWithMinutes = calculateRankForMetric(sameLeague, 'progressiveRuns', p => ({...p, progressiveRuns: Math.round(p.progressiveRuns * p.minutes / 90)}));
 const positionRankProgressiveRuns = calculateRankForMetric(samePosition, 'progressiveRuns');
 const positionRankProgressiveRunsWithMinutes = calculateRankForMetric(samePosition, 'progressiveRuns', p => ({...p, progressiveRuns: Math.round(p.progressiveRuns * p.minutes / 90)}));
@@ -1164,7 +1167,7 @@ const samePositionAndLeagueProgressiveRunsWithMinutes = calculateRankForMetric(s
 // Metric: accelerations
 const allCsvRankAccelerations = calculateRankForMetric(baseFiltered, 'accelerations');
 const leagueRankAccelerations = calculateRankForMetric(sameLeague, 'accelerations');
-const allCsvRankAccelerationsWithMinutes = calculateRankForMetric(baseFiltered, 'accelerations', p => true, p => ({...p, accelerations: Math.round(p.accelerations * p.minutes / 90)}));
+const allCsvRankAccelerationsWithMinutes = calculateRankForMetric(baseFiltered, 'accelerations', p => ({...p, accelerations: Math.round(p.accelerations * p.minutes / 90)}));
 const leagueRankAccelerationsWithMinutes = calculateRankForMetric(sameLeague, 'accelerations', p => ({...p, accelerations: Math.round(p.accelerations * p.minutes / 90)}));
 const positionRankAccelerations = calculateRankForMetric(samePosition, 'accelerations');
 const positionRankAccelerationsWithMinutes = calculateRankForMetric(samePosition, 'accelerations', p => ({...p, accelerations: Math.round(p.accelerations * p.minutes / 90)}));
@@ -1174,7 +1177,7 @@ const samePositionAndLeagueAccelerationsWithMinutes = calculateRankForMetric(sam
 // Metric: foulsSuffered
 const allCsvRankFoulsSuffered = calculateRankForMetric(baseFiltered, 'foulsSuffered');
 const leagueRankFoulsSuffered = calculateRankForMetric(sameLeague, 'foulsSuffered');
-const allCsvRankFoulsSufferedWithMinutes = calculateRankForMetric(baseFiltered, 'foulsSuffered', p => true, p => ({...p, foulsSuffered: Math.round(p.foulsSuffered * p.minutes / 90)}));
+const allCsvRankFoulsSufferedWithMinutes = calculateRankForMetric(baseFiltered, 'foulsSuffered', p => ({...p, foulsSuffered: Math.round(p.foulsSuffered * p.minutes / 90)}));
 const leagueRankFoulsSufferedWithMinutes = calculateRankForMetric(sameLeague, 'foulsSuffered', p => ({...p, foulsSuffered: Math.round(p.foulsSuffered * p.minutes / 90)}));
 const positionRankFoulsSuffered = calculateRankForMetric(samePosition, 'foulsSuffered');
 const positionRankFoulsSufferedWithMinutes = calculateRankForMetric(samePosition, 'foulsSuffered', p => ({...p, foulsSuffered: Math.round(p.foulsSuffered * p.minutes / 90)}));
@@ -1184,7 +1187,7 @@ const samePositionAndLeagueFoulsSufferedWithMinutes = calculateRankForMetric(sam
 // Metric: passes
 const allCsvRankPasses = calculateRankForMetric(baseFiltered, 'passes');
 const leagueRankPasses = calculateRankForMetric(sameLeague, 'passes');
-const allCsvRankPassesWithMinutes = calculateRankForMetric(baseFiltered, 'passes', p => true, p => ({...p, passes: Math.round(p.passes * p.minutes / 90)}));
+const allCsvRankPassesWithMinutes = calculateRankForMetric(baseFiltered, 'passes', p => ({...p, passes: Math.round(p.passes * p.minutes / 90)}));
 const leagueRankPassesWithMinutes = calculateRankForMetric(sameLeague, 'passes', p => ({...p, passes: Math.round(p.passes * p.minutes / 90)}));
 const positionRankPasses = calculateRankForMetric(samePosition, 'passes');
 const positionRankPassesWithMinutes = calculateRankForMetric(samePosition, 'passes', p => ({...p, passes: Math.round(p.passes * p.minutes / 90)}));
@@ -1194,7 +1197,7 @@ const samePositionAndLeaguePassesWithMinutes = calculateRankForMetric(samePositi
 // Metric: forwardPasses
 const allCsvRankForwardPasses = calculateRankForMetric(baseFiltered, 'forwardPasses');
 const leagueRankForwardPasses = calculateRankForMetric(sameLeague, 'forwardPasses');
-const allCsvRankForwardPassesWithMinutes = calculateRankForMetric(baseFiltered, 'forwardPasses', p => true, p => ({...p, forwardPasses: Math.round(p.forwardPasses * p.minutes / 90)}));
+const allCsvRankForwardPassesWithMinutes = calculateRankForMetric(baseFiltered, 'forwardPasses', p => ({...p, forwardPasses: Math.round(p.forwardPasses * p.minutes / 90)}));
 const leagueRankForwardPassesWithMinutes = calculateRankForMetric(sameLeague, 'forwardPasses', p => ({...p, forwardPasses: Math.round(p.forwardPasses * p.minutes / 90)}));
 const positionRankForwardPasses = calculateRankForMetric(samePosition, 'forwardPasses');
 const positionRankForwardPassesWithMinutes = calculateRankForMetric(samePosition, 'forwardPasses', p => ({...p, forwardPasses: Math.round(p.forwardPasses * p.minutes / 90)}));
@@ -1204,7 +1207,7 @@ const samePositionAndLeagueForwardPassesWithMinutes = calculateRankForMetric(sam
 // Metric: shortMediumPasses
 const allCsvRankShortMediumPasses = calculateRankForMetric(baseFiltered, 'shortMediumPasses');
 const leagueRankShortMediumPasses = calculateRankForMetric(sameLeague, 'shortMediumPasses');
-const allCsvRankShortMediumPassesWithMinutes = calculateRankForMetric(baseFiltered, 'shortMediumPasses', p => true, p => ({...p, shortMediumPasses: Math.round(p.shortMediumPasses * p.minutes / 90)}));
+const allCsvRankShortMediumPassesWithMinutes = calculateRankForMetric(baseFiltered, 'shortMediumPasses', p => ({...p, shortMediumPasses: Math.round(p.shortMediumPasses * p.minutes / 90)}));
 const leagueRankShortMediumPassesWithMinutes = calculateRankForMetric(sameLeague, 'shortMediumPasses', p => ({...p, shortMediumPasses: Math.round(p.shortMediumPasses * p.minutes / 90)}));
 const positionRankShortMediumPasses = calculateRankForMetric(samePosition, 'shortMediumPasses');
 const positionRankShortMediumPassesWithMinutes = calculateRankForMetric(samePosition, 'shortMediumPasses', p => ({...p, shortMediumPasses: Math.round(p.shortMediumPasses * p.minutes / 90)}));
@@ -1214,7 +1217,7 @@ const samePositionAndLeagueShortMediumPassesWithMinutes = calculateRankForMetric
 // Metric: longPasses
 const allCsvRankLongPasses = calculateRankForMetric(baseFiltered, 'longPasses');
 const leagueRankLongPasses = calculateRankForMetric(sameLeague, 'longPasses');
-const allCsvRankLongPassesWithMinutes = calculateRankForMetric(baseFiltered, 'longPasses', p => true, p => ({...p, longPasses: Math.round(p.longPasses * p.minutes / 90)}));
+const allCsvRankLongPassesWithMinutes = calculateRankForMetric(baseFiltered, 'longPasses', p => ({...p, longPasses: Math.round(p.longPasses * p.minutes / 90)}));
 const leagueRankLongPassesWithMinutes = calculateRankForMetric(sameLeague, 'longPasses', p => ({...p, longPasses: Math.round(p.longPasses * p.minutes / 90)}));
 const positionRankLongPasses = calculateRankForMetric(samePosition, 'longPasses');
 const positionRankLongPassesWithMinutes = calculateRankForMetric(samePosition, 'longPasses', p => ({...p, longPasses: Math.round(p.longPasses * p.minutes / 90)}));
@@ -1225,7 +1228,7 @@ const samePositionAndLeagueLongPassesWithMinutes = calculateRankForMetric(samePo
 // Metric: xA (Expected Assists)
 const allCsvRankXA = calculateRankForMetric(baseFiltered, 'xA');
 const leagueRankXA = calculateRankForMetric(sameLeague, 'xA');
-const allCsvRankXAWithMinutes = calculateRankForMetric(baseFiltered, 'xA', p => true, p => ({...p, xA: p.xA * p.minutes}));
+const allCsvRankXAWithMinutes = calculateRankForMetric(baseFiltered, 'xA', p => ({...p, xA: p.xA * p.minutes}));
 const leagueRankXAWithMinutes = calculateRankForMetric(sameLeague, 'xA', p => ({...p, xA: p.xA * p.minutes}));
 const positionRankXA = calculateRankForMetric(samePosition, 'xA');
 const positionRankXAWithMinutes = calculateRankForMetric(samePosition, 'xA', p => ({...p, xA: p.xA * p.minutes}));
@@ -1235,7 +1238,7 @@ const samePositionAndLeagueXAWithMinutes = calculateRankForMetric(samePositionAn
 // Metric: shotAssists
 const allCsvRankShotAssists = calculateRankForMetric(baseFiltered, 'shotAssists');
 const leagueRankShotAssists = calculateRankForMetric(sameLeague, 'shotAssists');
-const allCsvRankShotAssistsWithMinutes = calculateRankForMetric(baseFiltered, 'shotAssists', p => true, p => ({...p, shotAssists: Math.round(p.shotAssists * p.minutes / 90)}));
+const allCsvRankShotAssistsWithMinutes = calculateRankForMetric(baseFiltered, 'shotAssists', p => ({...p, shotAssists: Math.round(p.shotAssists * p.minutes / 90)}));
 const leagueRankShotAssistsWithMinutes = calculateRankForMetric(sameLeague, 'shotAssists', p => ({...p, shotAssists: Math.round(p.shotAssists * p.minutes / 90)}));
 const positionRankShotAssists = calculateRankForMetric(samePosition, 'shotAssists');
 const positionRankShotAssistsWithMinutes = calculateRankForMetric(samePosition, 'shotAssists', p => ({...p, shotAssists: Math.round(p.shotAssists * p.minutes / 90)}));
@@ -1245,7 +1248,7 @@ const samePositionAndLeagueShotAssistsWithMinutes = calculateRankForMetric(sameP
 // Metric: keyPasses
 const allCsvRankKeyPasses = calculateRankForMetric(baseFiltered, 'keyPasses');
 const leagueRankKeyPasses = calculateRankForMetric(sameLeague, 'keyPasses');
-const allCsvRankKeyPassesWithMinutes = calculateRankForMetric(baseFiltered, 'keyPasses', p => true, p => ({...p, keyPasses: Math.round(p.keyPasses * p.minutes / 90)}));
+const allCsvRankKeyPassesWithMinutes = calculateRankForMetric(baseFiltered, 'keyPasses', p => ({...p, keyPasses: Math.round(p.keyPasses * p.minutes / 90)}));
 const leagueRankKeyPassesWithMinutes = calculateRankForMetric(sameLeague, 'keyPasses', p => ({...p, keyPasses: Math.round(p.keyPasses * p.minutes / 90)}));
 const positionRankKeyPasses = calculateRankForMetric(samePosition, 'keyPasses');
 const positionRankKeyPassesWithMinutes = calculateRankForMetric(samePosition, 'keyPasses', p => ({...p, keyPasses: Math.round(p.keyPasses * p.minutes / 90)}));
@@ -1255,7 +1258,7 @@ const samePositionAndLeagueKeyPassesWithMinutes = calculateRankForMetric(samePos
 // Metric: passesToFinalThird
 const allCsvRankPassesToFinalThird = calculateRankForMetric(baseFiltered, 'passesToFinalThird');
 const leagueRankPassesToFinalThird = calculateRankForMetric(sameLeague, 'passesToFinalThird');
-const allCsvRankPassesToFinalThirdWithMinutes = calculateRankForMetric(baseFiltered, 'passesToFinalThird', p => true, p => ({...p, passesToFinalThird: Math.round(p.passesToFinalThird * p.minutes / 90)}));
+const allCsvRankPassesToFinalThirdWithMinutes = calculateRankForMetric(baseFiltered, 'passesToFinalThird', p => ({...p, passesToFinalThird: Math.round(p.passesToFinalThird * p.minutes / 90)}));
 const leagueRankPassesToFinalThirdWithMinutes = calculateRankForMetric(sameLeague, 'passesToFinalThird', p => ({...p, passesToFinalThird: Math.round(p.passesToFinalThird * p.minutes / 90)}));
 const positionRankPassesToFinalThird = calculateRankForMetric(samePosition, 'passesToFinalThird');
 const positionRankPassesToFinalThirdWithMinutes = calculateRankForMetric(samePosition, 'passesToFinalThird', p => ({...p, passesToFinalThird: Math.round(p.passesToFinalThird * p.minutes / 90)}));
@@ -1265,7 +1268,7 @@ const samePositionAndLeaguePassesToFinalThirdWithMinutes = calculateRankForMetri
 // Metric: passesToPenaltyArea
 const allCsvRankPassesToPenaltyArea = calculateRankForMetric(baseFiltered, 'passesToPenaltyArea');
 const leagueRankPassesToPenaltyArea = calculateRankForMetric(sameLeague, 'passesToPenaltyArea');
-const allCsvRankPassesToPenaltyAreaWithMinutes = calculateRankForMetric(baseFiltered, 'passesToPenaltyArea', p => true, p => ({...p, passesToPenaltyArea: Math.round(p.passesToPenaltyArea * p.minutes / 90)}));
+const allCsvRankPassesToPenaltyAreaWithMinutes = calculateRankForMetric(baseFiltered, 'passesToPenaltyArea', p => ({...p, passesToPenaltyArea: Math.round(p.passesToPenaltyArea * p.minutes / 90)}));
 const leagueRankPassesToPenaltyAreaWithMinutes = calculateRankForMetric(sameLeague, 'passesToPenaltyArea', p => ({...p, passesToPenaltyArea: Math.round(p.passesToPenaltyArea * p.minutes / 90)}));
 const positionRankPassesToPenaltyArea = calculateRankForMetric(samePosition, 'passesToPenaltyArea');
 const positionRankPassesToPenaltyAreaWithMinutes = calculateRankForMetric(samePosition, 'passesToPenaltyArea', p => ({...p, passesToPenaltyArea: Math.round(p.passesToPenaltyArea * p.minutes / 90)}));
@@ -1275,7 +1278,7 @@ const samePositionAndLeaguePassesToPenaltyAreaWithMinutes = calculateRankForMetr
 // Metric: throughPasses
 const allCsvRankThroughPasses = calculateRankForMetric(baseFiltered, 'throughPasses');
 const leagueRankThroughPasses = calculateRankForMetric(sameLeague, 'throughPasses');
-const allCsvRankThroughPassesWithMinutes = calculateRankForMetric(baseFiltered, 'throughPasses', p => true, p => ({...p, throughPasses: Math.round(p.throughPasses * p.minutes / 90)}));
+const allCsvRankThroughPassesWithMinutes = calculateRankForMetric(baseFiltered, 'throughPasses', p => ({...p, throughPasses: Math.round(p.throughPasses * p.minutes / 90)}));
 const leagueRankThroughPassesWithMinutes = calculateRankForMetric(sameLeague, 'throughPasses', p => ({...p, throughPasses: Math.round(p.throughPasses * p.minutes / 90)}));
 const positionRankThroughPasses = calculateRankForMetric(samePosition, 'throughPasses');
 const positionRankThroughPassesWithMinutes = calculateRankForMetric(samePosition, 'throughPasses', p => ({...p, throughPasses: Math.round(p.throughPasses * p.minutes / 90)}));
@@ -1285,7 +1288,7 @@ const samePositionAndLeagueThroughPassesWithMinutes = calculateRankForMetric(sam
 // Metric: deepCompletions
 const allCsvRankDeepCompletions = calculateRankForMetric(baseFiltered, 'deepCompletions');
 const leagueRankDeepCompletions = calculateRankForMetric(sameLeague, 'deepCompletions');
-const allCsvRankDeepCompletionsWithMinutes = calculateRankForMetric(baseFiltered, 'deepCompletions', p => true, p => ({...p, deepCompletions: Math.round(p.deepCompletions * p.minutes / 90)}));
+const allCsvRankDeepCompletionsWithMinutes = calculateRankForMetric(baseFiltered, 'deepCompletions', p => ({...p, deepCompletions: Math.round(p.deepCompletions * p.minutes / 90)}));
 const leagueRankDeepCompletionsWithMinutes = calculateRankForMetric(sameLeague, 'deepCompletions', p => ({...p, deepCompletions: Math.round(p.deepCompletions * p.minutes / 90)}));
 const positionRankDeepCompletions = calculateRankForMetric(samePosition, 'deepCompletions');
 const positionRankDeepCompletionsWithMinutes = calculateRankForMetric(samePosition, 'deepCompletions', p => ({...p, deepCompletions: Math.round(p.deepCompletions * p.minutes / 90)}));
@@ -1295,7 +1298,7 @@ const samePositionAndLeagueDeepCompletionsWithMinutes = calculateRankForMetric(s
 // Metric: progressivePasses
 const allCsvRankProgressivePasses = calculateRankForMetric(baseFiltered, 'progressivePasses');
 const leagueRankProgressivePasses = calculateRankForMetric(sameLeague, 'progressivePasses');
-const allCsvRankProgressivePassesWithMinutes = calculateRankForMetric(baseFiltered, 'progressivePasses', p => true, p => ({...p, progressivePasses: Math.round(p.progressivePasses * p.minutes / 90)}));
+const allCsvRankProgressivePassesWithMinutes = calculateRankForMetric(baseFiltered, 'progressivePasses', p => ({...p, progressivePasses: Math.round(p.progressivePasses * p.minutes / 90)}));
 const leagueRankProgressivePassesWithMinutes = calculateRankForMetric(sameLeague, 'progressivePasses', p => ({...p, progressivePasses: Math.round(p.progressivePasses * p.minutes / 90)}));
 const positionRankProgressivePasses = calculateRankForMetric(samePosition, 'progressivePasses');
 const positionRankProgressivePassesWithMinutes = calculateRankForMetric(samePosition, 'progressivePasses', p => ({...p, progressivePasses: Math.round(p.progressivePasses * p.minutes / 90)}));
@@ -1305,7 +1308,7 @@ const samePositionAndLeagueProgressivePassesWithMinutes = calculateRankForMetric
 // Metric: shotsAgainst
 const allCsvRankShotsAgainst = calculateRankForMetric(baseFiltered, 'shotsAgainst');
 const leagueRankShotsAgainst = calculateRankForMetric(sameLeague, 'shotsAgainst');
-const allCsvRankShotsAgainstWithMinutes = calculateRankForMetric(baseFiltered, 'shotsAgainst', p => true, p => ({...p, shotsAgainst: Math.round(p.shotsAgainst * p.minutes / 90)}));
+const allCsvRankShotsAgainstWithMinutes = calculateRankForMetric(baseFiltered, 'shotsAgainst', p => ({...p, shotsAgainst: Math.round(p.shotsAgainst * p.minutes / 90)}));
 const leagueRankShotsAgainstWithMinutes = calculateRankForMetric(sameLeague, 'shotsAgainst', p => ({...p, shotsAgainst: Math.round(p.shotsAgainst * p.minutes / 90)}));
 const positionRankShotsAgainst = calculateRankForMetric(samePosition, 'shotsAgainst');
 const positionRankShotsAgainstWithMinutes = calculateRankForMetric(samePosition, 'shotsAgainst', p => ({...p, shotsAgainst: Math.round(p.shotsAgainst * p.minutes / 90)}));
@@ -1325,7 +1328,7 @@ const samePositionAndLeagueCleanSheetsWithMinutes = calculateRankForMetric(sameP
 // Metric: xGAgainst
 const allCsvRankXGAgainst = calculateRankForMetric(baseFiltered, 'xGAgainst');
 const leagueRankXGAgainst = calculateRankForMetric(sameLeague, 'xGAgainst');
-const allCsvRankXGAgainstWithMinutes = calculateRankForMetric(baseFiltered, 'xGAgainst', p => true, p => ({...p, xGAgainst: p.xGAgainst * p.minutes}));
+const allCsvRankXGAgainstWithMinutes = calculateRankForMetric(baseFiltered, 'xGAgainst', p => ({...p, xGAgainst: p.xGAgainst * p.minutes}));
 const leagueRankXGAgainstWithMinutes = calculateRankForMetric(sameLeague, 'xGAgainst', p => ({...p, xGAgainst: p.xGAgainst * p.minutes}));
 const positionRankXGAgainst = calculateRankForMetric(samePosition, 'xGAgainst');
 const positionRankXGAgainstWithMinutes = calculateRankForMetric(samePosition, 'xGAgainst', p => ({...p, xGAgainst: p.xGAgainst * p.minutes}));
@@ -1335,7 +1338,7 @@ const samePositionAndLeagueXGAgainstWithMinutes = calculateRankForMetric(samePos
 // Metric: preventedGoals
 const allCsvRankPreventedGoals = calculateRankForMetric(baseFiltered, 'preventedGoals');
 const leagueRankPreventedGoals = calculateRankForMetric(sameLeague, 'preventedGoals');
-const allCsvRankPreventedGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'preventedGoals', p => true, p => ({...p, preventedGoals: p.preventedGoals * p.minutes}));
+const allCsvRankPreventedGoalsWithMinutes = calculateRankForMetric(baseFiltered, 'preventedGoals', p => ({...p, preventedGoals: p.preventedGoals * p.minutes}));
 const leagueRankPreventedGoalsWithMinutes = calculateRankForMetric(sameLeague, 'preventedGoals', p => ({...p, preventedGoals: p.preventedGoals * p.minutes}));
 const positionRankPreventedGoals = calculateRankForMetric(samePosition, 'preventedGoals');
 const positionRankPreventedGoalsWithMinutes = calculateRankForMetric(samePosition, 'preventedGoals', p => ({...p, preventedGoals: p.preventedGoals * p.minutes}));
@@ -1345,7 +1348,7 @@ const samePositionAndLeaguePreventedGoalsWithMinutes = calculateRankForMetric(sa
 // Metric: exits
 const allCsvRankExits = calculateRankForMetric(baseFiltered, 'exits');
 const leagueRankExits = calculateRankForMetric(sameLeague, 'exits');
-const allCsvRankExitsWithMinutes = calculateRankForMetric(baseFiltered, 'exits', p => true, p => ({...p, exits: Math.round(p.exits * p.minutes / 90)}));
+const allCsvRankExitsWithMinutes = calculateRankForMetric(baseFiltered, 'exits', p => ({...p, exits: Math.round(p.exits * p.minutes / 90)}));
 const leagueRankExitsWithMinutes = calculateRankForMetric(sameLeague, 'exits', p => ({...p, exits: Math.round(p.exits * p.minutes / 90)}));
 const positionRankExits = calculateRankForMetric(samePosition, 'exits');
 const positionRankExitsWithMinutes = calculateRankForMetric(samePosition, 'exits', p => ({...p, exits: Math.round(p.exits * p.minutes / 90)}));
@@ -1507,7 +1510,7 @@ const samePositionAndLeagueSaveRatePercentageWithMinutes = calculateRankForMetri
 // Metric: preAssistsPerNinety
 const allCsvRankPreAssistsPerNinety = calculateRankForMetric(baseFiltered, 'preAssistsPerNinety');
 const leagueRankPreAssistsPerNinety = calculateRankForMetric(sameLeague, 'preAssistsPerNinety');
-const allCsvRankPreAssistsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'preAssistsPerNinety', p => true, p => ({...p, preAssistsPerNinety: Math.round(p.preAssistsPerNinety * p.minutes / 90)}));
+const allCsvRankPreAssistsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'preAssistsPerNinety', p => ({...p, preAssistsPerNinety: Math.round(p.preAssistsPerNinety * p.minutes / 90)}));
 const leagueRankPreAssistsPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'preAssistsPerNinety', p => ({...p, preAssistsPerNinety: Math.round(p.preAssistsPerNinety * p.minutes / 90)}));
 const positionRankPreAssistsPerNinety = calculateRankForMetric(samePosition, 'preAssistsPerNinety');
 const positionRankPreAssistsPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'preAssistsPerNinety', p => ({...p, preAssistsPerNinety: Math.round(p.preAssistsPerNinety * p.minutes / 90)}));
@@ -1518,7 +1521,7 @@ const samePositionAndLeaguePreAssistsPerNinetyWithMinutes = calculateRankForMetr
 // Metric: duelsPerNinety
 const allCsvRankDuelsPerNinety = calculateRankForMetric(baseFiltered, 'duelsPerNinety');
 const leagueRankDuelsPerNinety = calculateRankForMetric(sameLeague, 'duelsPerNinety');
-const allCsvRankDuelsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'duelsPerNinety', p => true, p => ({...p, duelsPerNinety: Math.round(p.duelsPerNinety * p.minutes / 90)}));
+const allCsvRankDuelsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'duelsPerNinety', p => ({...p, duelsPerNinety: Math.round(p.duelsPerNinety * p.minutes / 90)}));
 const leagueRankDuelsPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'duelsPerNinety', p => ({...p, duelsPerNinety: Math.round(p.duelsPerNinety * p.minutes / 90)}));
 const positionRankDuelsPerNinety = calculateRankForMetric(samePosition, 'duelsPerNinety');
 const positionRankDuelsPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'duelsPerNinety', p => ({...p, duelsPerNinety: Math.round(p.duelsPerNinety * p.minutes / 90)}));
@@ -1528,7 +1531,7 @@ const samePositionAndLeagueDuelsPerNinetyWithMinutes = calculateRankForMetric(sa
 // Metric: goalsAndAssistsPerNinety
 const allCsvRankGoalsAndAssistsPerNinety = calculateRankForMetric(baseFiltered, 'goalsAndAssistsPerNinety');
 const leagueRankGoalsAndAssistsPerNinety = calculateRankForMetric(sameLeague, 'goalsAndAssistsPerNinety');
-const allCsvRankGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'goalsAndAssistsPerNinety', p => true, p => ({...p, goalsAndAssistsPerNinety: Math.round(p.goalsAndAssistsPerNinety * p.minutes / 90)}));
+const allCsvRankGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'goalsAndAssistsPerNinety', p => ({...p, goalsAndAssistsPerNinety: Math.round(p.goalsAndAssistsPerNinety * p.minutes / 90)}));
 const leagueRankGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'goalsAndAssistsPerNinety', p => ({...p, goalsAndAssistsPerNinety: Math.round(p.goalsAndAssistsPerNinety * p.minutes / 90)}));
 const positionRankGoalsAndAssistsPerNinety = calculateRankForMetric(samePosition, 'goalsAndAssistsPerNinety');
 const positionRankGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'goalsAndAssistsPerNinety', p => ({...p, goalsAndAssistsPerNinety: Math.round(p.goalsAndAssistsPerNinety * p.minutes / 90)}));
@@ -1538,7 +1541,7 @@ const samePositionAndLeagueGoalsAndAssistsPerNinetyWithMinutes = calculateRankFo
 // Metric: npGoalsAndAssistsPerNinety
 const allCsvRankNpGoalsAndAssistsPerNinety = calculateRankForMetric(baseFiltered, 'npGoalsAndAssistsPerNinety');
 const leagueRankNpGoalsAndAssistsPerNinety = calculateRankForMetric(sameLeague, 'npGoalsAndAssistsPerNinety');
-const allCsvRankNpGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'npGoalsAndAssistsPerNinety', p => true, p => ({...p, npGoalsAndAssistsPerNinety: Math.round(p.npGoalsAndAssistsPerNinety * p.minutes / 90)}));
+const allCsvRankNpGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'npGoalsAndAssistsPerNinety', p => ({...p, npGoalsAndAssistsPerNinety: Math.round(p.npGoalsAndAssistsPerNinety * p.minutes / 90)}));
 const leagueRankNpGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'npGoalsAndAssistsPerNinety', p => ({...p, npGoalsAndAssistsPerNinety: Math.round(p.npGoalsAndAssistsPerNinety * p.minutes / 90)}));
 const positionRankNpGoalsAndAssistsPerNinety = calculateRankForMetric(samePosition, 'npGoalsAndAssistsPerNinety');
 const positionRankNpGoalsAndAssistsPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'npGoalsAndAssistsPerNinety', p => ({...p, npGoalsAndAssistsPerNinety: Math.round(p.npGoalsAndAssistsPerNinety * p.minutes / 90)}));
@@ -1548,7 +1551,7 @@ const samePositionAndLeagueNpGoalsAndAssistsPerNinetyWithMinutes = calculateRank
 // Metric: successfulDribblesPerNinety
 const allCsvRankSuccessfulDribblesPerNinety = calculateRankForMetric(baseFiltered, 'successfulDribblesPerNinety');
 const leagueRankSuccessfulDribblesPerNinety = calculateRankForMetric(sameLeague, 'successfulDribblesPerNinety');
-const allCsvRankSuccessfulDribblesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'successfulDribblesPerNinety', p => true, p => ({...p, successfulDribblesPerNinety: Math.round(p.successfulDribblesPerNinety * p.minutes / 90)}));
+const allCsvRankSuccessfulDribblesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'successfulDribblesPerNinety', p => ({...p, successfulDribblesPerNinety: Math.round(p.successfulDribblesPerNinety * p.minutes / 90)}));
 const leagueRankSuccessfulDribblesPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'successfulDribblesPerNinety', p => ({...p, successfulDribblesPerNinety: Math.round(p.successfulDribblesPerNinety * p.minutes / 90)}));
 const positionRankSuccessfulDribblesPerNinety = calculateRankForMetric(samePosition, 'successfulDribblesPerNinety');
 const positionRankSuccessfulDribblesPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'successfulDribblesPerNinety', p => ({...p, successfulDribblesPerNinety: Math.round(p.successfulDribblesPerNinety * p.minutes / 90)}));
@@ -1558,7 +1561,7 @@ const samePositionAndLeagueSuccessfulDribblesPerNinetyWithMinutes = calculateRan
 // Metric: shotsOnTargetPerNinety
 const allCsvRankShotsOnTargetPerNinety = calculateRankForMetric(baseFiltered, 'shotsOnTargetPerNinety');
 const leagueRankShotsOnTargetPerNinety = calculateRankForMetric(sameLeague, 'shotsOnTargetPerNinety');
-const allCsvRankShotsOnTargetPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'shotsOnTargetPerNinety', p => true, p => ({...p, shotsOnTargetPerNinety: Math.round(p.shotsOnTargetPerNinety * p.minutes / 90)}));
+const allCsvRankShotsOnTargetPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'shotsOnTargetPerNinety', p => ({...p, shotsOnTargetPerNinety: Math.round(p.shotsOnTargetPerNinety * p.minutes / 90)}));
 const leagueRankShotsOnTargetPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'shotsOnTargetPerNinety', p => ({...p, shotsOnTargetPerNinety: Math.round(p.shotsOnTargetPerNinety * p.minutes / 90)}));
 const positionRankShotsOnTargetPerNinety = calculateRankForMetric(samePosition, 'shotsOnTargetPerNinety');
 const positionRankShotsOnTargetPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'shotsOnTargetPerNinety', p => ({...p, shotsOnTargetPerNinety: Math.round(p.shotsOnTargetPerNinety * p.minutes / 90)}));
@@ -1569,7 +1572,7 @@ const samePositionAndLeagueShotsOnTargetPerNinetyWithMinutes = calculateRankForM
 // Metric: accurateCrossesPerNinety
 const allCsvRankAccurateCrossesPerNinety = calculateRankForMetric(baseFiltered, 'accurateCrossesPerNinety');
 const leagueRankAccurateCrossesPerNinety = calculateRankForMetric(sameLeague, 'accurateCrossesPerNinety');
-const allCsvRankAccurateCrossesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'accurateCrossesPerNinety', p => true, p => ({...p, accurateCrossesPerNinety: Math.round(p.accurateCrossesPerNinety * p.minutes / 90)}));
+const allCsvRankAccurateCrossesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'accurateCrossesPerNinety', p => ({...p, accurateCrossesPerNinety: Math.round(p.accurateCrossesPerNinety * p.minutes / 90)}));
 const leagueRankAccurateCrossesPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'accurateCrossesPerNinety', p => ({...p, accurateCrossesPerNinety: Math.round(p.accurateCrossesPerNinety * p.minutes / 90)}));
 const positionRankAccurateCrossesPerNinety = calculateRankForMetric(samePosition, 'accurateCrossesPerNinety');
 const positionRankAccurateCrossesPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'accurateCrossesPerNinety', p => ({...p, accurateCrossesPerNinety: Math.round(p.accurateCrossesPerNinety * p.minutes / 90)}));
@@ -1581,7 +1584,7 @@ const samePositionAndLeagueAccurateCrossesPerNinetyWithMinutes = calculateRankFo
 // Metric: offensiveDuelsWonPerNinety
 const allCsvRankOffensiveDuelsWonPerNinety = calculateRankForMetric(baseFiltered, 'offensiveDuelsWonPerNinety');
 const leagueRankOffensiveDuelsWonPerNinety = calculateRankForMetric(sameLeague, 'offensiveDuelsWonPerNinety');
-const allCsvRankOffensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'offensiveDuelsWonPerNinety', p => true, p => ({...p, offensiveDuelsWonPerNinety: Math.round(p.offensiveDuelsWonPerNinety * p.minutes / 90)}));
+const allCsvRankOffensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'offensiveDuelsWonPerNinety', p => ({...p, offensiveDuelsWonPerNinety: Math.round(p.offensiveDuelsWonPerNinety * p.minutes / 90)}));
 const leagueRankOffensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'offensiveDuelsWonPerNinety', p => ({...p, offensiveDuelsWonPerNinety: Math.round(p.offensiveDuelsWonPerNinety * p.minutes / 90)}));
 const positionRankOffensiveDuelsWonPerNinety = calculateRankForMetric(samePosition, 'offensiveDuelsWonPerNinety');
 const positionRankOffensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'offensiveDuelsWonPerNinety', p => ({...p, offensiveDuelsWonPerNinety: Math.round(p.offensiveDuelsWonPerNinety * p.minutes / 90)}));
@@ -1592,7 +1595,7 @@ const samePositionAndLeagueOffensiveDuelsWonPerNinetyWithMinutes = calculateRank
 // Metric: defensiveDuelsWonPerNinety
 const allCsvRankDefensiveDuelsWonPerNinety = calculateRankForMetric(baseFiltered, 'defensiveDuelsWonPerNinety');
 const leagueRankDefensiveDuelsWonPerNinety = calculateRankForMetric(sameLeague, 'defensiveDuelsWonPerNinety');
-const allCsvRankDefensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'defensiveDuelsWonPerNinety', p => true, p => ({...p, defensiveDuelsWonPerNinety: Math.round(p.defensiveDuelsWonPerNinety * p.minutes / 90)}));
+const allCsvRankDefensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'defensiveDuelsWonPerNinety', p => ({...p, defensiveDuelsWonPerNinety: Math.round(p.defensiveDuelsWonPerNinety * p.minutes / 90)}));
 const leagueRankDefensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'defensiveDuelsWonPerNinety', p => ({...p, defensiveDuelsWonPerNinety: Math.round(p.defensiveDuelsWonPerNinety * p.minutes / 90)}));
 const positionRankDefensiveDuelsWonPerNinety = calculateRankForMetric(samePosition, 'defensiveDuelsWonPerNinety');
 const positionRankDefensiveDuelsWonPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'defensiveDuelsWonPerNinety', p => ({...p, defensiveDuelsWonPerNinety: Math.round(p.defensiveDuelsWonPerNinety * p.minutes / 90)}));
@@ -1603,7 +1606,7 @@ const samePositionAndLeagueDefensiveDuelsWonPerNinetyWithMinutes = calculateRank
 // Metric: aerialDuelsWonPerNinety
 const allCsvRankAerialDuelsWonPerNinety = calculateRankForMetric(baseFiltered, 'aerialDuelsWonPerNinety');
 const leagueRankAerialDuelsWonPerNinety = calculateRankForMetric(sameLeague, 'aerialDuelsWonPerNinety');
-const allCsvRankAerialDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'aerialDuelsWonPerNinety', p => true, p => ({...p, aerialDuelsWonPerNinety: Math.round(p.aerialDuelsWonPerNinety * p.minutes / 90)}));
+const allCsvRankAerialDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'aerialDuelsWonPerNinety', p => ({...p, aerialDuelsWonPerNinety: Math.round(p.aerialDuelsWonPerNinety * p.minutes / 90)}));
 const leagueRankAerialDuelsWonPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'aerialDuelsWonPerNinety', p => ({...p, aerialDuelsWonPerNinety: Math.round(p.aerialDuelsWonPerNinety * p.minutes / 90)}));
 const positionRankAerialDuelsWonPerNinety = calculateRankForMetric(samePosition, 'aerialDuelsWonPerNinety');
 const positionRankAerialDuelsWonPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'aerialDuelsWonPerNinety', p => ({...p, aerialDuelsWonPerNinety: Math.round(p.aerialDuelsWonPerNinety * p.minutes / 90)}));
@@ -1614,7 +1617,7 @@ const samePositionAndLeagueAerialDuelsWonPerNinetyWithMinutes = calculateRankFor
 // Metric: touchesPerNinety
 const allCsvRankTouchesPerNinety = calculateRankForMetric(baseFiltered, 'touchesPerNinety');
 const leagueRankTouchesPerNinety = calculateRankForMetric(sameLeague, 'touchesPerNinety');
-const allCsvRankTouchesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'touchesPerNinety', p => true, p => ({...p, touchesPerNinety: Math.round(p.touchesPerNinety * p.minutes / 90)}));
+const allCsvRankTouchesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'touchesPerNinety', p => ({...p, touchesPerNinety: Math.round(p.touchesPerNinety * p.minutes / 90)}));
 const leagueRankTouchesPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'touchesPerNinety', p => ({...p, touchesPerNinety: Math.round(p.touchesPerNinety * p.minutes / 90)}));
 const positionRankTouchesPerNinety = calculateRankForMetric(samePosition, 'touchesPerNinety');
 const positionRankTouchesPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'touchesPerNinety', p => ({...p, touchesPerNinety: Math.round(p.touchesPerNinety * p.minutes / 90)}));
@@ -1624,7 +1627,7 @@ const samePositionAndLeagueTouchesPerNinetyWithMinutes = calculateRankForMetric(
 // Metric: passesCompletedPerNinety
 const allCsvRankPassesCompletedPerNinety = calculateRankForMetric(baseFiltered, 'passesCompletedPerNinety');
 const leagueRankPassesCompletedPerNinety = calculateRankForMetric(sameLeague, 'passesCompletedPerNinety');
-const allCsvRankPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'passesCompletedPerNinety', p => true, p => ({...p, passesCompletedPerNinety: Math.round(p.passesCompletedPerNinety * p.minutes / 90)}));
+const allCsvRankPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'passesCompletedPerNinety', p => ({...p, passesCompletedPerNinety: Math.round(p.passesCompletedPerNinety * p.minutes / 90)}));
 const leagueRankPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'passesCompletedPerNinety', p => ({...p, passesCompletedPerNinety: Math.round(p.passesCompletedPerNinety * p.minutes / 90)}));
 const positionRankPassesCompletedPerNinety = calculateRankForMetric(samePosition, 'passesCompletedPerNinety');
 const positionRankPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'passesCompletedPerNinety', p => ({...p, passesCompletedPerNinety: Math.round(p.passesCompletedPerNinety * p.minutes / 90)}));
@@ -1634,7 +1637,7 @@ const samePositionAndLeaguePassesCompletedPerNinetyWithMinutes = calculateRankFo
 // Metric: forwardPassesCompletedPerNinety
 const allCsvRankForwardPassesCompletedPerNinety = calculateRankForMetric(baseFiltered, 'forwardPassesCompletedPerNinety');
 const leagueRankForwardPassesCompletedPerNinety = calculateRankForMetric(sameLeague, 'forwardPassesCompletedPerNinety');
-const allCsvRankForwardPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'forwardPassesCompletedPerNinety', p => true, p => ({...p, forwardPassesCompletedPerNinety: Math.round(p.forwardPassesCompletedPerNinety * p.minutes / 90)}));
+const allCsvRankForwardPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'forwardPassesCompletedPerNinety', p => ({...p, forwardPassesCompletedPerNinety: Math.round(p.forwardPassesCompletedPerNinety * p.minutes / 90)}));
 const leagueRankForwardPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'forwardPassesCompletedPerNinety', p => ({...p, forwardPassesCompletedPerNinety: Math.round(p.forwardPassesCompletedPerNinety * p.minutes / 90)}));
 const positionRankForwardPassesCompletedPerNinety = calculateRankForMetric(samePosition, 'forwardPassesCompletedPerNinety');
 const positionRankForwardPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'forwardPassesCompletedPerNinety', p => ({...p, forwardPassesCompletedPerNinety: Math.round(p.forwardPassesCompletedPerNinety * p.minutes / 90)}));
@@ -1644,7 +1647,7 @@ const samePositionAndLeagueForwardPassesCompletedPerNinetyWithMinutes = calculat
 // Metric: shortPassesCompletedPerNinety
 const allCsvRankShortPassesCompletedPerNinety = calculateRankForMetric(baseFiltered, 'shortPassesCompletedPerNinety');
 const leagueRankShortPassesCompletedPerNinety = calculateRankForMetric(sameLeague, 'shortPassesCompletedPerNinety');
-const allCsvRankShortPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'shortPassesCompletedPerNinety', p => true, p => ({...p, shortPassesCompletedPerNinety: Math.round(p.shortPassesCompletedPerNinety * p.minutes / 90)}));
+const allCsvRankShortPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'shortPassesCompletedPerNinety', p => ({...p, shortPassesCompletedPerNinety: Math.round(p.shortPassesCompletedPerNinety * p.minutes / 90)}));
 const leagueRankShortPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'shortPassesCompletedPerNinety', p => ({...p, shortPassesCompletedPerNinety: Math.round(p.shortPassesCompletedPerNinety * p.minutes / 90)}));
 const positionRankShortPassesCompletedPerNinety = calculateRankForMetric(samePosition, 'shortPassesCompletedPerNinety');
 const positionRankShortPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'shortPassesCompletedPerNinety', p => ({...p, shortPassesCompletedPerNinety: Math.round(p.shortPassesCompletedPerNinety * p.minutes / 90)}));
@@ -1654,7 +1657,7 @@ const samePositionAndLeagueShortPassesCompletedPerNinetyWithMinutes = calculateR
 // Metric: longPassesCompletedPerNinety
 const allCsvRankLongPassesCompletedPerNinety = calculateRankForMetric(baseFiltered, 'longPassesCompletedPerNinety');
 const leagueRankLongPassesCompletedPerNinety = calculateRankForMetric(sameLeague, 'longPassesCompletedPerNinety');
-const allCsvRankLongPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'longPassesCompletedPerNinety', p => true, p => ({...p, longPassesCompletedPerNinety: Math.round(p.longPassesCompletedPerNinety * p.minutes / 90)}));
+const allCsvRankLongPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'longPassesCompletedPerNinety', p => ({...p, longPassesCompletedPerNinety: Math.round(p.longPassesCompletedPerNinety * p.minutes / 90)}));
 const leagueRankLongPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'longPassesCompletedPerNinety', p => ({...p, longPassesCompletedPerNinety: Math.round(p.longPassesCompletedPerNinety * p.minutes / 90)}));
 const positionRankLongPassesCompletedPerNinety = calculateRankForMetric(samePosition, 'longPassesCompletedPerNinety');
 const positionRankLongPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'longPassesCompletedPerNinety', p => ({...p, longPassesCompletedPerNinety: Math.round(p.longPassesCompletedPerNinety * p.minutes / 90)}));
@@ -1664,7 +1667,7 @@ const samePositionAndLeagueLongPassesCompletedPerNinetyWithMinutes = calculateRa
 // Metric: accuratePassesToFinalThirdPerNinety
 const allCsvRankAccuratePassesToFinalThirdPerNinety = calculateRankForMetric(baseFiltered, 'accuratePassesToFinalThirdPerNinety');
 const leagueRankAccuratePassesToFinalThirdPerNinety = calculateRankForMetric(sameLeague, 'accuratePassesToFinalThirdPerNinety');
-const allCsvRankAccuratePassesToFinalThirdPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'accuratePassesToFinalThirdPerNinety', p => true, p => ({...p, accuratePassesToFinalThirdPerNinety: Math.round(p.accuratePassesToFinalThirdPerNinety * p.minutes / 90)}));
+const allCsvRankAccuratePassesToFinalThirdPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'accuratePassesToFinalThirdPerNinety', p => ({...p, accuratePassesToFinalThirdPerNinety: Math.round(p.accuratePassesToFinalThirdPerNinety * p.minutes / 90)}));
 const leagueRankAccuratePassesToFinalThirdPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'accuratePassesToFinalThirdPerNinety', p => ({...p, accuratePassesToFinalThirdPerNinety: Math.round(p.accuratePassesToFinalThirdPerNinety * p.minutes / 90)}));
 const positionRankAccuratePassesToFinalThirdPerNinety = calculateRankForMetric(samePosition, 'accuratePassesToFinalThirdPerNinety');
 const positionRankAccuratePassesToFinalThirdPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'accuratePassesToFinalThirdPerNinety', p => ({...p, accuratePassesToFinalThirdPerNinety: Math.round(p.accuratePassesToFinalThirdPerNinety * p.minutes / 90)}));
@@ -1675,7 +1678,7 @@ const samePositionAndLeagueAccuratePassesToFinalThirdPerNinetyWithMinutes = calc
 // Metric: throughPassesCompletedPerNinety
 const allCsvRankThroughPassesCompletedPerNinety = calculateRankForMetric(baseFiltered, 'throughPassesCompletedPerNinety');
 const leagueRankThroughPassesCompletedPerNinety = calculateRankForMetric(sameLeague, 'throughPassesCompletedPerNinety');
-const allCsvRankThroughPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'throughPassesCompletedPerNinety', p => true, p => ({...p, throughPassesCompletedPerNinety: Math.round(p.throughPassesCompletedPerNinety * p.minutes / 90)}));
+const allCsvRankThroughPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'throughPassesCompletedPerNinety', p => ({...p, throughPassesCompletedPerNinety: Math.round(p.throughPassesCompletedPerNinety * p.minutes / 90)}));
 const leagueRankThroughPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'throughPassesCompletedPerNinety', p => ({...p, throughPassesCompletedPerNinety: Math.round(p.throughPassesCompletedPerNinety * p.minutes / 90)}));
 const positionRankThroughPassesCompletedPerNinety = calculateRankForMetric(samePosition, 'throughPassesCompletedPerNinety');
 const positionRankThroughPassesCompletedPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'throughPassesCompletedPerNinety', p => ({...p, throughPassesCompletedPerNinety: Math.round(p.throughPassesCompletedPerNinety * p.minutes / 90)}));
@@ -1687,7 +1690,7 @@ const samePositionAndLeagueThroughPassesCompletedPerNinetyWithMinutes = calculat
 // Metric: progressivePassesCompletedPerNinety
 const allCsvRankProgressivePassesCompletedPerNinety = calculateRankForMetric(baseFiltered, 'progressivePassesCompletedPerNinety');
 const leagueRankProgressivePassesCompletedPerNinety = calculateRankForMetric(sameLeague, 'progressivePassesCompletedPerNinety');
-const allCsvRankProgressivePassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'progressivePassesCompletedPerNinety', p => true, p => ({...p, progressivePassesCompletedPerNinety: Math.round(p.progressivePassesCompletedPerNinety * p.minutes / 90)}));
+const allCsvRankProgressivePassesCompletedPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'progressivePassesCompletedPerNinety', p => ({...p, progressivePassesCompletedPerNinety: Math.round(p.progressivePassesCompletedPerNinety * p.minutes / 90)}));
 const leagueRankProgressivePassesCompletedPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'progressivePassesCompletedPerNinety', p => ({...p, progressivePassesCompletedPerNinety: Math.round(p.progressivePassesCompletedPerNinety * p.minutes / 90)}));
 const positionRankProgressivePassesCompletedPerNinety = calculateRankForMetric(samePosition, 'progressivePassesCompletedPerNinety');
 const positionRankProgressivePassesCompletedPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'progressivePassesCompletedPerNinety', p => ({...p, progressivePassesCompletedPerNinety: Math.round(p.progressivePassesCompletedPerNinety * p.minutes / 90)}));
@@ -1700,7 +1703,7 @@ const samePositionAndLeagueProgressivePassesCompletedPerNinetyWithMinutes = calc
 // Metric: savesPerNinety
 const allCsvRankSavesPerNinety = calculateRankForMetric(baseFiltered, 'savesPerNinety');
 const leagueRankSavesPerNinety = calculateRankForMetric(sameLeague, 'savesPerNinety');
-const allCsvRankSavesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'savesPerNinety', p => true, p => ({...p, savesPerNinety: Math.round(p.savesPerNinety * p.minutes / 90)}));
+const allCsvRankSavesPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'savesPerNinety', p => ({...p, savesPerNinety: Math.round(p.savesPerNinety * p.minutes / 90)}));
 const leagueRankSavesPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'savesPerNinety', p => ({...p, savesPerNinety: Math.round(p.savesPerNinety * p.minutes / 90)}));
 const positionRankSavesPerNinety = calculateRankForMetric(samePosition, 'savesPerNinety');
 const positionRankSavesPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'savesPerNinety', p => ({...p, savesPerNinety: Math.round(p.savesPerNinety * p.minutes / 90)}));
@@ -1710,7 +1713,7 @@ const samePositionAndLeagueSavesPerNinetyWithMinutes = calculateRankForMetric(sa
 // Metric: possessionsWonMinusLostPerNinety
 const allCsvRankPossessionsWonMinusLostPerNinety = calculateRankForMetric(baseFiltered, 'possessionsWonMinusLostPerNinety');
 const leagueRankPossessionsWonMinusLostPerNinety = calculateRankForMetric(sameLeague, 'possessionsWonMinusLostPerNinety');
-const allCsvRankPossessionsWonMinusLostPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'possessionsWonMinusLostPerNinety', p => true, p => ({...p, possessionsWonMinusLostPerNinety: Math.round(p.possessionsWonMinusLostPerNinety * p.minutes / 90)}));
+const allCsvRankPossessionsWonMinusLostPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'possessionsWonMinusLostPerNinety', p => ({...p, possessionsWonMinusLostPerNinety: Math.round(p.possessionsWonMinusLostPerNinety * p.minutes / 90)}));
 const leagueRankPossessionsWonMinusLostPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'possessionsWonMinusLostPerNinety', p => ({...p, possessionsWonMinusLostPerNinety: Math.round(p.possessionsWonMinusLostPerNinety * p.minutes / 90)}));
 const positionRankPossessionsWonMinusLostPerNinety = calculateRankForMetric(samePosition, 'possessionsWonMinusLostPerNinety');
 const positionRankPossessionsWonMinusLostPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'possessionsWonMinusLostPerNinety', p => ({...p, possessionsWonMinusLostPerNinety: Math.round(p.possessionsWonMinusLostPerNinety * p.minutes / 90)}));
@@ -1720,7 +1723,7 @@ const samePositionAndLeaguePossessionsWonMinusLostPerNinetyWithMinutes = calcula
 // Metric: duelsWonPerNinety
 const allCsvRankDuelsWonPerNinety = calculateRankForMetric(baseFiltered, 'duelsWonPerNinety');
 const leagueRankDuelsWonPerNinety = calculateRankForMetric(sameLeague, 'duelsWonPerNinety');
-const allCsvRankDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'duelsWonPerNinety', p => true, p => ({...p, duelsWonPerNinety: Math.round(p.duelsWonPerNinety * p.minutes / 90)}));
+const allCsvRankDuelsWonPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'duelsWonPerNinety', p => ({...p, duelsWonPerNinety: Math.round(p.duelsWonPerNinety * p.minutes / 90)}));
 const leagueRankDuelsWonPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'duelsWonPerNinety', p => ({...p, duelsWonPerNinety: Math.round(p.duelsWonPerNinety * p.minutes / 90)}));
 const positionRankDuelsWonPerNinety = calculateRankForMetric(samePosition, 'duelsWonPerNinety');
 const positionRankDuelsWonPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'duelsWonPerNinety', p => ({...p, duelsWonPerNinety: Math.round(p.duelsWonPerNinety * p.minutes / 90)}));
@@ -1730,7 +1733,7 @@ const samePositionAndLeagueDuelsWonPerNinetyWithMinutes = calculateRankForMetric
 // Metric: progressiveActionsPerNinety
 const allCsvRankProgressiveActionsPerNinety = calculateRankForMetric(baseFiltered, 'progressiveActionsPerNinety');
 const leagueRankProgressiveActionsPerNinety = calculateRankForMetric(sameLeague, 'progressiveActionsPerNinety');
-const allCsvRankProgressiveActionsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'progressiveActionsPerNinety', p => true, p => ({...p, progressiveActionsPerNinety: Math.round(p.progressiveActionsPerNinety * p.minutes / 90)}));
+const allCsvRankProgressiveActionsPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'progressiveActionsPerNinety', p => ({...p, progressiveActionsPerNinety: Math.round(p.progressiveActionsPerNinety * p.minutes / 90)}));
 const leagueRankProgressiveActionsPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'progressiveActionsPerNinety', p => ({...p, progressiveActionsPerNinety: Math.round(p.progressiveActionsPerNinety * p.minutes / 90)}));
 const positionRankProgressiveActionsPerNinety = calculateRankForMetric(samePosition, 'progressiveActionsPerNinety');
 const positionRankProgressiveActionsPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'progressiveActionsPerNinety', p => ({...p, progressiveActionsPerNinety: Math.round(p.progressiveActionsPerNinety * p.minutes / 90)}));
@@ -1767,6 +1770,7 @@ const positionRankForwardPassRatio = calculateRankForMetric(samePosition, 'forwa
 const positionRankForwardPassRatioWithMinutes = calculateRankForMetric(samePosition, 'forwardPassRatio');
 const samePositionAndLeagueForwardPassRatio = calculateRankForMetric(samePositionAndLeague, 'forwardPassRatio');
 const samePositionAndLeagueForwardPassRatioWithMinutes = calculateRankForMetric(samePositionAndLeague, 'forwardPassRatio');
+
 
 
 // Metric: chanceCreationRatio
@@ -1823,6 +1827,7 @@ const samePositionAndLeagueBallCarryingFrequency = calculateRankForMetric(samePo
 const samePositionAndLeagueBallCarryingFrequencyWithMinutes = calculateRankForMetric(samePositionAndLeague, 'ballCarryingFrequency');
 
 
+
 // Metric: shotFrequency
 const allCsvRankShotFrequency = calculateRankForMetric(baseFiltered, 'shotFrequency');
 const leagueRankShotFrequency = calculateRankForMetric(sameLeague, 'shotFrequency');
@@ -1843,11 +1848,10 @@ const positionRankDribblesPerHundredTouchesWithMinutes = calculateRankForMetric(
 const samePositionAndLeagueDribblesPerHundredTouches = calculateRankForMetric(samePositionAndLeague, 'dribblesPerHundredTouches');
 const samePositionAndLeagueDribblesPerHundredTouchesWithMinutes = calculateRankForMetric(samePositionAndLeague, 'dribblesPerHundredTouches');
 
-
 // Metric: goalsMinusxGPerNinety
 const allCsvRankGoalsMinusxGPerNinety = calculateRankForMetric(baseFiltered, 'goalsMinusxGPerNinety');
 const leagueRankGoalsMinusxGPerNinety = calculateRankForMetric(sameLeague, 'goalsMinusxGPerNinety');
-const allCsvRankGoalsMinusxGPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'goalsMinusxGPerNinety', p => true, p => ({...p, goalsMinusxGPerNinety: p.goalsMinusxGPerNinety * p.minutes / 90}));
+const allCsvRankGoalsMinusxGPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'goalsMinusxGPerNinety', p => ({...p, goalsMinusxGPerNinety: p.goalsMinusxGPerNinety * p.minutes / 90}));
 const leagueRankGoalsMinusxGPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'goalsMinusxGPerNinety', p => ({...p, goalsMinusxGPerNinety: p.goalsMinusxGPerNinety * p.minutes / 90}));
 const positionRankGoalsMinusxGPerNinety = calculateRankForMetric(samePosition, 'goalsMinusxGPerNinety');
 const positionRankGoalsMinusxGPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'goalsMinusxGPerNinety', p => ({...p, goalsMinusxGPerNinety: p.goalsMinusxGPerNinety * p.minutes / 90}));
@@ -1858,7 +1862,7 @@ const samePositionAndLeagueGoalsMinusxGPerNinetyWithMinutes = calculateRankForMe
 // Metric: npxGAndxAPerNinety
 const allCsvRankNpxGAndxAPerNinety = calculateRankForMetric(baseFiltered, 'npxGAndxAPerNinety');
 const leagueRankNpxGAndxAPerNinety = calculateRankForMetric(sameLeague, 'npxGAndxAPerNinety');
-const allCsvRankNpxGAndxAPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'npxGAndxAPerNinety', p => true, p => ({...p, npxGAndxAPerNinety: p.npxGAndxAPerNinety * p.minutes / 90}));
+const allCsvRankNpxGAndxAPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'npxGAndxAPerNinety', p => ({...p, npxGAndxAPerNinety: p.npxGAndxAPerNinety * p.minutes / 90}));
 const leagueRankNpxGAndxAPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'npxGAndxAPerNinety', p => ({...p, npxGAndxAPerNinety: p.npxGAndxAPerNinety * p.minutes / 90}));
 const positionRankNpxGAndxAPerNinety = calculateRankForMetric(samePosition, 'npxGAndxAPerNinety');
 const positionRankNpxGAndxAPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'npxGAndxAPerNinety', p => ({...p, npxGAndxAPerNinety: p.npxGAndxAPerNinety * p.minutes / 90}));
@@ -1869,7 +1873,7 @@ const samePositionAndLeagueNpxGAndxAPerNinetyWithMinutes = calculateRankForMetri
 // Metric: npxGPerNinety
 const allCsvRankNpxGPerNinety = calculateRankForMetric(baseFiltered, 'npxGPerNinety');
 const leagueRankNpxGPerNinety = calculateRankForMetric(sameLeague, 'npxGPerNinety');
-const allCsvRankNpxGPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'npxGPerNinety', p => true, p => ({...p, npxGPerNinety: p.npxGPerNinety * p.minutes / 90}));
+const allCsvRankNpxGPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'npxGPerNinety', p => ({...p, npxGPerNinety: p.npxGPerNinety * p.minutes / 90}));
 const leagueRankNpxGPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'npxGPerNinety', p => ({...p, npxGPerNinety: p.npxGPerNinety * p.minutes / 90}));
 const positionRankNpxGPerNinety = calculateRankForMetric(samePosition, 'npxGPerNinety');
 const positionRankNpxGPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'npxGPerNinety', p => ({...p, npxGPerNinety: p.npxGPerNinety * p.minutes / 90}));
@@ -1880,21 +1884,24 @@ const samePositionAndLeagueNpxGPerNinetyWithMinutes = calculateRankForMetric(sam
 // Metric: xGAndxAPerNinety
 const allCsvRankXGAndxAPerNinety = calculateRankForMetric(baseFiltered, 'xGAndxAPerNinety');
 const leagueRankXGAndxAPerNinety = calculateRankForMetric(sameLeague, 'xGAndxAPerNinety');
-const allCsvRankXGAndxAPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'xGAndxAPerNinety', p => true, p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
+const allCsvRankXGAndxAPerNinetyWithMinutes = calculateRankForMetric(baseFiltered, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
 const leagueRankXGAndxAPerNinetyWithMinutes = calculateRankForMetric(sameLeague, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
 const positionRankXGAndxAPerNinety = calculateRankForMetric(samePosition, 'xGAndxAPerNinety');
 const positionRankXGAndxAPerNinetyWithMinutes = calculateRankForMetric(samePosition, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
 const samePositionAndLeagueXGAndxAPerNinety = calculateRankForMetric(samePositionAndLeague, 'xGAndxAPerNinety');
 const samePositionAndLeagueXGAndxAPerNinetyWithMinutes = calculateRankForMetric(samePositionAndLeague, 'xGAndxAPerNinety', p => ({...p, xGAndxAPerNinety: p.xGAndxAPerNinety * p.minutes / 90}));
-// Metric: xAPer100Passes
-const allCsvRankXAPer100Passes = calculateRankForMetric(baseFiltered, 'xAPer100Passes');
-const leagueRankXAPer100Passes = calculateRankForMetric(sameLeague, 'xAPer100Passes');
-const allCsvRankXAPer100PassesWithMinutes = calculateRankForMetric(baseFiltered, 'xAPer100Passes');
-const leagueRankXAPer100PassesWithMinutes = calculateRankForMetric(sameLeague, 'xAPer100Passes');
-const positionRankXAPer100Passes = calculateRankForMetric(samePosition, 'xAPer100Passes');
-const positionRankXAPer100PassesWithMinutes = calculateRankForMetric(samePosition, 'xAPer100Passes');
-const samePositionAndLeagueXAPer100Passes = calculateRankForMetric(samePositionAndLeague, 'xAPer100Passes');
-const samePositionAndLeagueXAPer100PassesWithMinutes = calculateRankForMetric(samePositionAndLeague, 'xAPer100Passes');
+
+
+// Metric: goalsPer100Touches
+const allCsvRankGoalsPer100Touches = calculateRankForMetric(baseFiltered, 'goalsPer100Touches');
+const leagueRankGoalsPer100Touches = calculateRankForMetric(sameLeague, 'goalsPer100Touches');
+const allCsvRankGoalsPer100TouchesWithMinutes = calculateRankForMetric(baseFiltered, 'goalsPer100Touches');
+const leagueRankGoalsPer100TouchesWithMinutes = calculateRankForMetric(sameLeague, 'goalsPer100Touches');
+const positionRankGoalsPer100Touches = calculateRankForMetric(samePosition, 'goalsPer100Touches');
+const positionRankGoalsPer100TouchesWithMinutes = calculateRankForMetric(samePosition, 'goalsPer100Touches');
+const samePositionAndLeagueGoalsPer100Touches = calculateRankForMetric(samePositionAndLeague, 'goalsPer100Touches');
+const samePositionAndLeagueGoalsPer100TouchesWithMinutes = calculateRankForMetric(samePositionAndLeague, 'goalsPer100Touches');
+
 
 // Metric: xGPer100Touches
 const allCsvRankXGPer100Touches = calculateRankForMetric(baseFiltered, 'xGPer100Touches');
@@ -1906,19 +1913,15 @@ const positionRankXGPer100TouchesWithMinutes = calculateRankForMetric(samePositi
 const samePositionAndLeagueXGPer100Touches = calculateRankForMetric(samePositionAndLeague, 'xGPer100Touches');
 const samePositionAndLeagueXGPer100TouchesWithMinutes = calculateRankForMetric(samePositionAndLeague, 'xGPer100Touches');
 
-// Metric: goalsPer100Touches
-const allCsvRankGoalsPer100Touches = calculateRankForMetric(baseFiltered, 'goalsPer100Touches');
-const leagueRankGoalsPer100Touches = calculateRankForMetric(sameLeague, 'goalsPer100Touches');
-const allCsvRankGoalsPer100TouchesWithMinutes = calculateRankForMetric(baseFiltered, 'goalsPer100Touches');
-const leagueRankGoalsPer100TouchesWithMinutes = calculateRankForMetric(sameLeague, 'goalsPer100Touches');
-const positionRankGoalsPer100Touches = calculateRankForMetric(samePosition, 'goalsPer100Touches');
-const positionRankGoalsPer100TouchesWithMinutes = calculateRankForMetric(samePosition, 'goalsPer100Touches');
-const samePositionAndLeagueGoalsPer100Touches = calculateRankForMetric(samePositionAndLeague, 'goalsPer100Touches');
-const samePositionAndLeagueGoalsPer100TouchesWithMinutes = calculateRankForMetric(samePositionAndLeague, 'goalsPer100Touches');
-	    
-
-
-
+// Metric: xAPer100Passes
+const allCsvRankXAPer100Passes = calculateRankForMetric(baseFiltered, 'xAPer100Passes');
+const leagueRankXAPer100Passes = calculateRankForMetric(sameLeague, 'xAPer100Passes');
+const allCsvRankXAPer100PassesWithMinutes = calculateRankForMetric(baseFiltered, 'xAPer100Passes');
+const leagueRankXAPer100PassesWithMinutes = calculateRankForMetric(sameLeague, 'xAPer100Passes');
+const positionRankXAPer100Passes = calculateRankForMetric(samePosition, 'xAPer100Passes');
+const positionRankXAPer100PassesWithMinutes = calculateRankForMetric(samePosition, 'xAPer100Passes');
+const samePositionAndLeagueXAPer100Passes = calculateRankForMetric(samePositionAndLeague, 'xAPer100Passes');
+const samePositionAndLeagueXAPer100PassesWithMinutes = calculateRankForMetric(samePositionAndLeague, 'xAPer100Passes');
 
     const sectionSelect = document.getElementById('sectionSelect');
     const selectedSection = sectionSelect.options[sectionSelect.selectedIndex].value;
