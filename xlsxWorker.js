@@ -1,45 +1,71 @@
-
 self.onmessage = async function(event) {
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
     
-    let urls = event.data.urls;
+    const urls = event.data.urls;
+    const positions = {
+        0: 'Goalkeeper', 1: 'Goalkeeper', 2: 'Goalkeeper',
+        3: 'Centre-back', 4: 'Centre-back', 5: 'Centre-back',
+        6: 'Full-back', 7: 'Full-back', 8: 'Full-back',
+        9: 'Midfielder', 10: 'Midfielder', 11: 'Midfielder',
+        12: 'Winger', 13: 'Winger', 14: 'Winger',
+        15: 'Striker', 16: 'Striker', 17: 'Striker'
+    };
+
     let allData = [];
-    let isFirstFileProcessed = false;
+    const BATCH_SIZE = 6; // Process 6 files at a time for balance between speed and memory
 
-    const fetchPromises = urls.map(url => fetch(url).then(response => response.arrayBuffer()));
-    const responses = await Promise.all(fetchPromises);
+    try {
+        for (let i = 0; i < urls.length; i += BATCH_SIZE) {
+            const batchUrls = urls.slice(i, Math.min(i + BATCH_SIZE, urls.length));
+            
+            // Fetch all files in current batch concurrently
+            const batchPromises = batchUrls.map(async (url, batchIndex) => {
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                const position = positions[i + batchIndex];
+                
+                // Process each file as soon as it's downloaded
+                const workbook = XLSX.read(new Uint8Array(arrayBuffer), { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { 
+                    header: 1,
+                    raw: false, // Convert to strings for faster processing
+                    defval: '' // Use empty string for empty cells
+                });
 
-    responses.forEach((data, index) => {
-        const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        jsonData = jsonData.map(row => row.slice(0, 93));
-        
-        let label;
-        if (index >= 0 && index <= 2) label = 'Goalkeeper';
-        else if (index >= 3 && index <= 5) label = 'Centre-back';
-        else if (index >= 6 && index <= 8) label = 'Full-back';
-        else if (index >= 9 && index <= 11) label = 'Midfielder';
-        else if (index >= 12 && index <= 14) label = 'Winger';
-        else if (index >= 15 && index <= 17) label = 'Striker';
-        else label = 'Unknown';
+                // Process rows directly during conversion
+                return jsonData.slice(1).map(row => {
+                    const processedRow = row.slice(0, 93);
+                    processedRow.splice(2, 0, position);
+                    return processedRow;
+                });
+            });
 
-        for (let i = 0; i < jsonData.length; i++) {
-            if (index !== 0 && i === 0) continue;
-            for (let j = jsonData[i].length - 1; j >= 2; j--) {
-                jsonData[i][j] = jsonData[i][j - 1];
-            }
-            jsonData[i][2] = label;
+            // Wait for current batch to complete
+            const batchResults = await Promise.all(batchPromises);
+            
+            // Combine batch results
+            batchResults.forEach(data => {
+                allData.push(...data);
+            });
+
+            // Report progress
+            self.postMessage({
+                type: 'progress',
+                progress: Math.min(100, Math.round((i + BATCH_SIZE) / urls.length * 100))
+            });
         }
 
-        if (!isFirstFileProcessed) {
-            allData.push(...jsonData);
-            isFirstFileProcessed = true;
-        } else {
-            allData.push(...jsonData.slice(1));
-        }
-    });
+        // Send completed data
+        self.postMessage({
+            type: 'complete',
+            data: allData
+        });
 
-    self.postMessage(allData);
+    } catch (error) {
+        self.postMessage({
+            type: 'error',
+            error: error.message
+        });
+    }
 };
