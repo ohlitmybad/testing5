@@ -868,34 +868,32 @@ function parseCSV(csv) {
   
   function calculateRankForMetric(data, metric, filterFn, transformFn) {
     // Early filtering and transformation to minimize data processing
-    const processedData = data
-        .filter(item => filterFn ? filterFn(item) : true)  // Apply filter first
-        .map(item => transformFn ? transformFn(item) : item)  // Transform only filtered data
-        .filter(item => item[metric] !== 0);  // Remove 0 values early
+    let processedData = filterFn ? data.filter(filterFn) : data;
+    processedData = transformFn ? processedData.map(transformFn) : processedData;
 
-    // Use object instead of Map for faster lookup
+    // Use object for faster unique player lookup
     const uniquePlayersObj = {};
     
     for (const player of processedData) {
+        if (player[metric] === 0) continue; // Skip zero values early
         const key = `${player.player}-${player.team}`;
         uniquePlayersObj[key] = player;
     }
 
-    // Convert to array and sort only the unique values
+    // Sort only unique, non-zero values
     const sortedData = Object.values(uniquePlayersObj)
         .sort((a, b) => b[metric] - a[metric]);
 
-    // Single pass ranking
+    // Generate rankings
     const playerRanks = [];
     let currentRank = 1;
     let prevValue = null;
 
-    for (let i = 0; i < sortedData.length; i++) {
-        const player = sortedData[i];
+    for (const player of sortedData) {
         const currentValue = player[metric];
-
+        
         if (currentValue !== prevValue) {
-            currentRank = i + 1;
+            currentRank = playerRanks.length + 1;
             prevValue = currentValue;
         }
 
