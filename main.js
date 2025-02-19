@@ -866,45 +866,38 @@ function parseCSV(csv) {
   }
 
   
-  function calculateRankForMetric(data, metric, transformFn) {
+  function calculateRankForMetric(data, metric, filterFn, transformFn) {
+    // Early filtering and transformation to minimize data processing
+    const processedData = data
+        .filter(item => filterFn ? filterFn(item) : true)  // Apply filter first
+        .map(item => transformFn ? transformFn(item) : item)  // Transform only filtered data
+        .filter(item => item[metric] !== 0);  // Remove 0 values early
 
-    // Apply transformation function if provided
-    const transformedData = transformFn ? data.map(transformFn) : data;
-
-    // Use a Map to store unique players based on their name and team
-    const uniquePlayers = new Map();
-
-    for (const player of transformedData) {
+    // Use object instead of Map for faster lookup
+    const uniquePlayersObj = {};
+    
+    for (const player of processedData) {
         const key = `${player.player}-${player.team}`;
-        if (!uniquePlayers.has(key)) {
-            uniquePlayers.set(key, player);
-        }
+        uniquePlayersObj[key] = player;
     }
 
-    // Convert Map to array and sort by metric (Descending order)
-    const sortedData = Array.from(uniquePlayers.values()).sort((a, b) => b[metric] - a[metric]);
+    // Convert to array and sort only the unique values
+    const sortedData = Object.values(uniquePlayersObj)
+        .sort((a, b) => b[metric] - a[metric]);
 
-    // Assign ranks efficiently in a single pass (O(n))
-    let rank = 1;
-    let prevValue = null;
-    const playerRanks = [];
-
-    for (let i = 0; i < sortedData.length; i++) {
-        const player = sortedData[i];
-        const currentValue = player[metric];
-
-        if (currentValue === 0) {
-            playerRanks.push({ player: player.player, team: player.team, rank: "N/A" });
-            continue;
-        }
-
-        if (currentValue !== prevValue) {
-            rank = i + 1; // Rank is based on position in sorted list
-            prevValue = currentValue;
-        }
-
-        playerRanks.push({ player: player.player, team: player.team, rank });
-    }
+    // Single pass ranking with early termination if needed
+    const playerRanks = sortedData.map((player, index) => {
+        const prevPlayer = sortedData[index - 1];
+        const rank = prevPlayer && prevPlayer[metric] === player[metric] 
+            ? playerRanks[index - 1].rank 
+            : index + 1;
+            
+        return { 
+            player: player.player, 
+            team: player.team, 
+            rank 
+        };
+    });
 
     return playerRanks;
 }
