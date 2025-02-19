@@ -864,25 +864,25 @@ function parseCSV(csv) {
       };
     });
   }
+
+  
   function calculateRankForMetric(data, metric, filterFn, transformFn) {
-    // Early filtering and transformation to minimize data processing
-    let processedData = filterFn ? data.filter(filterFn) : data;
-    processedData = transformFn ? processedData.map(transformFn) : processedData;
-
-    // Use object for faster unique player lookup
-    const uniquePlayersObj = {};
+    // FILTER FIRST - before doing anything else!
+    // This immediately reduces 10000+ players to just ~20 if filterFn is provided
+    const filteredData = filterFn ? data.filter(filterFn) : data;
     
-    for (const player of processedData) {
-        if (player[metric] === 0) continue; // Skip zero values early
-        const key = `${player.player}-${player.team}`;
-        uniquePlayersObj[key] = player;
-    }
+    // Now we're only transforming the filtered data (e.g., 20 players instead of 10000)
+    const processedData = transformFn 
+        ? filteredData.map(transformFn) 
+        : filteredData;
 
-    // Sort only unique, non-zero values
-    const sortedData = Object.values(uniquePlayersObj)
-        .sort((a, b) => b[metric] - a[metric]);
+    // Quick array to store non-zero values (no need for Map or Object for such small datasets)
+    const nonZeroData = processedData.filter(player => player[metric] !== 0);
 
-    // Generate rankings
+    // Sort the much smaller dataset
+    const sortedData = nonZeroData.sort((a, b) => b[metric] - a[metric]);
+
+    // Generate rankings (now working with a very small array)
     const playerRanks = [];
     let currentRank = 1;
     let prevValue = null;
@@ -892,7 +892,7 @@ function parseCSV(csv) {
         const currentValue = player[metric];
         
         if (currentValue !== prevValue) {
-            currentRank = i + 1;  // Use index + 1 instead of playerRanks.length + 1
+            currentRank = i + 1;
             prevValue = currentValue;
         }
 
@@ -905,6 +905,8 @@ function parseCSV(csv) {
 
     return playerRanks;
 }
+
+
 
 
 function getRankSuffix(rank) {
