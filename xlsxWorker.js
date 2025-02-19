@@ -54,33 +54,33 @@ self.onmessage = async function(event) {
             const buffer = await response.arrayBuffer();
             const workbook = XLSX.read(new Uint8Array(buffer), xlsxOptions);
             
-            // Skip the sheet_to_json conversion and directly access the data
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             const range = XLSX.utils.decode_range(sheet['!ref']);
             
-            // Pre-allocate array with exact size needed
             const rowCount = range.e.r + 1;
             const processedData = new Array(rowCount);
             
-            // Direct cell access instead of conversion to JSON
             for (let R = 0; R <= range.e.r; R++) {
-                const row = new Array(93); // Pre-allocate with known column count
+                const row = new Array(93);
                 for (let C = 0; C <= Math.min(92, range.e.c); C++) {
                     const cell = sheet[XLSX.utils.encode_cell({r: R, c: C})];
-                    row[C] = cell ? cell.v : ''; // .v gives raw value
+                    row[C] = cell ? cell.v : '';
                 }
                 
-                if (startIndex + batchIndex !== 0 && R === 0) {
+                // Calculate the absolute file index
+                const fileIndex = startIndex + batchIndex;
+                
+                // Skip headers for all files except the first one
+                if (fileIndex !== 0 && R === 0) {
                     processedData[R] = null;
                     continue;
                 }
                 
-                // Insert position label
-                row.splice(2, 0, getPositionLabel(urls.indexOf(url)));
+                // Use fileIndex for position label
+                row.splice(2, 0, getPositionLabel(fileIndex));
                 processedData[R] = row;
             }
             
-            // Clear references
             workbook.Sheets = null;
             workbook.SheetNames = null;
             
