@@ -384,13 +384,11 @@ worker.postMessage({ urls: [
     'https://datamb.football/database/CURRENT/TOP72425/ST/ST.xlsx'
 ] });
 
-
 worker.onmessage = function(event) {
     if (event.data.type === 'complete') {
         allData = event.data.data;
         document.getElementById('loadingContainer').style.display = 'none';
     }
-
 
 
 
