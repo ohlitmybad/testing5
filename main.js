@@ -1041,8 +1041,11 @@ function displaySelectedPlayer() {
 
 function displayPlayerRankings(player) {
     const parsedData = parseCSV(csvData);
-    const selectedPlayer = parsedData.find(p => p.player === player.player && p.position === player.position  &&
-    p.team === player.team);
+    const selectedPlayer = {
+        ...player,
+        position: positionToNumber[player.position] || 0,
+        league: leagueToNumber[player.league] || 0
+    };
     const ageSelect = document.getElementById('ageSelect');
     const selectedAge = parseInt(ageSelect.value);
     const filteredData = selectedAge ? parsedData.filter(p => p.age <= selectedAge) : parsedData;
