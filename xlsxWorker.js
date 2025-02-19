@@ -1,7 +1,7 @@
 self.onmessage = async function(event) {
     importScripts('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
     
-    const BATCH_SIZE = 2; // Increased batch size for modern browsers
+    const BATCH_SIZE = 3; // Increased batch size for modern browsers
     const cache = new Map();
     let urls = event.data.urls;
     let allData = [];
