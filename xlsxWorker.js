@@ -60,6 +60,9 @@ self.onmessage = async function(event) {
             const rowCount = range.e.r + 1;
             const processedData = new Array(rowCount);
             
+            // Calculate the absolute file index once, outside the loop
+            const fileIndex = startIndex + batchIndex;
+            
             for (let R = 0; R <= range.e.r; R++) {
                 const row = new Array(93);
                 for (let C = 0; C <= Math.min(92, range.e.c); C++) {
@@ -67,17 +70,13 @@ self.onmessage = async function(event) {
                     row[C] = cell ? cell.v : '';
                 }
                 
-                // Calculate the absolute file index
-                const fileIndex = startIndex + batchIndex;
-                
                 // Skip headers for all files except the first one
                 if (fileIndex !== 0 && R === 0) {
                     processedData[R] = null;
                     continue;
                 }
                 
-                // Use fileIndex for position label
-                row.splice(2, 0, getPositionLabel(fileIndex));
+                row.splice(2, 0, getPositionLabel(fileIndex));  // Use fileIndex here
                 processedData[R] = row;
             }
             
