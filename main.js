@@ -363,11 +363,6 @@ function updateCurrentMetricValue(parsedData, selectedPlayer, metric) {
 let allData = [];
 let worker = new Worker('xlsxWorker.js');
 
-const loadingProgress = document.querySelector('.loading-progress');
-const loadingText = document.querySelector('.loading-text');
-const loadingContainer = document.getElementById('loadingContainer');
-
-
 worker.postMessage({ urls: [
     'https://datamb.football/database/CURRENT/PRO2425/GK/GK.xlsx',
     'https://datamb.football/database/CURRENT/PRO2024/GK/GK.xlsx',
@@ -390,32 +385,16 @@ worker.postMessage({ urls: [
 ] });
 
 worker.onmessage = function(event) {
-    if (event.data.type) {
-        // Handle progress/status messages
-        switch(event.data.type) {
-            case 'progress':
-                loadingProgress.style.width = `${event.data.progress}%`;
-                loadingText.textContent = `Loading data... ${event.data.progress}%`;
-                break;
-                
-            case 'complete':
-                allData = event.data.data;
-                loadingContainer.style.display = 'none';
-                initializeApp(); // Your initialization function
-                break;
-                
-            case 'error':
-                loadingText.textContent = 'Error loading data. Please refresh the page.';
-                console.error('Loading error:', event.data.error);
-                break;
+    if (event.data.type === 'progress') {
+        // Update progress bar
+        const progressBar = document.querySelector('.loading-progress');
+        if (progressBar) {
+            progressBar.style.width = `${event.data.progress}%`;
         }
-    } else {    allData = event.data;
-    document.getElementById('loadingContainer').style.display = 'none';
-
-
-
-
-
+    } else if (event.data.type === 'complete') {
+        allData = event.data.data;
+        document.getElementById('loadingContainer').style.display = 'none';
+    }
 
         const leagues = {
 
@@ -12305,7 +12284,7 @@ document.getElementById('toggleSortingButton').addEventListener('change', functi
 });
 
 
-}};function toggleActive(element) {
+};function toggleActive(element) {
   element.classList.toggle('active');
 }
 
