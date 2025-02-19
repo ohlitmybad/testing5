@@ -385,16 +385,11 @@ worker.postMessage({ urls: [
 ] });
 
 worker.onmessage = function(event) {
-    if (event.data.type === 'progress') {
-        // Update progress bar
-        const progressBar = document.querySelector('.loading-progress');
-        if (progressBar) {
-            progressBar.style.width = `${event.data.progress}%`;
-        }
-    } else if (event.data.type === 'complete') {
-        allData = event.data.data;
-        document.getElementById('loadingContainer').style.display = 'none';
-    }
+    allData = event.data;
+    document.getElementById('loadingContainer').style.display = 'none';
+
+
+
 
         const leagues = {
 
