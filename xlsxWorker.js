@@ -14,7 +14,6 @@ self.onmessage = async function(event) {
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         let jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        jsonData = jsonData.map;
         
         let label;
         if (index >= 0 && index <= 2) label = 'Goalkeeper';
