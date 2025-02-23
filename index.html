@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -1940,26 +1942,16 @@
               // Close menu when clicking a link (mobile only)
               if (window.innerWidth <= 768) {
                 navLinks.forEach(link => {
-                  link.addEventListener('click', function(e) {
-                    // Get the target from the href
-                    const target = this.getAttribute('href').substring(1);
-                    
+                  link.addEventListener('click', function() {
                     // Check if the parent li has no child ul elements
                     const parentLi = this.closest('li');
                     const hasChildren = parentLi.querySelector('ul');
                     
-                    // If no children, handle the navigation first, then close the menu
+                    // Only close the sidebar if there are no child elements
                     if (!hasChildren) {
-                      e.preventDefault(); // Prevent default to handle scroll manually
-                      
-                      // Handle the navigation
-                      handleNavigation(target);
-                      
-                      // Close the menu after a small delay to allow scroll to begin
-                      setTimeout(() => {
+                        setTimeout(() => {
                         navContainer.classList.remove('active');
-                      }, 100);
-                    }
+                      }, 1000);                    }
                   });
                 });
               }
