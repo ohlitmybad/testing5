@@ -1940,14 +1940,24 @@
               // Close menu when clicking a link (mobile only)
               if (window.innerWidth <= 768) {
                 navLinks.forEach(link => {
-                  link.addEventListener('click', function() {
-                    // Check if the parent li has no child ul elements
+                  link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get the target from href
+                    const target = this.getAttribute('href').substring(1);
+                    
+                    // Check if the parent li has child ul elements
                     const parentLi = this.closest('li');
                     const hasChildren = parentLi.querySelector('ul');
                     
-                    // Only close the sidebar if there are no child elements
+                    // Handle the navigation first
+                    handleNavigation(target);
+                    
+                    // Only close the menu if this is a final destination link (no children)
                     if (!hasChildren) {
-                      navContainer.classList.remove('active');
+                      setTimeout(() => {
+                        navContainer.classList.remove('active');
+                      }, 100);
                     }
                   });
                 });
