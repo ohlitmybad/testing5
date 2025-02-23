@@ -1909,17 +1909,18 @@
                     }
                   }
                   
-                  // Wait longer for DOM updates and use absolute positioning
+                  // Wait for DOM updates
                   setTimeout(() => {
-                    const headerOffset = 85;
-                    const rect = targetElement.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    const absoluteTop = rect.top + scrollTop;
+                    // First scroll the element into view
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
                     
-                    window.scrollTo({
-                      top: absoluteTop - headerOffset,
-                      behavior: 'smooth'
-                    });
+                    // Then adjust for header offset
+                    setTimeout(() => {
+                      window.scrollBy({
+                        top: -85,
+                        behavior: 'smooth'
+                      });
+                    }, 500);
                   }, 300);
                 }
               }
