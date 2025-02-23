@@ -1722,7 +1722,7 @@
              
               </div><br><hr class="tool-divider">
             </section>      
-        <br>
+        
         
             <!-- Account & Subscription -->
             <section id="account" class="section">
@@ -1909,19 +1909,17 @@
                     }
                   }
                   
-                  // Wait a brief moment for the section to become visible
-                  setTimeout(() => {
-                    // Calculate the offset (height of fixed header + some padding)
-                    const offset = 85; // Adjust this value based on your header height
-                    const elementPosition = targetElement.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                  // Calculate offset only for desktop
+                  const isMobile = window.innerWidth <= 768;
+                  const offset = isMobile ? 0 : 85; // No offset for mobile, 85px for desktop
+                  const elementPosition = targetElement.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.pageYOffset - offset;
 
-                    // Smooth scroll to element with offset
-                    window.scrollTo({
-                      top: offsetPosition,
-                      behavior: 'smooth'
-                    });
-                  }, 10);
+                  // Smooth scroll to element
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                  });
                 }
               }
         
