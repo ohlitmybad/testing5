@@ -1909,26 +1909,10 @@
                     }
                   }
                   
-                  // Calculate nesting level for mobile offset
-                  let nestingLevel = 0;
-                  if (window.innerWidth <= 768) { // Only for mobile
-                    let element = matchingNavLink;
-                    while (element && !element.classList.contains('nav-container')) {
-                      if (element.parentElement.tagName === 'UL' && 
-                          !element.parentElement.classList.contains('nav-container')) {
-                        nestingLevel++;
-                      }
-                      element = element.parentElement;
-                    }
-                  }
-
-                  // Calculate the offset
-                  const baseOffset = 85; // Base offset for header
-                  const mobileNestingOffset = window.innerWidth <= 768 ? ((nestingLevel - 1) * 240) : 0; // 20px per nesting level
-                  const totalOffset = baseOffset - mobileNestingOffset;
-                  
-                  const elementPosition = targetElement.getBoundingClientRect().top;
-                  const offsetPosition = elementPosition + window.pageYOffset - totalOffset;
+                  // Calculate the offset (height of fixed header + some padding)
+                  const offset = 85; // Adjust this value based on your header height
+                  const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                  const offsetPosition = elementPosition - offset;
 
                   // Smooth scroll to element with offset
                   window.scrollTo({
