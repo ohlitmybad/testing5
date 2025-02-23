@@ -1924,8 +1924,8 @@
 
                   // Calculate the offset
                   const baseOffset = 85; // Base offset for header
-                  const mobileNestingOffset = window.innerWidth <= 768 ? (nestingLevel * 20) : 0; // 20px per nesting level
-                  const totalOffset = baseOffset + mobileNestingOffset;
+                  const mobileNestingOffset = window.innerWidth <= 768 ? (nestingLevel * 100) : 0; // 20px per nesting level
+                  const totalOffset = baseOffset - mobileNestingOffset;
                   
                   const elementPosition = targetElement.getBoundingClientRect().top;
                   const offsetPosition = elementPosition + window.pageYOffset - totalOffset;
