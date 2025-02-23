@@ -1909,16 +1909,19 @@
                     }
                   }
                   
-                  // Calculate the offset (height of fixed header + some padding)
-                  const offset = 85; // Adjust this value based on your header height
-                  const elementPosition = targetElement.getBoundingClientRect().top;
-                  const offsetPosition = elementPosition + window.pageYOffset - offset;
+                  // Wait a brief moment for the section to become visible
+                  setTimeout(() => {
+                    // Calculate the offset (height of fixed header + some padding)
+                    const offset = 85; // Adjust this value based on your header height
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
 
-                  // Smooth scroll to element with offset
-                  window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                  });
+                    // Smooth scroll to element with offset
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }, 10);
                 }
               }
         
@@ -1940,24 +1943,14 @@
               // Close menu when clicking a link (mobile only)
               if (window.innerWidth <= 768) {
                 navLinks.forEach(link => {
-                  link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Get the target from href
-                    const target = this.getAttribute('href').substring(1);
-                    
-                    // Check if the parent li has child ul elements
+                  link.addEventListener('click', function() {
+                    // Check if the parent li has no child ul elements
                     const parentLi = this.closest('li');
                     const hasChildren = parentLi.querySelector('ul');
                     
-                    // Handle the navigation first
-                    handleNavigation(target);
-                    
-                    // Only close the menu if this is a final destination link (no children)
+                    // Only close the sidebar if there are no child elements
                     if (!hasChildren) {
-                      setTimeout(() => {
-                        navContainer.classList.remove('active');
-                      }, 100);
+                      navContainer.classList.remove('active');
                     }
                   });
                 });
