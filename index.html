@@ -1909,19 +1909,30 @@
                     }
                   }
                   
-                  // Wait for DOM updates
-                  setTimeout(() => {
-                    // First scroll the element into view
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                    
-                    // Then adjust for header offset
+                  // Different scroll behavior for mobile and desktop
+                  if (window.innerWidth <= 768) { // Mobile
                     setTimeout(() => {
-                      window.scrollBy({
-                        top: -85,
-                        behavior: 'smooth'
-                      });
-                    }, 500);
-                  }, 300);
+                      // First scroll the element into view
+                      targetElement.scrollIntoView({ behavior: 'smooth' });
+                      
+                      // Then adjust for header offset with a shorter delay and smoother transition
+                      setTimeout(() => {
+                        window.scrollBy({
+                          top: -85,
+                          behavior: 'instant' // Use instant to hide the adjustment
+                        });
+                      }, 400); // Reduced from 500ms
+                    }, 300);
+                  } else { // Desktop
+                    const headerOffset = 85;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
                 }
               }
         
