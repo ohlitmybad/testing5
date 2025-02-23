@@ -1909,17 +1909,19 @@
                     }
                   }
                   
-                  // Add small delay to ensure content is rendered
+                  // Wait for DOM updates to complete
                   setTimeout(() => {
-                    const offset = 85;
-                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                    const offsetPosition = elementPosition - offset;
+                    // Get updated position after DOM changes
+                    const headerOffset = 85;
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = window.pageYOffset + elementPosition - headerOffset;
 
+                    // Smooth scroll to element
                     window.scrollTo({
                       top: offsetPosition,
                       behavior: 'smooth'
                     });
-                  }, 50);
+                  }, 100);
                 }
               }
         
