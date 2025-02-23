@@ -6,7 +6,7 @@
 
 <link rel="shortcut icon" type="image/x-icon" href="https://datamb.football/favicon.ico">
   <title translate="no">DataMB | Guide</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.00">
+  <meta name="viewport" content="width=device-width>
   <meta property="og:image" content="https://datamb.football/vignettes/glossary.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@DataMB_">
@@ -14,7 +14,26 @@
   <meta name="twitter:description" content="Explanation of the tools, metrics, and methodology used by DataMB">
   <meta name="twitter:image" content="https://datamb.football/vignettes/glossary.png">
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script>
+ (function() {
+    var width = window.innerWidth;
 
+    // Find the viewport meta tag
+    var viewportMeta = document.querySelector('meta[name="viewport"]');
+    if (viewportMeta) {
+        if (width < 601) {
+            var initialScale = width / 601;
+
+            viewportMeta.setAttribute('content', 'width=device-width, initial-scale=' + initialScale + ', maximum-scale=' + initialScale + ', user-scalable=no');
+        } else {
+            var fixedScale = 1;
+
+            viewportMeta.setAttribute('content', 'width=device-width, initial-scale=' + fixedScale + ', maximum-scale=' + fixedScale + ', user-scalable=no');
+        }
+    } 
+})();
+
+</script>
   <title>DataMB | Guide</title>
     <style>
         .google-play-container {
