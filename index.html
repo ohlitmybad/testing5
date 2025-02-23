@@ -71,12 +71,13 @@
         iframe {
             display: none;
             width: 100%;
-            border: none; /* Remove iframe borders if desired */
-            height: 89vh;
-            margin-top: 6vh; /* Add margin-top equal to header height */
-            
-
-     }
+            border: none;
+            height: calc(100vh - 6vh); /* Subtract header height from viewport height */
+            margin-top: 6vh; /* Push content below header */
+            position: fixed; /* Fix iframe position */
+            left: 0;
+            bottom: 0;
+        }
 
 body {
 background: #1a1a1a;
@@ -106,7 +107,8 @@ background: #1a1a1a;
   }
 			
   iframe {
-    margin-top: 3vh; /* Adjust margin-top for mobile */
+    height: calc(100vh - 3vh); /* Adjust for smaller header on mobile */
+    margin-top: 3vh;
   }
 }
 		
