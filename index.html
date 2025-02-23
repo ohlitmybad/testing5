@@ -1909,16 +1909,17 @@
                     }
                   }
                   
-                  // Calculate the offset (height of fixed header + some padding)
-                  const offset = 85; // Adjust this value based on your header height
-                  const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                  const offsetPosition = elementPosition - offset;
+                  // Add small delay to ensure content is rendered
+                  setTimeout(() => {
+                    const offset = 85;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - offset;
 
-                  // Smooth scroll to element with offset
-                  window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                  });
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }, 50);
                 }
               }
         
