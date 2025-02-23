@@ -66,7 +66,6 @@
        body, html {
             margin: 0;
             padding: 0;
-            height: 100%;
             overflow: hidden;
         }
         iframe {
@@ -74,6 +73,7 @@
             width: 100%;
             border: none; /* Remove iframe borders if desired */
             height: 89vh;
+            margin-top: 6vh; /* Add margin-top equal to header height */
             
 
      }
@@ -92,7 +92,12 @@ background: #1a1a1a;
   display: flex;
   align-items: center;
   justify-content: space-between;
-background: #1a1a1a;
+  background: #1a1a1a;
+  position: fixed; /* Add fixed positioning */
+  top: 0; /* Stick to top */
+  left: 0; /* Stick to left */
+  right: 0; /* Stretch across full width */
+  z-index: 1000; /* Ensure header stays above other content */
 }
 
 		@media (max-width: 768px) {
@@ -100,6 +105,9 @@ background: #1a1a1a;
     height: 3vh; /* Adjusted height for mobile devices */
   }
 			
+  iframe {
+    margin-top: 3vh; /* Adjust margin-top for mobile */
+  }
 }
 		
 .header .logo {
